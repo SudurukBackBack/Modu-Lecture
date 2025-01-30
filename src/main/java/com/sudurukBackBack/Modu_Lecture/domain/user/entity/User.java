@@ -29,7 +29,7 @@ public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String id;
+    private Long id;
 
     @Email
     @NotNull
@@ -60,12 +60,20 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(Integer.toString(grade)));
+        return mapGradeToRoles(grade).stream()
+                .map(SimpleGrantedAuthority::new)
+                .toList();
     }
 
-    @Override
-    public String getPassword() {
-        return password;
+    // 상위 역할은 하위 역할의 권한도 가질 수 있도록 설정
+    public List<String> mapGradeToRoles(int grade) {
+        return switch (grade) {
+            case 0 -> List.of("ROLE_BRONZE");
+            case 1 -> List.of("ROLE_BRONZE", "ROLE_SILVER");
+            case 2 -> List.of("ROLE_BRONZE", "ROLE_SILVER", "ROLE_GOLD");
+            case 3 -> List.of("ROLE_BRONZE", "ROLE_SILVER", "ROLE_GOLD", "ROLE_PLATINUM");
+            default -> List.of("ROLE_GUEST");
+        };
     }
 
     @Override

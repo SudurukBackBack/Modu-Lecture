@@ -1,6 +1,7 @@
 package com.sudurukBackBack.Modu_Lecture.domain.user.controller;
 
 import com.sudurukBackBack.Modu_Lecture.domain.user.dto.request.UserRegistrationRequestDto;
+import com.sudurukBackBack.Modu_Lecture.domain.user.entity.User;
 import com.sudurukBackBack.Modu_Lecture.domain.user.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +22,7 @@ public class AuthController {
     public ResponseEntity<?> signUp(
             @Valid @RequestBody UserRegistrationRequestDto request
     ) {
-        authService.signUp(request);
+        User user = authService.signUp(request);
 
         return ResponseEntity.ok().build();
     }
