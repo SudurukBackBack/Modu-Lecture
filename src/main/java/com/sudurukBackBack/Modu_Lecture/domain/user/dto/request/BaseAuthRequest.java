@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
 @Data
-public class BaseUserRequest {
+public class BaseAuthRequest {
 
     // 이메일 형식
     @Email(message = "Invalid email format")
