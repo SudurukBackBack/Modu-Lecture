@@ -44,7 +44,7 @@ public class User implements UserDetails {
 
     @NotNull
     @Column(nullable = false)
-    private Integer grade; // 0: Bronze, 1: Sliver, 2: Gold, 3: Platinum
+    private Integer grade; // 0: Bronze, 1: Silver, 2: Gold, 3: Platinum
 
     @NotNull
     @Column(nullable = false)
