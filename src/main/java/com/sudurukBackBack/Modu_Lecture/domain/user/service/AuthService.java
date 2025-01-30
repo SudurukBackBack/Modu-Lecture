@@ -3,6 +3,7 @@ package com.sudurukBackBack.Modu_Lecture.domain.user.service;
 import com.sudurukBackBack.Modu_Lecture.domain.user.dto.request.UserRegistrationRequestDto;
 import com.sudurukBackBack.Modu_Lecture.domain.user.entity.User;
 import com.sudurukBackBack.Modu_Lecture.domain.user.repository.UserRepository;
+import com.sudurukBackBack.Modu_Lecture.global.util.UserValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -19,6 +20,7 @@ public class AuthService implements UserDetailsService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UserValidator userValidator;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -32,6 +34,9 @@ public class AuthService implements UserDetailsService {
         String email = request.getEmail();
         String password = request.getPassword();
         String username = request.getUsername();
+
+        // email 가입 가능 여부 확인
+        userValidator.emailAlreadyExist(email);
 
         return userRepository.save(User.builder()
                 .email(email)
