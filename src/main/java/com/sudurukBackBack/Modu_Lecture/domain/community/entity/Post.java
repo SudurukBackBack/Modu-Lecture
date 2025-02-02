@@ -39,5 +39,9 @@ public class Post {
 
     @Column(nullable = false)
     private boolean isActive;
-    
+
+    public void updateContent(String content) {
+        this.content = content;
+        this.updatedAt = LocalDateTime.now();
+    }
 }
