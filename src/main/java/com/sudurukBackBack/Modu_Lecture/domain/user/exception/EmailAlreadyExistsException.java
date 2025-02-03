@@ -3,15 +3,15 @@ package com.sudurukBackBack.Modu_Lecture.domain.user.exception;
 import com.sudurukBackBack.Modu_Lecture.global.exception.BasicException;
 import org.springframework.http.HttpStatus;
 
-public class UserNotFoundException extends BasicException {
+public final class EmailAlreadyExistsException extends BasicException {
 
     @Override
     public int statusCode() {
-        return HttpStatus.NOT_FOUND.value();
+        return HttpStatus.CONFLICT.value();
     }
 
     @Override
     public String errorMessage() {
-        return "사용자를 찾을 수 없습니다.";
+        return "이미 사용 중인 이메일 입니다.";
     }
 }

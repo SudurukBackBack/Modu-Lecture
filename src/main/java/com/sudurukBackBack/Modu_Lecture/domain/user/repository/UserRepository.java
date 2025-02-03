@@ -1,4 +1,15 @@
 package com.sudurukBackBack.Modu_Lecture.domain.user.repository;
 
-public interface UserRepository {
+import com.sudurukBackBack.Modu_Lecture.domain.user.entity.User;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
+
+@Repository
+public interface UserRepository extends JpaRepository<User, Long> {
+
+    Optional<User> findByEmail(String email);
+
+    boolean existsByEmail(String email);
 }
