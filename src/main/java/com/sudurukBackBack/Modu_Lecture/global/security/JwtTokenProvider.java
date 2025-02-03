@@ -36,20 +36,24 @@ public class JwtTokenProvider {
     @PostConstruct
     public void init() {
         String secretKey = getSecretKey();
-
         this.key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
+
+        log.info("JWT Secret Key initialized successfully.");
     }
 
     // `.env`에서 secretKey 추출
     private String getSecretKey() {
+
         Dotenv dotenv = Dotenv.load();
         String secretKey = dotenv.get("JWT_SECRET");
 
         if (secretKey == null || secretKey.isEmpty()) {
+            log.error("JWT_SECRET is not defined in environment variables.");
             throw new IllegalStateException("JWT_SECRET is not defined in the environment variables.");
         }
 
         if (secretKey.getBytes(StandardCharsets.UTF_8).length < 32) {
+            log.error("JWT_SECRET must be at least 32 bytes long.");
             throw new IllegalArgumentException("JWT_SECRET must be at least 32 bytes long.");
         }
 
@@ -74,13 +78,16 @@ public class JwtTokenProvider {
         var expirationDate = new Date(now.getTime() + EXPIRATION_TIME);
 
         // 토큰 생성
-        return Jwts.builder()
+        String token = Jwts.builder()
                 .setHeaderParam("typ", "JWT")
-                .setClaims(claims)                          // 사용자 정보
-                .setIssuedAt(now)                           // 발행 시간
-                .setExpiration(expirationDate)              // 만료 시간
-                .signWith(key, SignatureAlgorithm.HS256)    // 서명 방식
+                .setClaims(claims)
+                .setIssuedAt(now)
+                .setExpiration(expirationDate)
+                .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
+
+        log.info("JWT Token generated for user: {} (Expires: {})", email, expirationDate);
+        return token;
     }
 
     /**
@@ -90,8 +97,12 @@ public class JwtTokenProvider {
      * @return 인증(Authentication) 객체.
      */
     public Authentication getAuthentication(String token) {
-        UserDetails userDetails = authService.loadUserByUsername(getUsername(token));
+
+        String username = getUsername(token);
+        UserDetails userDetails = authService.loadUserByUsername(username);
+
         List<GrantedAuthority> authorities = getAuthorities(token);
+        log.info("Authentication created for user: {}", username);
 
         return new UsernamePasswordAuthenticationToken(userDetails, null, authorities);
     }
@@ -103,7 +114,11 @@ public class JwtTokenProvider {
      * @return 사용자 이름(식별자).
      */
     public String getUsername(String token) {
-        return parseClaims(token).getSubject();
+
+        String username = parseClaims(token).getSubject();
+        log.debug("Extracted username from JWT: {}", username);
+
+        return username;
     }
 
     /**
@@ -121,17 +136,16 @@ public class JwtTokenProvider {
         List<String> roles;
 
         if (rolesObject instanceof List) {
-            // rolesObject가 List인 경우
             roles = ((List<?>) rolesObject).stream()
                     .filter(item -> item instanceof String)
                     .map(item -> (String) item)
                     .toList();
         } else if (rolesObject instanceof String) {
-            // rolesObject가 단일 문자열인 경우
             roles = List.of((String) rolesObject);
         } else {
             roles = new ArrayList<>();
         }
+        log.debug("Extracted roles from JWT: {}", roles);
 
         return roles.stream()
                 .map(SimpleGrantedAuthority::new)
@@ -145,17 +159,20 @@ public class JwtTokenProvider {
      * @return Claims 객체.
      */
     private Claims parseClaims(String token) {
+
         try {
             return Jwts.parserBuilder()
-                    .setSigningKey(key)     // 서명 키 설정
+                    .setSigningKey(key)
                     .build()
-                    .parseClaimsJws(token)  // JWT 파싱 및 유효성 검증
+                    .parseClaimsJws(token)
                     .getBody();
 
         } catch (ExpiredJwtException e) {
+            log.warn("JWT Token expired: {}", e.getClaims().getSubject());
             return e.getClaims();
 
         } catch (JwtException e) {
+            log.error("Invalid JWT Token: {}", token);
             throw new IllegalArgumentException("Invalid JWT token");
         }
     }
@@ -167,12 +184,22 @@ public class JwtTokenProvider {
      * @return 유효한 토큰이면 true, 그렇지 않으면 false.
      */
     public boolean validateToken(String token) {
+
         try {
             // Claims를 파싱하여 만료 시간 확인
-            var claims = parseClaims(token);
-            return !claims.getExpiration().before(new Date());
+            Claims claims = parseClaims(token);
+            boolean isValid = !claims.getExpiration().before(new Date());
+
+            if (isValid) {
+                log.info("JWT Token is valid for user: {}", claims.getSubject());
+            } else {
+                log.warn("JWT Token has expired for user: {}", claims.getSubject());
+            }
+
+            return isValid;
 
         } catch (JwtException | IllegalArgumentException e) {
+            log.error("JWT Token validation failed: {}", token);
             return false;
         }
     }
