@@ -1,5 +1,6 @@
 package com.sudurukBackBack.Modu_Lecture.domain.user.service;
 
+import com.sudurukBackBack.Modu_Lecture.domain.user.dto.request.UserLoginRequestDto;
 import com.sudurukBackBack.Modu_Lecture.domain.user.dto.request.UserRegistrationRequestDto;
 import com.sudurukBackBack.Modu_Lecture.domain.user.entity.User;
 import com.sudurukBackBack.Modu_Lecture.domain.user.repository.UserRepository;
@@ -46,6 +47,18 @@ public class AuthService implements UserDetailsService {
                 .userStatus(1)
                 .createdAt(LocalDateTime.now())
                 .build());
+    }
+
+    public User authenticate(UserLoginRequestDto request) {
+
+        var user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new UsernameNotFoundException(request.getEmail()));
+
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            throw new IllegalArgumentException("Wrong password");
+        }
+
+        return user;
     }
 
 }
