@@ -69,6 +69,7 @@ public class JwtTokenProvider {
      */
     public String generateToken(User user) {
 
+        // 역할을 `int`에서 `List<String>`으로 변환
         List<String> roles = user.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .toList();

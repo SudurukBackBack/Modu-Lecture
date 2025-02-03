@@ -3,6 +3,7 @@ package com.sudurukBackBack.Modu_Lecture.domain.user.service;
 import com.sudurukBackBack.Modu_Lecture.domain.user.dto.request.UserLoginRequestDto;
 import com.sudurukBackBack.Modu_Lecture.domain.user.dto.request.UserRegistrationRequestDto;
 import com.sudurukBackBack.Modu_Lecture.domain.user.entity.User;
+import com.sudurukBackBack.Modu_Lecture.domain.user.exception.WrongAuthenticationException;
 import com.sudurukBackBack.Modu_Lecture.domain.user.repository.UserRepository;
 import com.sudurukBackBack.Modu_Lecture.global.util.UserValidator;
 import lombok.RequiredArgsConstructor;
@@ -52,10 +53,10 @@ public class AuthService implements UserDetailsService {
     public User authenticate(UserLoginRequestDto request) {
 
         var user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new UsernameNotFoundException(request.getEmail()));
+                .orElseThrow(WrongAuthenticationException::new);
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new IllegalArgumentException("Wrong password");
+            throw new WrongAuthenticationException();
         }
 
         return user;
