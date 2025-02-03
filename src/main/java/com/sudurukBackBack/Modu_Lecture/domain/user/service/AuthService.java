@@ -31,7 +31,7 @@ public class AuthService implements UserDetailsService {
     @Transactional
     public User signUp(UserRegistrationRequestDto request) {
 
-        String email = request.getEmail();
+        String email = request.getEmail().toLowerCase();
         String password = request.getPassword();
         String username = request.getUsername();
 
