@@ -1,5 +1,6 @@
 package com.sudurukBackBack.Modu_Lecture.domain.community.service;
 
+import com.sudurukBackBack.Modu_Lecture.domain.community.dto.request.PostCreateRequestDto;
 import com.sudurukBackBack.Modu_Lecture.domain.community.entity.Post;
 import com.sudurukBackBack.Modu_Lecture.domain.community.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,12 @@ public class PostService {
                 .orElseThrow(() -> new RuntimeException("Post not found"));
     }
 
-    public Post createPost(Post post) {
+    public Post createPost(PostCreateRequestDto postCreateDto) {
+        Post post = new Post();
+        post.setUserId(postCreateDto.getUserId());
+        post.setCategory(postCreateDto.getCategory());
+        post.setTitle(postCreateDto.getTitle());
+        post.setContent(postCreateDto.getContent());
         return postRepository.save(post);
     }
 
