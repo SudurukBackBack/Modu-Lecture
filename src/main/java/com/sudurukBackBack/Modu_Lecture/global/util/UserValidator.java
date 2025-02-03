@@ -1,6 +1,6 @@
 package com.sudurukBackBack.Modu_Lecture.global.util;
 
-import com.sudurukBackBack.Modu_Lecture.domain.user.exception.UserAlreadyExistsException;
+import com.sudurukBackBack.Modu_Lecture.domain.user.exception.EmailAlreadyExistsException;
 import com.sudurukBackBack.Modu_Lecture.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -15,7 +15,7 @@ public class UserValidator {
         boolean emailExists = userRepository.existsByEmail(email);
 
         if (emailExists) {
-            throw new UserAlreadyExistsException();
+            throw new EmailAlreadyExistsException();
         }
     }
 }
