@@ -7,10 +7,10 @@ spring:
     password: your_password
     driver-class-name: com.mysql.cj.jdbc.Driver
 
-  #     AWS RDS DB 접속 정보
-  #     url: jdbc:mysql://${DB_ENDPOINT}:3306/modu_lecture?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true
-  #     username: ${DB_USERNAME}
-  #     password: ${DB_PASSWORD}
+#     AWS RDS DB 접속 정보
+#     url: jdbc:mysql://${DB_ENDPOINT}:3306/modu_lecture?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true
+#     username: ${DB_USERNAME}
+#     password: ${DB_PASSWORD}
 
   jpa:
     hibernate:
