@@ -18,5 +18,16 @@ Content-Type: application/json
 
 {
   "email": "zxc@gmail.com",
-  "password": "Abcd1234!"
+  "password": "Abcd12345!"
+}
+
+### 비밀번호 재설정
+PUT http://localhost:8080/auth/password
+Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ6eGNAZ21haWwuY29tIiwicm9sZSI6WyJST0xFX0JST05aRSJdLCJpYXQiOjE3Mzg5MTkzMDgsImV4cCI6MTczODkxOTkxMn0.HirW424tG9_lYvcfIXBlKNaKZ2gyfEqaa17mOBZ8FKc
+
+
+{
+  "currentPassword": "Abcd1234!",
+  "newPassword": "Abcd12345!"
 }
