@@ -41,11 +41,13 @@ public class AuthController {
     }
 
     @PutMapping("/password")
-    public void updatePassword(
+    public ResponseEntity<?> updatePassword(
             @RequestBody PasswordUpdateRequestDto request,
             Authentication auth
     ) {
         authService.updatePassword(auth.getName(), request);
+
+        return ResponseEntity.ok("비밀번호 변경이 완료되었습니다. 다시 로그인해주세요");
     }
 
 }

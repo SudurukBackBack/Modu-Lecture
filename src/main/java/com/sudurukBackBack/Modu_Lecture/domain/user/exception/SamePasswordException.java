@@ -3,7 +3,7 @@ package com.sudurukBackBack.Modu_Lecture.domain.user.exception;
 import com.sudurukBackBack.Modu_Lecture.global.exception.BasicException;
 import org.springframework.http.HttpStatus;
 
-public class SamePasswordException extends BasicException {
+public final class SamePasswordException extends BasicException {
 
     @Override
     public int statusCode() {
