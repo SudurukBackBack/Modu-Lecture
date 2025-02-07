@@ -72,7 +72,7 @@ public class User implements UserDetails {
     // 비밀번호 재설정
     public void changePassword(String newPassword, PasswordEncoder passwordEncoder) {
         if (passwordEncoder.matches(password, passwordEncoder.encode(newPassword))) {
-            throw new IllegalArgumentException("새 비밀번호는 기존 비밀번호와 다르게 설정해야 합니다.");
+            throw new SamePasswordException();
         }
 
         this.password = passwordEncoder.encode(newPassword);
