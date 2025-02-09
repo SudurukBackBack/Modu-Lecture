@@ -13,6 +13,7 @@ import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -66,6 +67,15 @@ public class User implements UserDetails {
         return grade.getRoles().stream()
                 .map(SimpleGrantedAuthority::new)
                 .toList();
+    }
+
+    // 비밀번호 재설정
+    public void changePassword(String newPassword, PasswordEncoder passwordEncoder) {
+        if (passwordEncoder.matches(password, passwordEncoder.encode(newPassword))) {
+            throw new IllegalArgumentException("새 비밀번호는 기존 비밀번호와 다르게 설정해야 합니다.");
+        }
+
+        this.password = passwordEncoder.encode(newPassword);
     }
 
     @Override
