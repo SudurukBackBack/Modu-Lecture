@@ -30,7 +30,7 @@ public class JwtTokenProvider {
     private final AuthService authService;
 
     private static final String KEY_ROLE = "role";
-    private static final long EXPIRATION_TIME = 60 * 60 * 24 * 7; // 7 hours
+    private static final long EXPIRATION_TIME = 60 * 60 * 7; // 7 hours
 
     private Key key;
 
