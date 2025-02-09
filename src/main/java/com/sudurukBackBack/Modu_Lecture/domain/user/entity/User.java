@@ -72,10 +72,13 @@ public class User implements UserDetails {
 
     // 비밀번호 재설정
     public void changePassword(String newPassword, PasswordEncoder passwordEncoder) {
-        if (passwordEncoder.matches(password, passwordEncoder.encode(newPassword))) {
+
+        // 기존 비밀번호와 새 비밀번호가 동일한지 확인
+        if (passwordEncoder.matches(newPassword, this.password)) {
             throw new SamePasswordException();
         }
 
+        // 새 비밀번호를 암호화하여 저장
         this.password = passwordEncoder.encode(newPassword);
     }
 
