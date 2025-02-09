@@ -1,5 +1,6 @@
 package com.sudurukBackBack.Modu_Lecture.global.security;
 
+import com.sudurukBackBack.Modu_Lecture.domain.user.entity.User;
 import com.sudurukBackBack.Modu_Lecture.domain.user.service.AuthService;
 import io.github.cdimascio.dotenv.Dotenv;
 import io.jsonwebtoken.*;
@@ -29,7 +30,7 @@ public class JwtTokenProvider {
     private final AuthService authService;
 
     private static final String KEY_ROLE = "role";
-    private static final long EXPIRATION_TIME = 60 * 60 * 24 * 7; // 7 hours
+    private static final long EXPIRATION_TIME = 60 * 60 * 7; // 7 hours
 
     private Key key;
 
@@ -63,11 +64,17 @@ public class JwtTokenProvider {
     /**
      * JWT 토큰 생성.
      *
-     * @param email 사용자 이름.
-     * @param roles 사용자 권한 리스트.
+     * @param user 사용자 이름.
      * @return 생성된 JWT 토큰 문자열.
      */
-    public String generateToken(String email, List<String> roles) {
+    public String generateToken(User user) {
+
+        // 역할을 `int`에서 `List<String>`으로 변환
+        List<String> roles = user.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .toList();
+
+        String email = user.getEmail();
 
         // 사용자 정보 추가
         var claims = Jwts.claims().setSubject(email);

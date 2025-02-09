@@ -1,5 +1,7 @@
 package com.sudurukBackBack.Modu_Lecture.domain.user.entity;
 
+import com.sudurukBackBack.Modu_Lecture.domain.user.entity.enums.UserGrade;
+import com.sudurukBackBack.Modu_Lecture.domain.user.entity.enums.UserStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
@@ -14,7 +16,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.List;
 
 @Data
 @Builder
@@ -44,11 +45,13 @@ public class User implements UserDetails {
 
     @NotNull
     @Column(nullable = false)
-    private Integer grade; // 0: Bronze, 1: Silver, 2: Gold, 3: Platinum
+    @Enumerated(EnumType.STRING)
+    private UserGrade grade; // 0: Bronze, 1: Silver, 2: Gold, 3: Platinum
 
     @NotNull
     @Column(nullable = false)
-    private Integer userStatus; // 0: INACTIVE, 1: ACTIVE
+    @Enumerated(EnumType.STRING)
+    private UserStatus userStatus;
 
     @NotNull
     @Column(nullable = false, updatable = false)
@@ -60,24 +63,18 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return mapGradeToRoles(grade).stream()
+        return grade.getRoles().stream()
                 .map(SimpleGrantedAuthority::new)
                 .toList();
-    }
-
-    // 상위 역할은 하위 역할의 권한도 가질 수 있도록 설정
-    public List<String> mapGradeToRoles(int grade) {
-        return switch (grade) {
-            case 0 -> List.of("ROLE_BRONZE");
-            case 1 -> List.of("ROLE_BRONZE", "ROLE_SILVER");
-            case 2 -> List.of("ROLE_BRONZE", "ROLE_SILVER", "ROLE_GOLD");
-            case 3 -> List.of("ROLE_BRONZE", "ROLE_SILVER", "ROLE_GOLD", "ROLE_PLATINUM");
-            default -> List.of("ROLE_GUEST");
-        };
     }
 
     @Override
     public String getUsername() {
         return email;
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
     }
 }
