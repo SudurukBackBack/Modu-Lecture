@@ -2,6 +2,7 @@ package com.sudurukBackBack.Modu_Lecture.domain.user.entity;
 
 import com.sudurukBackBack.Modu_Lecture.domain.user.entity.enums.UserGrade;
 import com.sudurukBackBack.Modu_Lecture.domain.user.entity.enums.UserStatus;
+import com.sudurukBackBack.Modu_Lecture.domain.user.exception.SamePasswordException;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;

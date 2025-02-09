@@ -3,6 +3,7 @@ package com.sudurukBackBack.Modu_Lecture.domain.user.controller;
 import com.sudurukBackBack.Modu_Lecture.domain.user.dto.request.PasswordUpdateRequestDto;
 import com.sudurukBackBack.Modu_Lecture.domain.user.dto.request.UserLoginRequestDto;
 import com.sudurukBackBack.Modu_Lecture.domain.user.dto.request.UserRegistrationRequestDto;
+import com.sudurukBackBack.Modu_Lecture.domain.user.dto.response.UpdatePasswordResponseDto;
 import com.sudurukBackBack.Modu_Lecture.domain.user.dto.response.UserLoginResponseDto;
 import com.sudurukBackBack.Modu_Lecture.domain.user.dto.response.UserRegistrationResponseDto;
 import com.sudurukBackBack.Modu_Lecture.domain.user.entity.User;
@@ -41,13 +42,13 @@ public class AuthController {
     }
 
     @PutMapping("/password")
-    public ResponseEntity<?> updatePassword(
+    public UpdatePasswordResponseDto updatePassword(
             @RequestBody PasswordUpdateRequestDto request,
             Authentication auth
     ) {
         authService.updatePassword(auth.getName(), request);
 
-        return ResponseEntity.ok("비밀번호 변경이 완료되었습니다. 다시 로그인해주세요");
+        return UpdatePasswordResponseDto.of();
     }
 
 }
