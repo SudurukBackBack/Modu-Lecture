@@ -3,6 +3,8 @@ package com.sudurukBackBack.Modu_Lecture.domain.user.service;
 import com.sudurukBackBack.Modu_Lecture.domain.user.dto.request.UserLoginRequestDto;
 import com.sudurukBackBack.Modu_Lecture.domain.user.dto.request.UserRegistrationRequestDto;
 import com.sudurukBackBack.Modu_Lecture.domain.user.entity.User;
+import com.sudurukBackBack.Modu_Lecture.domain.user.entity.enums.UserGrade;
+import com.sudurukBackBack.Modu_Lecture.domain.user.entity.enums.UserStatus;
 import com.sudurukBackBack.Modu_Lecture.domain.user.exception.WrongAuthenticationException;
 import com.sudurukBackBack.Modu_Lecture.domain.user.repository.UserRepository;
 import com.sudurukBackBack.Modu_Lecture.global.util.UserValidator;
@@ -44,8 +46,8 @@ public class AuthService implements UserDetailsService {
                 .email(email)
                 .password(passwordEncoder.encode(password))
                 .username(username)
-                .grade(0)
-                .userStatus(1)
+                .grade(UserGrade.ROLE_BRONZE)
+                .userStatus(UserStatus.ACTIVE)
                 .createdAt(LocalDateTime.now())
                 .build());
     }
