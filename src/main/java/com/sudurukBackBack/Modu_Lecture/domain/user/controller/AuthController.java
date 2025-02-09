@@ -2,13 +2,13 @@ package com.sudurukBackBack.Modu_Lecture.domain.user.controller;
 
 import com.sudurukBackBack.Modu_Lecture.domain.user.dto.request.UserLoginRequestDto;
 import com.sudurukBackBack.Modu_Lecture.domain.user.dto.request.UserRegistrationRequestDto;
+import com.sudurukBackBack.Modu_Lecture.domain.user.dto.response.UserLoginResponseDto;
 import com.sudurukBackBack.Modu_Lecture.domain.user.dto.response.UserRegistrationResponseDto;
 import com.sudurukBackBack.Modu_Lecture.domain.user.entity.User;
 import com.sudurukBackBack.Modu_Lecture.domain.user.service.AuthService;
 import com.sudurukBackBack.Modu_Lecture.global.security.JwtTokenProvider;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,13 +32,13 @@ public class AuthController {
     }
 
     @PostMapping("/sign-in")
-    public ResponseEntity<?> signIn(
+    public UserLoginResponseDto signIn(
             @Valid @RequestBody UserLoginRequestDto request
     ) {
         var user = authService.authenticate(request);
         var token = jwtTokenProvider.generateToken(user);
 
-        return ResponseEntity.ok(token);
+        return UserLoginResponseDto.of(token);
     }
 
 }
