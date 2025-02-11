@@ -82,13 +82,4 @@ public class User implements UserDetails {
         this.password = passwordEncoder.encode(newPassword);
     }
 
-    @Override
-    public String getUsername() {
-        return email;
-    }
-
-    @Override
-    public String getPassword() {
-        return password;
-    }
 }
