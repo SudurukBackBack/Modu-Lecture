@@ -1,12 +1,18 @@
 package com.sudurukBackBack.Modu_Lecture.domain.lecture.dto.request;
 
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
-@Setter
 public class LectureCreateRequestDto {
+
+    @NotNull(message = "회원 ID는 필수 입력값입니다.")
+    private Long userId;
+
     @NotBlank(message = "강의 제목은 필수 입력값입니다.")
     @Size(min = 5, max = 100, message = "강의 제목은 최소 5자 이상, 최대 100자 이하여야 합니다.")
     private String title;

@@ -3,18 +3,25 @@ package com.sudurukBackBack.Modu_Lecture.domain.lecture.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Entity
-@Table(name = "lectures")
+@Table(name = "lecture")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Lecture {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long lectureId;
 
     @Column(nullable = false)
+    private Long userId;
+
+    @Column(nullable = false, length = 100)
     private String title;
 
     @Column(nullable = false, length = 1000)
@@ -24,11 +31,15 @@ public class Lecture {
     private String instructor;
 
     @Column(nullable = false)
-    private String category;
+    private int category; //  기본형 int 사용
 
     @Column(nullable = false)
-    private Integer price;
+    private int price; //  기본형 int 사용
 
     @Column(nullable = false)
-    private Integer duration;
+    private LocalDateTime createdAt;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private LectureStatus status;
 }

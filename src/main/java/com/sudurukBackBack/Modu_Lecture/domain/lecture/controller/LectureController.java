@@ -23,7 +23,7 @@ public class LectureController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createLecture(@Valid @RequestBody LectureCreateRequestDto requestDto, BindingResult bindingResult) {
+    public ResponseEntity<?> createLecture(@Valid @RequestBody LectureCreateRequestDto requestDto, @org.jetbrains.annotations.NotNull BindingResult bindingResult) {
         // 유효성 검증 실패 시, 상세한 에러 메시지 반환
         if (bindingResult.hasErrors()) {
             Map<String, String> errors = new HashMap<>();
@@ -35,6 +35,6 @@ public class LectureController {
 
         // 강의 생성 요청을 서비스로 전달
         Lecture createdLecture = lectureService.createLecture(requestDto);
-        return ResponseEntity.ok(createdLecture);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdLecture);
     }
 }
