@@ -9,6 +9,7 @@ public enum UserStatus {
     INACTIVE(0, "휴면 계정"),
     RESTRICTED(-1, "이용 제한 계정"),
     BANNED(-2, "영구 정지 계정"),
+    PENDING(-98, "삭제 대기 계정"),
     DELETED(-99, "삭제된 계정");
 
     private final int code;
