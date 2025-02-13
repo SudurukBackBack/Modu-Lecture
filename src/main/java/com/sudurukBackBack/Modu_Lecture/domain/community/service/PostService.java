@@ -6,6 +6,7 @@ import com.sudurukBackBack.Modu_Lecture.domain.community.repository.PostReposito
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -27,17 +28,21 @@ public class PostService {
     }
 
     public Post createPost(PostCreateRequestDto postCreateDto) {
-        Post post = new Post();
-        post.setUserId(postCreateDto.getUserId());
-        post.setCategory(postCreateDto.getCategory());
-        post.setTitle(postCreateDto.getTitle());
-        post.setContent(postCreateDto.getContent());
+        Post post = Post.builder()
+                .userId(postCreateDto.getUserId())
+                .category(postCreateDto.getCategory())
+                .title(postCreateDto.getTitle())
+                .content(postCreateDto.getContent())
+                .createdAt(LocalDateTime.now())
+                .isActive(true)
+                .build();
         return postRepository.save(post);
     }
 
     public Post updatePost(Long id, String newContent) {
         Post post = getPostById(id);
         post.updateContent(newContent);
+        post.setUpdatedAt(LocalDateTime.now());
         return postRepository.save(post);
     }
 

@@ -1,34 +1,35 @@
 package com.sudurukBackBack.Modu_Lecture.domain.community.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sudurukBackBack.Modu_Lecture.domain.community.entity.Post;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.time.LocalDateTime;
 
 @Getter
-@Setter
+@Builder
 public class PostResponseDto {
-    private Long id;
-    private Long userId;
-    private String category;
-    private String title;
-    private String content;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
-    private boolean isActive;
+    private final Long id;
+    private final Long userId;
+    private final String category;
+    private final String title;
+    private final String content;
+    private final LocalDateTime createdAt;
+    private final LocalDateTime updatedAt;
+    @JsonProperty("isActive")
+    private final boolean active;
 
-    // Entity를 DTO로 변환하는 정적 메서드
     public static PostResponseDto fromEntity(Post post) {
-        PostResponseDto dto = new PostResponseDto();
-        dto.setId(post.getId());
-        dto.setUserId(post.getUserId());
-        dto.setCategory(post.getCategory());
-        dto.setTitle(post.getTitle());
-        dto.setContent(post.getContent());
-        dto.setCreatedAt(post.getCreatedAt());
-        dto.setUpdatedAt(post.getUpdatedAt());
-        dto.setActive(post.isActive());
-        return dto;
+        return PostResponseDto.builder()
+                .id(post.getId())
+                .userId(post.getUserId())
+                .category(post.getCategory())
+                .title(post.getTitle())
+                .content(post.getContent())
+                .createdAt(post.getCreatedAt())
+                .updatedAt(post.getUpdatedAt())
+                .active(post.isActive())
+                .build();
     }
 }
