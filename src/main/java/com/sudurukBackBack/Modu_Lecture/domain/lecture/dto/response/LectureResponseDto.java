@@ -7,14 +7,14 @@ import java.time.LocalDateTime;
 
 @Getter
 public class LectureResponseDto {
-    private Long lectureId;
-    private Long userId;
-    private String title;
-    private String description;
-    private String instructor;
-    private int category;
-    private int price;
-    private LocalDateTime createdAt;
+    private final Long lectureId;
+    private final Long userId;
+    private final String title;
+    private final String description;
+    private final String instructor;
+    private final int category;
+    private final int price;
+    private final LocalDateTime createdAt;
 
     public LectureResponseDto(Lecture lecture) {
         this.lectureId = lecture.getLectureId();

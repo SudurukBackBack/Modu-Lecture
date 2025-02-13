@@ -1,6 +1,7 @@
 package com.sudurukBackBack.Modu_Lecture.domain.lecture.service;
 
 import com.sudurukBackBack.Modu_Lecture.domain.lecture.dto.request.LectureCreateRequestDto;
+import com.sudurukBackBack.Modu_Lecture.domain.lecture.dto.response.LectureResponseDto;
 import com.sudurukBackBack.Modu_Lecture.domain.lecture.entity.Lecture;
 import com.sudurukBackBack.Modu_Lecture.domain.lecture.entity.LectureStatus;
 import com.sudurukBackBack.Modu_Lecture.domain.lecture.repository.LectureRepository;
