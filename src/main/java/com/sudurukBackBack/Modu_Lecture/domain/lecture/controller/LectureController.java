@@ -37,4 +37,13 @@ public class LectureController {
         Lecture createdLecture = lectureService.createLecture(requestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdLecture);
     }
+
+    // 생성된 강의 조회 API
+    @GetMapping("/{lecture_id}")
+    public ResponseEntity<LectureResponseDto> getLecture(@PathVariable Long lecture_id) {
+        LectureResponseDto lecture = lectureService.getLectureById(lecture_id);
+        return ResponseEntity.ok(lecture);
+    }
+
+
 }
