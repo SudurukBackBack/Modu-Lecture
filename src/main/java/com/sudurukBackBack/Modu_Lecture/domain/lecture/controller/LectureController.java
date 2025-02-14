@@ -42,5 +42,5 @@ public class LectureController {
         LectureResponseDto lecture = lectureService.getLecture(lecture_id);
         return ResponseEntity.ok(lecture);
     }
-    
+
 }

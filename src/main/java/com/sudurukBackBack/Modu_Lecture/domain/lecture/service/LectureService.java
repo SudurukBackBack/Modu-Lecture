@@ -39,4 +39,12 @@ public class LectureService {
 
         return lectureRepository.save(lecture);
     }
+    //  강의 조회 메서드
+    @Transactional(readOnly = true)
+    public LectureResponseDto getLectureById(Long lectureId) {
+        Lecture lecture = lectureRepository.findById(lectureId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 ID의 강의를 찾을 수 없습니다: " + lectureId));
+
+        return new LectureResponseDto(lecture);
+    }
 }
