@@ -1,5 +1,6 @@
 package com.sudurukBackBack.Modu_Lecture.domain.user.service;
 
+import com.sudurukBackBack.Modu_Lecture.domain.user.dto.request.PasswordUpdateRequestDto;
 import com.sudurukBackBack.Modu_Lecture.domain.user.dto.request.UserLoginRequestDto;
 import com.sudurukBackBack.Modu_Lecture.domain.user.dto.request.UserRegistrationRequestDto;
 import com.sudurukBackBack.Modu_Lecture.domain.user.entity.User;
@@ -53,18 +54,46 @@ public class AuthService implements UserDetailsService {
     }
 
     public User authenticate(UserLoginRequestDto request) {
+        return authenticationUser(request.getEmail(), request.getPassword());
+    }
 
-        var user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(WrongAuthenticationException::new);
+    @Transactional
+    public void updatePassword(String email, PasswordUpdateRequestDto request) {
 
-        // 계정이 활성화 상태인지 확인
+        // 로그인을 통한 본인 인증
+        var user = authenticationUser(email, request.getCurrentPassword());
+
+        // 비밀번호 재설정
+        user.changePassword(request.getNewPassword(), passwordEncoder);
+
+        // TODO: 로그아웃 처리 -> 토큰 무효화
+    }
+
+    /**
+     * 사용자 인증 (로그인)
+     * @param email
+     * @param password
+     * @return User
+     */
+    private User authenticationUser(String email, String password) {
+        var user = findUserByEmail(email);
+
         userValidator.validateUserIsActive(user);
 
-        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new WrongAuthenticationException();
-        }
-
+        validatePassword(password, user.getPassword());
         return user;
     }
 
+    // 이메일로 UserEntity 불러오기
+    private User findUserByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(WrongAuthenticationException::new);
+    }
+
+    // 비밀번호 검증
+    private void validatePassword(String password1, String password2) {
+        if (!passwordEncoder.matches(password1, password2)) {
+            throw new WrongAuthenticationException();
+        }
+    }
 }
