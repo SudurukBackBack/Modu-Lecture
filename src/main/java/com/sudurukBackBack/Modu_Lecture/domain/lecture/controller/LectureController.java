@@ -37,4 +37,10 @@ public class LectureController {
         Lecture createdLecture = lectureService.createLecture(requestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdLecture);
     }
+    @GetMapping("/{lecture_id}")
+    public ResponseEntity<LectureResponseDto> getLecture(@PathVariable Long lecture_id) {
+        LectureResponseDto lecture = lectureService.getLecture(lecture_id);
+        return ResponseEntity.ok(lecture);
+    }
+    
 }
