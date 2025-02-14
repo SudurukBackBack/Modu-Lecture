@@ -1,8 +1,10 @@
 package com.sudurukBackBack.Modu_Lecture.domain.lecture.service;
 
 import com.sudurukBackBack.Modu_Lecture.domain.lecture.dto.request.LectureCreateRequestDto;
+import com.sudurukBackBack.Modu_Lecture.domain.lecture.dto.response.LectureResponseDto;
 import com.sudurukBackBack.Modu_Lecture.domain.lecture.entity.Lecture;
 import com.sudurukBackBack.Modu_Lecture.domain.lecture.entity.LectureStatus;
+import com.sudurukBackBack.Modu_Lecture.domain.lecture.exception.LectureNotFoundException;
 import com.sudurukBackBack.Modu_Lecture.domain.lecture.repository.LectureRepository;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
@@ -41,10 +43,10 @@ public class LectureService {
     }
     //  강의 조회 메서드
     @Transactional(readOnly = true)
-    public LectureResponseDto getLectureById(Long lectureId) {
+    public LectureResponseDto getLecture(Long lectureId) {
         Lecture lecture = lectureRepository.findById(lectureId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 ID의 강의를 찾을 수 없습니다: " + lectureId));
-
+                .orElseThrow(() -> new LectureNotFoundException("해당 강의를 찾을 수 없습니다: " + lectureId));
         return new LectureResponseDto(lecture);
     }
+
 }
