@@ -17,3 +17,10 @@ spring:
       ddl-auto: update
     properties:
       hibernate.dialect: org.hibernate.dialect.MySQL8Dialect
+
+  aws:
+    region: 'ap-northeast-2'
+    s3:
+      bucket-name: 'modu-s3-bucket'
+      video-prefix: videos/
+      image-prefix: images/
