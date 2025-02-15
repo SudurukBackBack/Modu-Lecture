@@ -43,7 +43,7 @@ public class AuthController {
 
     @PutMapping("/password")
     public UpdatePasswordResponseDto updatePassword(
-            @RequestBody PasswordUpdateRequestDto request,
+            @Valid @RequestBody PasswordUpdateRequestDto request,
             Authentication auth
     ) {
         authService.updatePassword(auth.getName(), request);
