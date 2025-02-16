@@ -75,7 +75,7 @@ public class AuthService implements UserDetailsService {
      * @param password
      * @return User
      */
-    private User authenticationUser(String email, String password) {
+    protected User authenticationUser(String email, String password) {
         var user = findUserByEmail(email);
 
         userValidator.validateUserIsActive(user);

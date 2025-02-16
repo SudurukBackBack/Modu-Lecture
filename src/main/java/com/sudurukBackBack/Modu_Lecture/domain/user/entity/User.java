@@ -85,7 +85,6 @@ public class User implements UserDetails {
     public void deleteUser() {
         // 일정 시간이 흐르고 나서 정보를 삭제하는 것이 가능한가?
         this.userStatus = UserStatus.PENDING;
-        this.updatedAt = LocalDateTime.now();
+        this.deletedAt = LocalDateTime.now();
     }
-
 }

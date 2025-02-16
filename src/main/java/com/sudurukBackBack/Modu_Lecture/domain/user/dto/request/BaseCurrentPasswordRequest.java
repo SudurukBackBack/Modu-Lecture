@@ -5,7 +5,7 @@ import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
 @Data
-public class PasswordUpdateRequestDto extends BaseCurrentPasswordRequest {
+public class BaseCurrentPasswordRequest {
 
     // 비밀번호 형식
     @Pattern(
@@ -13,5 +13,6 @@ public class PasswordUpdateRequestDto extends BaseCurrentPasswordRequest {
             message = "Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one number, and one special character"
     )
     @NotBlank(message = "Password is required")
-    private String newPassword;
+    private String currentPassword;
+
 }
