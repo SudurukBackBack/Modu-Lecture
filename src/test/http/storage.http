@@ -1,0 +1,18 @@
+### 콘텐츠 업로드 및 생성하기 (비디오 파일 포함)
+POST http://localhost:8080/contents/upload
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="lectureId"
+
+100
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="categoryId"
+
+200
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="videoFile"; filename="sample-video.mp4"
+Content-Type: video/mp4
+
+"@/{mp4 영상 경로(확장자 포함)}"
+------WebKitFormBoundary7MA4YWxkTrZu0gW--

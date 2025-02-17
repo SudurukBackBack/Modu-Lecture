@@ -1,6 +1,6 @@
 package com.sudurukBackBack.Modu_Lecture.domain.storage.service;
 
-import com.sudurukBackBack.Modu_Lecture.domain.storage.dto.request.CreateContentRequestDTO;
+import com.sudurukBackBack.Modu_Lecture.domain.storage.dto.request.UploadContentRequestDTO;
 import com.sudurukBackBack.Modu_Lecture.domain.storage.entity.Content;
 import com.sudurukBackBack.Modu_Lecture.domain.storage.exception.ContentProcessingException;
 import com.sudurukBackBack.Modu_Lecture.domain.storage.exception.FileStorageException;
@@ -34,7 +34,7 @@ public class ContentService {
      * @param videoFile 업로드할 비디오 파일
      * @param request   콘텐츠 생성 요청 DTO
      */
-    public void uploadContent(MultipartFile videoFile, CreateContentRequestDTO request) {
+    public void uploadContent(MultipartFile videoFile, UploadContentRequestDTO request) {
         try {
             // 1. 비디오 파일을 로컬에 저장
             String localVideoPath = saveVideoFileLocally(videoFile);
