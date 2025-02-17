@@ -2,6 +2,7 @@ package com.sudurukBackBack.Modu_Lecture.domain.user.entity;
 
 import com.sudurukBackBack.Modu_Lecture.domain.user.entity.enums.UserGrade;
 import com.sudurukBackBack.Modu_Lecture.domain.user.entity.enums.UserStatus;
+import com.sudurukBackBack.Modu_Lecture.domain.user.exception.SamePasswordException;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
@@ -13,6 +14,7 @@ import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -68,13 +70,16 @@ public class User implements UserDetails {
                 .toList();
     }
 
-    @Override
-    public String getUsername() {
-        return email;
+    // 비밀번호 재설정
+    public void changePassword(String newPassword, PasswordEncoder passwordEncoder) {
+
+        // 기존 비밀번호와 새 비밀번호가 동일한지 확인
+        if (passwordEncoder.matches(newPassword, this.password)) {
+            throw new SamePasswordException();
+        }
+
+        // 새 비밀번호를 암호화하여 저장
+        this.password = passwordEncoder.encode(newPassword);
     }
 
-    @Override
-    public String getPassword() {
-        return password;
-    }
 }
