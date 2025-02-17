@@ -10,10 +10,14 @@ import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
 
 @Service
+@RestController
+@RequestMapping("/lectures")
 @RequiredArgsConstructor
 public class LectureService {
 
@@ -45,7 +49,8 @@ public class LectureService {
     @Transactional(readOnly = true)
     public LectureResponseDto getLecture(Long lectureId) {
         Lecture lecture = lectureRepository.findById(lectureId)
-                .orElseThrow(() -> new LectureNotFoundException("해당 강의를 찾을 수 없습니다: " + lectureId));
+                .orElseThrow(LectureNotFoundException::new); //  변경된 코드
+
         return new LectureResponseDto(lecture);
     }
 

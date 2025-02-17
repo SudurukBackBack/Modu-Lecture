@@ -2,6 +2,7 @@ package com.sudurukBackBack.Modu_Lecture.domain.lecture.dto.response;
 
 import com.sudurukBackBack.Modu_Lecture.domain.lecture.entity.Lecture;
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDateTime;
 
@@ -15,7 +16,7 @@ public record LectureResponseDto(
         int price,
         LocalDateTime createdAt
 ) {
-    public LectureResponseDto(Lecture lecture) {
+    public LectureResponseDto(@NotNull Lecture lecture) {
         this(
                 lecture.getLectureId(),
                 lecture.getUserId(),
