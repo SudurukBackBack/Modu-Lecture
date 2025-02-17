@@ -36,7 +36,8 @@ public class BatchConfig {
                 .name("pendingUsersReader")
                 .entityManagerFactory(entityManagerFactory)
                 .queryString("SELECT u FROM User u WHERE u.userStatus = :status AND u.deleteAt <= :oneWeekAgo")
-                .parameterValues(Map.of("status", UserStatus.PENDING, "oneWeekAgo", LocalDateTime.now().minusWeeks(1)))                .pageSize(100)
+                .parameterValues(Map.of("status", UserStatus.PENDING, "oneWeekAgo", LocalDateTime.now().minusWeeks(1)))
+                .pageSize(100)
                 .build();
     }
 

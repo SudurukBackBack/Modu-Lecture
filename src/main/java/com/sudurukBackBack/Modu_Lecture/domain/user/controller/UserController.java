@@ -34,7 +34,6 @@ public class UserController {
             @Valid @RequestBody UserDeleteRequestDto request,
             Authentication auth
     ) {
-        log.info("Deleting user {}", auth.getName());
         userService.deactivateAccount(auth.getName(), request);
 
         return UserDeleteResponseDto.of();
