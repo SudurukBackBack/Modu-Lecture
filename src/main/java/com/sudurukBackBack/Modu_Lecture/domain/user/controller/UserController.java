@@ -1,22 +1,31 @@
 package com.sudurukBackBack.Modu_Lecture.domain.user.controller;
 
+import com.sudurukBackBack.Modu_Lecture.domain.user.dto.request.PasswordUpdateRequestDto;
 import com.sudurukBackBack.Modu_Lecture.domain.user.dto.request.UserDeleteRequestDto;
+import com.sudurukBackBack.Modu_Lecture.domain.user.dto.response.UpdatePasswordResponseDto;
 import com.sudurukBackBack.Modu_Lecture.domain.user.dto.response.UserDeleteResponseDto;
 import com.sudurukBackBack.Modu_Lecture.domain.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
-@RequestMapping("/profile")
+@RequestMapping("/users")
 @RestController
 public class UserController {
 
     private final UserService userService;
+
+    @PutMapping("/password")
+    public UpdatePasswordResponseDto updatePassword(
+            @Valid @RequestBody PasswordUpdateRequestDto request,
+            Authentication auth
+    ) {
+        userService.updatePassword(auth, request);
+
+        return UpdatePasswordResponseDto.of();
+    }
 
     @DeleteMapping("/deactivate")
     public UserDeleteResponseDto deleteUser(

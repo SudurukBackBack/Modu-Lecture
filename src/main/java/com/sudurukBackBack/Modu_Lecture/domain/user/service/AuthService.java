@@ -1,6 +1,5 @@
 package com.sudurukBackBack.Modu_Lecture.domain.user.service;
 
-import com.sudurukBackBack.Modu_Lecture.domain.user.dto.request.PasswordUpdateRequestDto;
 import com.sudurukBackBack.Modu_Lecture.domain.user.dto.request.UserLoginRequestDto;
 import com.sudurukBackBack.Modu_Lecture.domain.user.dto.request.UserRegistrationRequestDto;
 import com.sudurukBackBack.Modu_Lecture.domain.user.entity.User;
@@ -55,18 +54,6 @@ public class AuthService implements UserDetailsService {
 
     public User authenticate(UserLoginRequestDto request) {
         return authenticationUser(request.getEmail(), request.getPassword());
-    }
-
-    @Transactional
-    public void updatePassword(String email, PasswordUpdateRequestDto request) {
-
-        // 로그인을 통한 본인 인증
-        var user = authenticationUser(email, request.getCurrentPassword());
-
-        // 비밀번호 재설정
-        user.changePassword(request.getNewPassword(), passwordEncoder);
-
-        // TODO: 로그아웃 처리 -> 토큰 무효화
     }
 
     /**

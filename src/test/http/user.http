@@ -1,0 +1,14 @@
+### GET request to example server
+GET https://examples.http-client.intellij.net/get
+    ?generated-in=IntelliJ IDEA
+
+### 비밀번호 재설정
+PUT http://localhost:8080/users/password
+Content-Type: application/json
+Authorization: Bearer
+
+
+{
+  "currentPassword": "Abcd1234!",
+  "newPassword": "Abcd12345!"
+}
