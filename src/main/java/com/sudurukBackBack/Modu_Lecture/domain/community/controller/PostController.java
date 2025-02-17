@@ -4,11 +4,13 @@ import com.sudurukBackBack.Modu_Lecture.domain.community.dto.request.PostCreateR
 import com.sudurukBackBack.Modu_Lecture.domain.community.dto.response.PostResponseDto;
 import com.sudurukBackBack.Modu_Lecture.domain.community.entity.Post;
 import com.sudurukBackBack.Modu_Lecture.domain.community.service.PostService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -37,10 +39,18 @@ public class PostController {
         return ResponseEntity.ok(PostResponseDto.fromEntity(post));
     }
 
+    // 게시글 생성
     @PostMapping
-    public ResponseEntity<PostResponseDto> createPost(@RequestBody PostCreateRequestDto postCreateDto) {
+    public ResponseEntity<String> createPost(@Valid @RequestBody PostCreateRequestDto postCreateDto, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            // 오류가 있을 경우, 오류 메시지를 반환 (유효성 검증)
+            String errorMessage = bindingResult.getAllErrors().getFirst().getDefaultMessage();
+            return ResponseEntity.badRequest().body(errorMessage);
+        }
         Post createdPost = postService.createPost(postCreateDto);
-        return ResponseEntity.ok(PostResponseDto.fromEntity(createdPost));
+        System.out.println("게시글 생성 :\n"+createdPost);
+
+        return ResponseEntity.ok("게시글 등록 성공");
     }
 
     @PutMapping("/{id}")
