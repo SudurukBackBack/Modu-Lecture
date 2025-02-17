@@ -61,6 +61,11 @@ public class AuthService implements UserDetailsService {
             user.reactiveAccount();
         }
 
+        // 탈퇴 완료된 계정으로 로그인 시
+        if (user.getUserStatus() == UserStatus.DELETED) {
+            throw new WrongAuthenticationException();
+        }
+
         return user;
     }
 
@@ -73,7 +78,6 @@ public class AuthService implements UserDetailsService {
      */
     User verifyEmailAndPassword(String email, String password) {
         var user = findUserByEmail(email);
-
         validatePassword(password, user.getPassword());
         return user;
     }
