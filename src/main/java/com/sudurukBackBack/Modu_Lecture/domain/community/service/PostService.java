@@ -2,6 +2,7 @@ package com.sudurukBackBack.Modu_Lecture.domain.community.service;
 
 import com.sudurukBackBack.Modu_Lecture.domain.community.dto.request.PostCreateRequestDto;
 import com.sudurukBackBack.Modu_Lecture.domain.community.entity.Post;
+import com.sudurukBackBack.Modu_Lecture.domain.community.exception.PostNotFoundException;
 import com.sudurukBackBack.Modu_Lecture.domain.community.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,7 +25,7 @@ public class PostService {
 
     public Post getPostById(Long id) {
         return postRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Post not found"));
+                .orElseThrow(PostNotFoundException::new);
     }
 
     public Post createPost(PostCreateRequestDto postCreateDto) {
