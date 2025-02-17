@@ -70,6 +70,12 @@ public class User implements UserDetails {
                 .toList();
     }
 
+    // 계정 재활성화 (탈퇴 유예 기간 내 로그인, 탈퇴 요청 철회)
+    public void reactiveAccount() {
+        this.userStatus = UserStatus.ACTIVE;
+        this.deletedAt = null;
+    }
+
     // 비밀번호 재설정
     public void changePassword(String newPassword, PasswordEncoder passwordEncoder) {
 
@@ -82,7 +88,9 @@ public class User implements UserDetails {
         this.password = passwordEncoder.encode(newPassword);
     }
 
-    public void deleteUser() {
+    // 계정 비활성화(탈퇴)
+    public void deactivateAccount() {
+
         // 일정 시간이 흐르고 나서 정보를 삭제하는 것이 가능한가?
         this.userStatus = UserStatus.PENDING;
         this.deletedAt = LocalDateTime.now();

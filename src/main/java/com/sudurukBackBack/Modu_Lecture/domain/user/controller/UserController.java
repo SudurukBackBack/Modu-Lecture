@@ -32,7 +32,7 @@ public class UserController {
             @Valid @RequestBody UserDeleteRequestDto request,
             Authentication auth
     ) {
-        userService.deleteUser(auth, request);
+        userService.deactivateAccount(auth, request);
 
         return UserDeleteResponseDto.of();
     }

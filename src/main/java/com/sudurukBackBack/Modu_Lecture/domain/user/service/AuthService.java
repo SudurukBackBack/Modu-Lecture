@@ -53,19 +53,26 @@ public class AuthService implements UserDetailsService {
     }
 
     public User authenticate(UserLoginRequestDto request) {
-        return authenticationUser(request.getEmail(), request.getPassword());
+
+        var user = verifyEmailAndPassword(request.getEmail(), request.getPassword());
+
+        // 계정 상태 확인 (Pending이면 Active로 복구)
+        if (user.getUserStatus() == UserStatus.PENDING) {
+            user.reactiveAccount();
+        }
+
+        return user;
     }
 
     /**
-     * 사용자 인증 (로그인)
+     * 이메일 비밀번호 매칭 인증
+     *
      * @param email
      * @param password
      * @return User
      */
-    protected User authenticationUser(String email, String password) {
+    User verifyEmailAndPassword(String email, String password) {
         var user = findUserByEmail(email);
-
-        userValidator.validateUserIsActive(user);
 
         validatePassword(password, user.getPassword());
         return user;
