@@ -43,7 +43,7 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String password;
 
-    private String username; // nickname
+    private String nickname;
 
     @NotNull
     @Column(nullable = false)
@@ -62,6 +62,11 @@ public class User implements UserDetails {
     private LocalDateTime updatedAt;
 
     private LocalDateTime deletedAt;
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

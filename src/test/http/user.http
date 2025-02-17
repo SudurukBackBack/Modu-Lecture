@@ -7,8 +7,16 @@ PUT http://localhost:8080/users/password
 Content-Type: application/json
 Authorization: Bearer
 
-
 {
   "currentPassword": "Abcd1234!",
-  "newPassword": "Abcd12345!"
+  "newPassword": "Abcde1234!"
+}
+
+### 회원 탈퇴
+DELETE http://localhost:8080/users/deactivate
+Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0MUBnbWFpbC5jb20iLCJyb2xlIjpbIlJPTEVfQlJPTlpFIl0sImlhdCI6MTczOTc5NTEyNSwiZXhwIjoxNzM5Nzk1MTUwfQ.RZEyLzb6su2taSesfkmuwsWSn07Lq-DnsTN8nktdGZs
+
+{
+  "currentPassword": "Test1234!"
 }

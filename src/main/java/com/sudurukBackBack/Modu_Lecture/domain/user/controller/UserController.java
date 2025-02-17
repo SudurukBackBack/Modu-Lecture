@@ -7,9 +7,11 @@ import com.sudurukBackBack.Modu_Lecture.domain.user.dto.response.UserDeleteRespo
 import com.sudurukBackBack.Modu_Lecture.domain.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/users")
 @RestController
@@ -22,7 +24,7 @@ public class UserController {
             @Valid @RequestBody PasswordUpdateRequestDto request,
             Authentication auth
     ) {
-        userService.updatePassword(auth, request);
+        userService.updatePassword(auth.getName(), request);
 
         return UpdatePasswordResponseDto.of();
     }
@@ -32,7 +34,8 @@ public class UserController {
             @Valid @RequestBody UserDeleteRequestDto request,
             Authentication auth
     ) {
-        userService.deactivateAccount(auth, request);
+        log.info("Deleting user {}", auth.getName());
+        userService.deactivateAccount(auth.getName(), request);
 
         return UserDeleteResponseDto.of();
     }

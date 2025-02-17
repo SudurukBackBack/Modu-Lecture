@@ -37,7 +37,7 @@ public class AuthService implements UserDetailsService {
 
         String email = request.getEmail().toLowerCase();
         String password = request.getPassword();
-        String username = request.getUsername();
+        String nickname = request.getNickname();
 
         // email 가입 가능 여부 확인
         userValidator.validateEmailUniqueness(email);
@@ -45,13 +45,14 @@ public class AuthService implements UserDetailsService {
         return userRepository.save(User.builder()
                 .email(email)
                 .password(passwordEncoder.encode(password))
-                .username(username)
+                .nickname(nickname)
                 .grade(UserGrade.ROLE_BRONZE)
                 .userStatus(UserStatus.ACTIVE)
                 .createdAt(LocalDateTime.now())
                 .build());
     }
 
+    @Transactional
     public User authenticate(UserLoginRequestDto request) {
 
         var user = verifyEmailAndPassword(request.getEmail(), request.getPassword());
@@ -59,6 +60,7 @@ public class AuthService implements UserDetailsService {
         // 계정 상태 확인 (Pending이면 Active로 복구)
         if (user.getUserStatus() == UserStatus.PENDING) {
             user.reactiveAccount();
+            userRepository.save(user);
         }
 
         // 탈퇴 완료된 계정으로 로그인 시

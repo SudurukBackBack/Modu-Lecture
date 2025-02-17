@@ -5,7 +5,6 @@ import com.sudurukBackBack.Modu_Lecture.domain.user.dto.request.UserDeleteReques
 import com.sudurukBackBack.Modu_Lecture.domain.user.entity.User;
 import com.sudurukBackBack.Modu_Lecture.global.util.UserValidator;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,10 +18,10 @@ public class UserService {
     private final UserValidator userValidator;
 
     @Transactional
-    public void updatePassword(Authentication auth, PasswordUpdateRequestDto request) {
+    public void updatePassword(String email, PasswordUpdateRequestDto request) {
 
         // 본인 인증
-        User user = authicateActiveUser(auth.getName(), request.getCurrentPassword());
+        User user = authicateActiveUser(email, request.getCurrentPassword());
 
         // 비밀번호 재설정
         user.changePassword(request.getNewPassword(), passwordEncoder);
@@ -31,10 +30,10 @@ public class UserService {
     }
 
     @Transactional
-    public void deactivateAccount(Authentication auth, UserDeleteRequestDto request) {
+    public void deactivateAccount(String email, UserDeleteRequestDto request) {
 
         // 본인 인증
-        User user = authicateActiveUser(auth.getName(), request.getCurrentPassword());
+        User user = authicateActiveUser(email, request.getCurrentPassword());
 
         user.deactivateAccount();
     }

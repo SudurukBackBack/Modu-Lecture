@@ -7,7 +7,7 @@ import lombok.Data;
 public class UserRegistrationRequestDto extends BaseAuthRequest {
 
     // 사용자 이름
-    @Size(max = 20, message = "User name must not exceed 20 characters")
-    private String username;
+    @Size(max = 20, message = "Nickname must not exceed 20 characters")
+    private String nickname;
 
 }
