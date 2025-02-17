@@ -15,3 +15,14 @@ spring:
       ddl-auto: update
     properties:
       hibernate.dialect: org.hibernate.dialect.MySQL8Dialect
+
+  mvc:
+    view:
+      prefix: classpath:/templates/
+      suffix: .html
+
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+    servlet:
+      content-type: text/html
