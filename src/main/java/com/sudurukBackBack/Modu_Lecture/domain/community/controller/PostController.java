@@ -5,11 +5,11 @@ import com.sudurukBackBack.Modu_Lecture.domain.community.dto.response.PostRespon
 import com.sudurukBackBack.Modu_Lecture.domain.community.entity.Post;
 import com.sudurukBackBack.Modu_Lecture.domain.community.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/posts")
@@ -23,10 +23,10 @@ public class PostController {
 
     // 게시글 전체 조회
     @GetMapping
-    public ResponseEntity<List<PostResponseDto>> getAllPosts() {
-        List<PostResponseDto> posts = postService.getAllPosts().stream()
-                .map(PostResponseDto::fromEntity)
-                .collect(Collectors.toList());
+    public ResponseEntity<Page<PostResponseDto>> getAllPosts(
+            @PageableDefault(page = 0, size = 5) Pageable pageable) { // 페이지네이션 적용
+        Page<PostResponseDto> posts = postService.getAllPosts(pageable)
+                .map(PostResponseDto::fromEntity);
         return ResponseEntity.ok(posts);
     }
 
