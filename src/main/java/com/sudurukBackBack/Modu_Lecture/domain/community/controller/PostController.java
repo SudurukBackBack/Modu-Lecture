@@ -5,6 +5,7 @@ import com.sudurukBackBack.Modu_Lecture.domain.community.dto.response.PostRespon
 import com.sudurukBackBack.Modu_Lecture.domain.community.entity.Post;
 import com.sudurukBackBack.Modu_Lecture.domain.community.service.PostService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,13 +16,9 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/posts")
+@RequiredArgsConstructor // final 필드에 대한 생성자 자동 생성
 public class PostController {
     private final PostService postService;
-
-    @Autowired
-    public PostController(PostService postService) {
-        this.postService = postService;
-    }
 
     // 게시글 전체 조회
     @GetMapping
