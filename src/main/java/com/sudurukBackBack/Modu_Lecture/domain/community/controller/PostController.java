@@ -1,12 +1,12 @@
 package com.sudurukBackBack.Modu_Lecture.domain.community.controller;
 
 import com.sudurukBackBack.Modu_Lecture.domain.community.dto.request.PostCreateRequestDto;
+import com.sudurukBackBack.Modu_Lecture.domain.community.dto.request.PostUpdateRequestDto;
 import com.sudurukBackBack.Modu_Lecture.domain.community.dto.response.PostResponseDto;
 import com.sudurukBackBack.Modu_Lecture.domain.community.entity.Post;
 import com.sudurukBackBack.Modu_Lecture.domain.community.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -21,7 +21,7 @@ public class PostController {
     private final PostService postService;
 
     // 게시글 전체 조회
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<Page<PostResponseDto>> getAllPosts(
             @PageableDefault(page = 0, size = 5) Pageable pageable) { // 페이지네이션 적용
         Page<PostResponseDto> posts = postService.getAllPosts(pageable)
@@ -51,8 +51,8 @@ public class PostController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Post> updatePost(@PathVariable Long id, @RequestBody String newContent) {
-        Post updatedPost = postService.updatePost(id, newContent);
+    public ResponseEntity<Post> updatePost(@PathVariable Long id, @RequestBody PostUpdateRequestDto request) {
+        Post updatedPost = postService.updatePost(id, request.getUserId(), request.getNewContent());
         return ResponseEntity.ok(updatedPost);
     }
 
