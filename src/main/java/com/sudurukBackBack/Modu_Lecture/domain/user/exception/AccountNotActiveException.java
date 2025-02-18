@@ -12,6 +12,6 @@ public final class AccountNotActiveException extends BasicException {
 
     @Override
     public String errorMessage() {
-        return "계정이 활성화되지 않았습니다. 관리자에게 문의하세요.";
+        return "사용할 수 없는 계정입니다. 관리자에게 문의하세요.";
     }
 }

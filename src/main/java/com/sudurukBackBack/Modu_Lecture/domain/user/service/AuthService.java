@@ -5,6 +5,7 @@ import com.sudurukBackBack.Modu_Lecture.domain.user.dto.request.UserRegistration
 import com.sudurukBackBack.Modu_Lecture.domain.user.entity.User;
 import com.sudurukBackBack.Modu_Lecture.domain.user.entity.enums.UserGrade;
 import com.sudurukBackBack.Modu_Lecture.domain.user.entity.enums.UserStatus;
+import com.sudurukBackBack.Modu_Lecture.domain.user.exception.AccountNotActiveException;
 import com.sudurukBackBack.Modu_Lecture.domain.user.exception.WrongAuthenticationException;
 import com.sudurukBackBack.Modu_Lecture.domain.user.repository.UserRepository;
 import com.sudurukBackBack.Modu_Lecture.global.util.UserValidator;
@@ -56,17 +57,7 @@ public class AuthService implements UserDetailsService {
     public User authenticate(UserLoginRequestDto request) {
 
         var user = verifyEmailAndPassword(request.getEmail(), request.getPassword());
-
-        // 계정 상태 확인 (Pending이면 Active로 복구)
-        if (user.getUserStatus() == UserStatus.PENDING) {
-            user.reactiveAccount();
-            userRepository.save(user);
-        }
-
-        // 탈퇴 완료된 계정으로 로그인 시
-        if (user.getUserStatus() == UserStatus.DELETED) {
-            throw new WrongAuthenticationException();
-        }
+        validateUserStatus(user);
 
         return user;
     }
@@ -94,6 +85,23 @@ public class AuthService implements UserDetailsService {
     private void validatePassword(String password1, String password2) {
         if (!passwordEncoder.matches(password1, password2)) {
             throw new WrongAuthenticationException();
+        }
+    }
+
+    // 로그인 계정 상태 확인
+    private void validateUserStatus(User user) {
+        // Pending: Active 변환 (탈퇴 요청 철회)
+        if (user.getUserStatus() == UserStatus.PENDING) {
+            user.reactiveAccount();
+            userRepository.save(user);
+
+        // Deleted: 로그인 거부
+        } else if (user.getUserStatus() == UserStatus.DELETED) {
+            throw new WrongAuthenticationException();
+
+        // Active 제외한 나머지: 로그인 거부 -> 관리자 문의로 유도
+        } else if (user.getUserStatus() != UserStatus.ACTIVE) {
+            throw new AccountNotActiveException();
         }
     }
 }

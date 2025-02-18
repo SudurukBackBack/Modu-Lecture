@@ -24,7 +24,7 @@ public class UserController {
             @Valid @RequestBody PasswordUpdateRequestDto request,
             Authentication auth
     ) {
-        userService.updatePassword(auth.getName(), request);
+        userService.updatePassword(auth, request);
 
         return UpdatePasswordResponseDto.of();
     }
@@ -34,7 +34,7 @@ public class UserController {
             @Valid @RequestBody UserDeleteRequestDto request,
             Authentication auth
     ) {
-        userService.deactivateAccount(auth.getName(), request);
+        userService.deactivateAccount(auth, request);
 
         return UserDeleteResponseDto.of();
     }

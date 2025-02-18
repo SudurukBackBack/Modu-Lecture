@@ -8,8 +8,8 @@ Content-Type: application/json
 Authorization: Bearer
 
 {
-  "currentPassword": "Abcd1234!",
-  "newPassword": "Abcde1234!"
+  "currentPassword": "Test1234!",
+  "newPassword": "Test12345!"
 }
 
 ### 회원 탈퇴
