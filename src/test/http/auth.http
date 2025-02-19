@@ -8,8 +8,28 @@ Content-Type: application/json
 
 {
   "username": "",
-  "email": "zxc@gmail.com",
-  "password": "Abcd1234!"
+  "email": "test1@gmail.com",
+  "password": "Test1234!"
+}
+
+### 회원 가입
+POST http://localhost:8080/auth/sign-up
+Content-Type: application/json
+
+{
+  "username": "",
+  "email": "test2@gmail.com",
+  "password": "Test2345!"
+}
+
+### 회원 가입
+POST http://localhost:8080/auth/sign-up
+Content-Type: application/json
+
+{
+  "username": "",
+  "email": "test3@gmail.com",
+  "password": "Test3456!"
 }
 
 ### 로그인
@@ -17,17 +37,6 @@ POST http://localhost:8080/auth/sign-in
 Content-Type: application/json
 
 {
-  "email": "zxc@gmail.com",
-  "password": "Abcd12345!"
-}
-
-### 비밀번호 재설정
-PUT http://localhost:8080/auth/password
-Content-Type: application/json
-Authorization: Bearer
-
-
-{
-  "currentPassword": "Abcd1234!",
-  "newPassword": "Abcd12345!"
+  "email": "test1@gmail.com",
+  "password": "Test1234!"
 }

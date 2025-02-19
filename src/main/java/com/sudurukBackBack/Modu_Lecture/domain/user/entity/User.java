@@ -43,7 +43,7 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String password;
 
-    private String username; // nickname
+    private String nickname;
 
     @NotNull
     @Column(nullable = false)
@@ -64,10 +64,21 @@ public class User implements UserDetails {
     private LocalDateTime deletedAt;
 
     @Override
+    public String getUsername() {
+        return email;
+    }
+
+    @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return grade.getRoles().stream()
                 .map(SimpleGrantedAuthority::new)
                 .toList();
+    }
+
+    // 계정 재활성화 (탈퇴 유예 기간 내 로그인, 탈퇴 요청 철회)
+    public void reactiveAccount() {
+        this.userStatus = UserStatus.ACTIVE;
+        this.deletedAt = null;
     }
 
     // 비밀번호 재설정
@@ -82,4 +93,11 @@ public class User implements UserDetails {
         this.password = passwordEncoder.encode(newPassword);
     }
 
+    // 계정 비활성화(탈퇴)
+    public void deactivateAccount() {
+
+        // 일정 시간이 흐르고 나서 정보를 삭제하는 것이 가능한가?
+        this.userStatus = UserStatus.PENDING;
+        this.deletedAt = LocalDateTime.now();
+    }
 }

@@ -1,9 +1,7 @@
 package com.sudurukBackBack.Modu_Lecture.domain.user.controller;
 
-import com.sudurukBackBack.Modu_Lecture.domain.user.dto.request.PasswordUpdateRequestDto;
 import com.sudurukBackBack.Modu_Lecture.domain.user.dto.request.UserLoginRequestDto;
 import com.sudurukBackBack.Modu_Lecture.domain.user.dto.request.UserRegistrationRequestDto;
-import com.sudurukBackBack.Modu_Lecture.domain.user.dto.response.UpdatePasswordResponseDto;
 import com.sudurukBackBack.Modu_Lecture.domain.user.dto.response.UserLoginResponseDto;
 import com.sudurukBackBack.Modu_Lecture.domain.user.dto.response.UserRegistrationResponseDto;
 import com.sudurukBackBack.Modu_Lecture.domain.user.entity.User;
@@ -11,8 +9,10 @@ import com.sudurukBackBack.Modu_Lecture.domain.user.service.AuthService;
 import com.sudurukBackBack.Modu_Lecture.global.security.JwtTokenProvider;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
 @RequestMapping("/auth")
@@ -39,16 +39,6 @@ public class AuthController {
         var token = jwtTokenProvider.generateToken(user);
 
         return UserLoginResponseDto.of(token);
-    }
-
-    @PutMapping("/password")
-    public UpdatePasswordResponseDto updatePassword(
-            @Valid @RequestBody PasswordUpdateRequestDto request,
-            Authentication auth
-    ) {
-        authService.updatePassword(auth.getName(), request);
-
-        return UpdatePasswordResponseDto.of();
     }
 
 }
