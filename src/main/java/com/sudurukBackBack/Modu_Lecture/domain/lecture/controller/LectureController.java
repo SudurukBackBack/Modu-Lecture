@@ -43,4 +43,14 @@ public class LectureController {
         LectureResponseDto lecture = lectureService.getLecture(lecture_id);
         return ResponseEntity.ok(lecture);
     }
+
+    @PutMapping("/{lecture_id}")
+    public ResponseEntity<LectureResponseDto> updateLecture(
+            @PathVariable Long lecture_id,
+            @Valid @RequestBody LectureUpdateRequestDto requestDto) {
+
+        LectureResponseDto updatedLecture = lectureService.updateLecture(lecture_id, requestDto);
+        return ResponseEntity.ok(updatedLecture);
+    }
+
 }
