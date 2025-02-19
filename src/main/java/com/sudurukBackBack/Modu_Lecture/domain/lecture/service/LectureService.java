@@ -54,4 +54,33 @@ public class LectureService {
         return new LectureResponseDto(lecture);
     }
 
+    @Transactional
+    public LectureResponseDto updateLecture(Long lectureId, LectureUpdateRequestDto requestDto) {
+        // 강의 존재 여부 확인
+        Lecture lecture = lectureRepository.findById(lectureId)
+                .orElseThrow(LectureNotFoundException::new);
+
+        // 필드 업데이트 (변경된 값만 적용)
+        if (requestDto.getTitle() != null) {
+            lecture.setTitle(requestDto.getTitle());
+        }
+        if (requestDto.getDescription() != null) {
+            lecture.setDescription(requestDto.getDescription());
+        }
+        if (requestDto.getInstructor() != null) {
+            lecture.setInstructor(requestDto.getInstructor());
+        }
+        if (requestDto.getCategory() != null) {
+            lecture.setCategory(Integer.parseInt(requestDto.getCategory()));
+        }
+        if (requestDto.getPrice() != null) {
+            lecture.setPrice(requestDto.getPrice());
+        }
+        if (requestDto.getDuration() != null) {
+            lecture.setDuration(requestDto.getDuration());
+        }
+
+        return new LectureResponseDto(lecture);
+    }
+
 }
