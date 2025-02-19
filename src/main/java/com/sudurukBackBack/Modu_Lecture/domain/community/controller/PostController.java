@@ -21,7 +21,7 @@ public class PostController {
     private final PostService postService;
 
     // 게시글 전체 조회
-    @GetMapping("/all")
+    @GetMapping
     public ResponseEntity<Page<PostResponseDto>> getAllPosts(
             @PageableDefault(page = 0, size = 5) Pageable pageable) { // 페이지네이션 적용
         Page<PostResponseDto> posts = postService.getAllPosts(pageable)

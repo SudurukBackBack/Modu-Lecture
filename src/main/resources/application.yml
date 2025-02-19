@@ -1,6 +1,9 @@
 spring:
   port: 8080
 
+  config:
+    import: optional:file:.env[.properties]
+
   datasource:
     url: ${DB_URL}
     username: ${DB_USERNAME}
@@ -14,7 +17,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
     properties:
       hibernate.dialect: org.hibernate.dialect.MySQL8Dialect
 
