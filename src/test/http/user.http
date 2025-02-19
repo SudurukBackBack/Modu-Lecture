@@ -13,7 +13,7 @@ Authorization: Bearer
 }
 
 ### 회원 탈퇴
-DELETE http://localhost:8080/users/deactivate
+PATCH http://localhost:8080/users/deactivate
 Content-Type: application/json
 Authorization: Bearer
 

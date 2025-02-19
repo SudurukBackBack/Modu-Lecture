@@ -7,11 +7,9 @@ import com.sudurukBackBack.Modu_Lecture.domain.user.dto.response.UserDeleteRespo
 import com.sudurukBackBack.Modu_Lecture.domain.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-@Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/users")
 @RestController
@@ -29,7 +27,7 @@ public class UserController {
         return UpdatePasswordResponseDto.of();
     }
 
-    @DeleteMapping("/deactivate")
+    @PatchMapping("/deactivate")
     public UserDeleteResponseDto deleteUser(
             @Valid @RequestBody UserDeleteRequestDto request,
             Authentication auth
