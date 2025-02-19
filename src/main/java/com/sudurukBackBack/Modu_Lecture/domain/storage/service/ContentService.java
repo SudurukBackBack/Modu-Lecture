@@ -1,6 +1,6 @@
 package com.sudurukBackBack.Modu_Lecture.domain.storage.service;
 
-import com.sudurukBackBack.Modu_Lecture.domain.storage.dto.request.UploadContentRequestDTO;
+import com.sudurukBackBack.Modu_Lecture.domain.storage.dto.request.UploadContentRequestDto;
 import com.sudurukBackBack.Modu_Lecture.domain.storage.entity.Content;
 import com.sudurukBackBack.Modu_Lecture.domain.storage.exception.ContentProcessingException;
 import com.sudurukBackBack.Modu_Lecture.domain.storage.exception.FileStorageException;
@@ -34,7 +34,7 @@ public class ContentService {
      * @param videoFile 업로드할 비디오 파일
      * @param request   콘텐츠 생성 요청 DTO
      */
-    public void uploadContent(MultipartFile videoFile, UploadContentRequestDTO request) {
+    public void uploadContent(MultipartFile videoFile, UploadContentRequestDto request) {
         try {
             // 1. 비디오 파일을 로컬에 저장
             String localVideoPath = saveVideoFileLocally(videoFile);
@@ -70,7 +70,7 @@ public class ContentService {
             contentRepository.save(content);
 
         } catch (Exception e) {
-            throw new ContentProcessingException("콘텐츠 업로드 중 오류가 발생하였습니다.", e);
+            throw new ContentProcessingException();
         }
     }
 
@@ -89,7 +89,7 @@ public class ContentService {
         try {
             videoFile.transferTo(dest);
         } catch (IOException e) {
-            throw new FileStorageException("비디오 파일 저장에 실패하였습니다.", e);
+            throw new FileStorageException();
         }
         return filePath;
     }
@@ -118,7 +118,7 @@ public class ContentService {
             process.waitFor();
 
         } catch (IOException | InterruptedException e) {
-            throw new ContentProcessingException("비디오 재생 시간 추출에 실패하였습니다.", e);
+            throw new ContentProcessingException();
         }
         return duration;
     }
@@ -143,7 +143,7 @@ public class ContentService {
             process.waitFor();
 
         } catch (IOException | InterruptedException e) {
-            throw new ContentProcessingException("썸네일 생성에 실패하였습니다.", e);
+            throw new ContentProcessingException();
         }
         return thumbnailPath;
     }
@@ -168,7 +168,7 @@ public class ContentService {
             return s3Client.utilities().getUrl(b -> b.bucket(bucketName).key(s3Key)).toExternalForm();
 
         } catch (Exception e) {
-            throw new S3UploadException("S3 업로드에 실패하였습니다.", e);
+            throw new S3UploadException();
         }
     }
 

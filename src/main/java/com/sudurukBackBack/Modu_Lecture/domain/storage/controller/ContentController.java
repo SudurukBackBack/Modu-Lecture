@@ -1,6 +1,6 @@
 package com.sudurukBackBack.Modu_Lecture.domain.storage.controller;
 
-import com.sudurukBackBack.Modu_Lecture.domain.storage.dto.request.UploadContentRequestDTO;
+import com.sudurukBackBack.Modu_Lecture.domain.storage.dto.request.UploadContentRequestDto;
 import com.sudurukBackBack.Modu_Lecture.domain.storage.exception.ContentUploadException;
 import com.sudurukBackBack.Modu_Lecture.domain.storage.service.ContentService;
 import lombok.RequiredArgsConstructor;
@@ -25,12 +25,12 @@ public class ContentController {
     @PostMapping("/upload")
     public ResponseEntity<Void> uploadContent(
             @RequestParam("videoFile") MultipartFile videoFile,
-            @ModelAttribute UploadContentRequestDTO request) {
+            @ModelAttribute UploadContentRequestDto request) {
         try {
             contentService.uploadContent(videoFile, request);
             return ResponseEntity.ok().build();
         } catch (Exception e) {
-            throw new ContentUploadException("콘텐츠 업로드에 실패하였습니다.", e);
+            throw new ContentUploadException();
         }
     }
 

@@ -5,7 +5,7 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-public class UploadContentResponseDTO {
+public class UploadContentResponseDto {
     private Integer lectureId;
     private Integer categoryId;
     private String videoUrl;

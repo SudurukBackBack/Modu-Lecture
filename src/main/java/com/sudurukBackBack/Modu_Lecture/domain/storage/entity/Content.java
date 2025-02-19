@@ -14,31 +14,29 @@ import java.time.LocalDateTime;
 public class Content {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "content_id")
-    private Integer contentId;
+    private Integer id;
 
     @NonNull
-    @Column(name = "lecture_id", nullable = false)
+    @Column(nullable = false)
     private Integer lectureId;
 
     @NonNull
-    @Column(name = "category_id", nullable = false)
+    @Column(nullable = false)
     private Integer categoryId;
 
     @NonNull
-    @Column(name = "image_url", nullable = false)
+    @Column(nullable = false)
     private String imageUrl;
 
     @NonNull
-    @Column(name = "video_url", nullable = false)
+    @Column(nullable = false)
     private String videoUrl;
 
     @NonNull
-    @Column(name = "duration", nullable = false)
+    @Column(nullable = false)
     private Integer duration;
 
     @NonNull
-    @Column(name = "createdAt", nullable = false, updatable = false)
+    @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
-
 }
