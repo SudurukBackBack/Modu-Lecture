@@ -1,4 +1,4 @@
-package com.sudurukbackback.modulecture.global.util;
+package com.sudurukbackback.modulecture.global.scheduler;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
