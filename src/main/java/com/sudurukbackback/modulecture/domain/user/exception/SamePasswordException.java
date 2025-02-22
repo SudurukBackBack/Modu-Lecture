@@ -1,6 +1,6 @@
-package com.sudurukBackBack.Modu_Lecture.domain.user.exception;
+package com.sudurukbackback.modulecture.domain.user.exception;
 
-import com.sudurukBackBack.Modu_Lecture.global.exception.BasicException;
+import com.sudurukbackback.modulecture.global.exception.BasicException;
 import org.springframework.http.HttpStatus;
 
 public final class SamePasswordException extends BasicException {

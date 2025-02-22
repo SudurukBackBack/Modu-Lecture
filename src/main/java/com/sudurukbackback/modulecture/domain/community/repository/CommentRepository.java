@@ -1,4 +1,4 @@
-package com.sudurukBackBack.Modu_Lecture.domain.community.repository;
+package com.sudurukbackback.modulecture.domain.community.repository;
 
 public interface CommentRepository {
 }

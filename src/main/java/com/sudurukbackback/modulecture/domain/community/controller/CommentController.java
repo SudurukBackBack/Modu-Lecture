@@ -1,4 +1,4 @@
-package com.sudurukBackBack.Modu_Lecture.domain.community.controller;
+package com.sudurukbackback.modulecture.domain.community.controller;
 
 public class CommentController {
 }

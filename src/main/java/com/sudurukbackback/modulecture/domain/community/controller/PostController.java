@@ -1,12 +1,11 @@
-package com.sudurukBackBack.Modu_Lecture.domain.community.controller;
+package com.sudurukbackback.modulecture.domain.community.controller;
 
-import com.sudurukBackBack.Modu_Lecture.domain.community.dto.request.PostCreateRequestDto;
-import com.sudurukBackBack.Modu_Lecture.domain.community.dto.response.PostResponseDto;
-import com.sudurukBackBack.Modu_Lecture.domain.community.entity.Post;
-import com.sudurukBackBack.Modu_Lecture.domain.community.service.PostService;
+import com.sudurukbackback.modulecture.domain.community.dto.request.PostCreateRequestDto;
+import com.sudurukbackback.modulecture.domain.community.dto.response.PostResponseDto;
+import com.sudurukbackback.modulecture.domain.community.entity.Post;
+import com.sudurukbackback.modulecture.domain.community.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;

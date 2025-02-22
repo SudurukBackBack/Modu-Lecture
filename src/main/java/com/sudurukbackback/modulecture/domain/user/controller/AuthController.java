@@ -1,12 +1,12 @@
-package com.sudurukBackBack.Modu_Lecture.domain.user.controller;
+package com.sudurukbackback.modulecture.domain.user.controller;
 
-import com.sudurukBackBack.Modu_Lecture.domain.user.dto.request.UserLoginRequestDto;
-import com.sudurukBackBack.Modu_Lecture.domain.user.dto.request.UserRegistrationRequestDto;
-import com.sudurukBackBack.Modu_Lecture.domain.user.dto.response.UserLoginResponseDto;
-import com.sudurukBackBack.Modu_Lecture.domain.user.dto.response.UserRegistrationResponseDto;
-import com.sudurukBackBack.Modu_Lecture.domain.user.entity.User;
-import com.sudurukBackBack.Modu_Lecture.domain.user.service.AuthService;
-import com.sudurukBackBack.Modu_Lecture.global.security.JwtTokenProvider;
+import com.sudurukbackback.modulecture.domain.user.dto.request.UserLoginRequestDto;
+import com.sudurukbackback.modulecture.domain.user.dto.request.UserRegistrationRequestDto;
+import com.sudurukbackback.modulecture.domain.user.dto.response.UserLoginResponseDto;
+import com.sudurukbackback.modulecture.domain.user.dto.response.UserRegistrationResponseDto;
+import com.sudurukbackback.modulecture.domain.user.entity.User;
+import com.sudurukbackback.modulecture.domain.user.service.AuthService;
+import com.sudurukbackback.modulecture.global.security.JwtTokenProvider;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;

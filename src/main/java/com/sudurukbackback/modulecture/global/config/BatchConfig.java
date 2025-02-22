@@ -1,8 +1,8 @@
-package com.sudurukBackBack.Modu_Lecture.global.config;
+package com.sudurukbackback.modulecture.global.config;
 
-import com.sudurukBackBack.Modu_Lecture.domain.user.entity.User;
-import com.sudurukBackBack.Modu_Lecture.domain.user.entity.enums.UserStatus;
-import com.sudurukBackBack.Modu_Lecture.domain.user.repository.UserRepository;
+import com.sudurukbackback.modulecture.domain.user.entity.User;
+import com.sudurukbackback.modulecture.domain.user.entity.enums.UserStatus;
+import com.sudurukbackback.modulecture.domain.user.repository.UserRepository;
 import jakarta.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.Step;

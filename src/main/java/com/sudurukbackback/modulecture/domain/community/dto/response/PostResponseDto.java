@@ -1,7 +1,7 @@
-package com.sudurukBackBack.Modu_Lecture.domain.community.dto.response;
+package com.sudurukbackback.modulecture.domain.community.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.sudurukBackBack.Modu_Lecture.domain.community.entity.Post;
+import com.sudurukbackback.modulecture.domain.community.entity.Post;
 
 import java.time.LocalDateTime;
 

@@ -1,4 +1,4 @@
-package com.sudurukBackBack.Modu_Lecture.domain.user.dto.request;
+package com.sudurukbackback.modulecture.domain.user.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;

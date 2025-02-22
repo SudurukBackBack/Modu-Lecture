@@ -1,21 +1,15 @@
-package com.sudurukBackBack.Modu_Lecture.domain.storage.service;
+package com.sudurukbackback.modulecture.domain.storage.service;
 
-import com.sudurukBackBack.Modu_Lecture.domain.storage.dto.request.UploadContentRequestDto;
-import com.sudurukBackBack.Modu_Lecture.domain.storage.entity.Content;
-import com.sudurukBackBack.Modu_Lecture.domain.storage.exception.ContentProcessingException;
-import com.sudurukBackBack.Modu_Lecture.domain.storage.exception.LocalFileUploadException;
-import com.sudurukBackBack.Modu_Lecture.domain.storage.exception.S3UploadException;
-import com.sudurukBackBack.Modu_Lecture.domain.storage.repository.ContentRepository;
+import com.sudurukbackback.modulecture.domain.storage.dto.request.UploadContentRequestDto;
+import com.sudurukbackback.modulecture.domain.storage.entity.Content;
+import com.sudurukbackback.modulecture.domain.storage.exception.ContentProcessingException;
+import com.sudurukbackback.modulecture.domain.storage.repository.ContentRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.model.PutObjectRequest;
-import software.amazon.awssdk.core.sync.RequestBody;
 
-import java.io.*;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.UUID;

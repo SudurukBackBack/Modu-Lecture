@@ -1,6 +1,6 @@
-package com.sudurukBackBack.Modu_Lecture.domain.lecture.exception;
+package com.sudurukbackback.modulecture.domain.lecture.exception;
 
-import com.sudurukBackBack.Modu_Lecture.global.exception.BasicException;
+import com.sudurukbackback.modulecture.global.exception.BasicException;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpStatus;

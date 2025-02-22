@@ -1,4 +1,4 @@
-package com.sudurukBackBack.Modu_Lecture.domain.storage.dto.request;
+package com.sudurukbackback.modulecture.domain.storage.dto.request;
 
 import lombok.Data;
 

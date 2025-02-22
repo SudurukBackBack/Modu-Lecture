@@ -1,9 +1,9 @@
-package com.sudurukBackBack.Modu_Lecture.domain.lecture.controller;
+package com.sudurukbackback.modulecture.domain.lecture.controller;
 
-import com.sudurukBackBack.Modu_Lecture.domain.lecture.dto.request.LectureCreateRequestDto;
-import com.sudurukBackBack.Modu_Lecture.domain.lecture.dto.response.LectureResponseDto;
-import com.sudurukBackBack.Modu_Lecture.domain.lecture.entity.Lecture;
-import com.sudurukBackBack.Modu_Lecture.domain.lecture.service.LectureService;
+import com.sudurukbackback.modulecture.domain.lecture.dto.request.LectureCreateRequestDto;
+import com.sudurukbackback.modulecture.domain.lecture.dto.response.LectureResponseDto;
+import com.sudurukbackback.modulecture.domain.lecture.entity.Lecture;
+import com.sudurukbackback.modulecture.domain.lecture.service.LectureService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

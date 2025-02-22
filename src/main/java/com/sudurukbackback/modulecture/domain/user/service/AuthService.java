@@ -1,14 +1,14 @@
-package com.sudurukBackBack.Modu_Lecture.domain.user.service;
+package com.sudurukbackback.modulecture.domain.user.service;
 
-import com.sudurukBackBack.Modu_Lecture.domain.user.dto.request.UserLoginRequestDto;
-import com.sudurukBackBack.Modu_Lecture.domain.user.dto.request.UserRegistrationRequestDto;
-import com.sudurukBackBack.Modu_Lecture.domain.user.entity.User;
-import com.sudurukBackBack.Modu_Lecture.domain.user.entity.enums.UserGrade;
-import com.sudurukBackBack.Modu_Lecture.domain.user.entity.enums.UserStatus;
-import com.sudurukBackBack.Modu_Lecture.domain.user.exception.AccountNotActiveException;
-import com.sudurukBackBack.Modu_Lecture.domain.user.exception.WrongAuthenticationException;
-import com.sudurukBackBack.Modu_Lecture.domain.user.repository.UserRepository;
-import com.sudurukBackBack.Modu_Lecture.global.util.UserValidator;
+import com.sudurukbackback.modulecture.domain.user.dto.request.UserLoginRequestDto;
+import com.sudurukbackback.modulecture.domain.user.dto.request.UserRegistrationRequestDto;
+import com.sudurukbackback.modulecture.domain.user.entity.User;
+import com.sudurukbackback.modulecture.domain.user.entity.enums.UserGrade;
+import com.sudurukbackback.modulecture.domain.user.entity.enums.UserStatus;
+import com.sudurukbackback.modulecture.domain.user.exception.AccountNotActiveException;
+import com.sudurukbackback.modulecture.domain.user.exception.WrongAuthenticationException;
+import com.sudurukbackback.modulecture.domain.user.repository.UserRepository;
+import com.sudurukbackback.modulecture.global.util.UserValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

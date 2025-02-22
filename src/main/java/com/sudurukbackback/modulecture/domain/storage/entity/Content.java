@@ -1,4 +1,4 @@
-package com.sudurukBackBack.Modu_Lecture.domain.storage.entity;
+package com.sudurukbackback.modulecture.domain.storage.entity;
 
 import jakarta.persistence.*;
 import lombok.*;

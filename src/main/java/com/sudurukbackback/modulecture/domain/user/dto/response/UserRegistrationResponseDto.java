@@ -1,6 +1,6 @@
-package com.sudurukBackBack.Modu_Lecture.domain.user.dto.response;
+package com.sudurukbackback.modulecture.domain.user.dto.response;
 
-import com.sudurukBackBack.Modu_Lecture.domain.user.entity.User;
+import com.sudurukbackback.modulecture.domain.user.entity.User;
 
 public record UserRegistrationResponseDto(
         String email,

@@ -1,4 +1,4 @@
-package com.sudurukBackBack.Modu_Lecture.domain.user.entity.enums;
+package com.sudurukbackback.modulecture.domain.user.entity.enums;
 
 import lombok.Getter;
 

@@ -1,7 +1,7 @@
-package com.sudurukBackBack.Modu_Lecture.domain.storage.service;
+package com.sudurukbackback.modulecture.domain.storage.service;
 
-import com.sudurukBackBack.Modu_Lecture.domain.storage.exception.LocalFileUploadException;
-import com.sudurukBackBack.Modu_Lecture.domain.storage.exception.LocalFileDeleteException;
+import com.sudurukbackback.modulecture.domain.storage.exception.LocalFileUploadException;
+import com.sudurukbackback.modulecture.domain.storage.exception.LocalFileDeleteException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

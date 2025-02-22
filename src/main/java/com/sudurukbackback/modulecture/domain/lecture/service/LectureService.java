@@ -1,11 +1,11 @@
-package com.sudurukBackBack.Modu_Lecture.domain.lecture.service;
+package com.sudurukbackback.modulecture.domain.lecture.service;
 
-import com.sudurukBackBack.Modu_Lecture.domain.lecture.dto.request.LectureCreateRequestDto;
-import com.sudurukBackBack.Modu_Lecture.domain.lecture.dto.response.LectureResponseDto;
-import com.sudurukBackBack.Modu_Lecture.domain.lecture.entity.Lecture;
-import com.sudurukBackBack.Modu_Lecture.domain.lecture.entity.LectureStatus;
-import com.sudurukBackBack.Modu_Lecture.domain.lecture.exception.LectureNotFoundException;
-import com.sudurukBackBack.Modu_Lecture.domain.lecture.repository.LectureRepository;
+import com.sudurukbackback.modulecture.domain.lecture.dto.request.LectureCreateRequestDto;
+import com.sudurukbackback.modulecture.domain.lecture.dto.response.LectureResponseDto;
+import com.sudurukbackback.modulecture.domain.lecture.entity.Lecture;
+import com.sudurukbackback.modulecture.domain.lecture.entity.LectureStatus;
+import com.sudurukbackback.modulecture.domain.lecture.exception.LectureNotFoundException;
+import com.sudurukbackback.modulecture.domain.lecture.repository.LectureRepository;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;

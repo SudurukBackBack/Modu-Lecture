@@ -1,7 +1,7 @@
-package com.sudurukBackBack.Modu_Lecture.domain.storage.exception;
+package com.sudurukbackback.modulecture.domain.storage.exception;
 
 
-import com.sudurukBackBack.Modu_Lecture.global.exception.BasicException;
+import com.sudurukbackback.modulecture.global.exception.BasicException;
 import org.springframework.http.HttpStatus;
 
 /**

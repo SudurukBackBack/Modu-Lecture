@@ -1,4 +1,4 @@
-package com.sudurukBackBack.Modu_Lecture.domain.community.dto.response;
+package com.sudurukbackback.modulecture.domain.community.dto.response;
 
 public class CommentResponseDto {
 }

@@ -1,4 +1,4 @@
-package com.sudurukBackBack.Modu_Lecture;
+package com.sudurukbackback.modulecture;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

@@ -1,6 +1,6 @@
-package com.sudurukBackBack.Modu_Lecture.global.security.config;
+package com.sudurukbackback.modulecture.global.security.config;
 
-import com.sudurukBackBack.Modu_Lecture.global.security.JwtAuthenticationFilter;
+import com.sudurukbackback.modulecture.global.security.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

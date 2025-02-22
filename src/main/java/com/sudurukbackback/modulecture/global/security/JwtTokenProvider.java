@@ -1,7 +1,7 @@
-package com.sudurukBackBack.Modu_Lecture.global.security;
+package com.sudurukbackback.modulecture.global.security;
 
-import com.sudurukBackBack.Modu_Lecture.domain.user.entity.User;
-import com.sudurukBackBack.Modu_Lecture.domain.user.service.AuthService;
+import com.sudurukbackback.modulecture.domain.user.entity.User;
+import com.sudurukbackback.modulecture.domain.user.service.AuthService;
 import io.github.cdimascio.dotenv.Dotenv;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;

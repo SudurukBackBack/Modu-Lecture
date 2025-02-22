@@ -1,4 +1,4 @@
-package com.sudurukBackBack.Modu_Lecture.domain.community.dto.request;
+package com.sudurukbackback.modulecture.domain.community.dto.request;
 
 public class CommentCreateRequestDto {
 }

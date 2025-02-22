@@ -1,16 +1,15 @@
-package com.sudurukBackBack.Modu_Lecture.domain.community.service;
+package com.sudurukbackback.modulecture.domain.community.service;
 
-import com.sudurukBackBack.Modu_Lecture.domain.community.dto.request.PostCreateRequestDto;
-import com.sudurukBackBack.Modu_Lecture.domain.community.entity.Post;
-import com.sudurukBackBack.Modu_Lecture.domain.community.exception.PostNotFoundException;
-import com.sudurukBackBack.Modu_Lecture.domain.community.repository.PostRepository;
+import com.sudurukbackback.modulecture.domain.community.dto.request.PostCreateRequestDto;
+import com.sudurukbackback.modulecture.domain.community.entity.Post;
+import com.sudurukbackback.modulecture.domain.community.exception.PostNotFoundException;
+import com.sudurukbackback.modulecture.domain.community.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Service
 public class PostService {

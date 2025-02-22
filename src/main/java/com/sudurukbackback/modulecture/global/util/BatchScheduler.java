@@ -1,4 +1,4 @@
-package com.sudurukBackBack.Modu_Lecture.global.util;
+package com.sudurukbackback.modulecture.global.util;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

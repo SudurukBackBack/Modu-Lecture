@@ -1,4 +1,4 @@
-package com.sudurukBackBack.Modu_Lecture.domain.community.entity;
+package com.sudurukbackback.modulecture.domain.community.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

@@ -1,10 +1,10 @@
-package com.sudurukBackBack.Modu_Lecture.global.util;
+package com.sudurukbackback.modulecture.global.util;
 
-import com.sudurukBackBack.Modu_Lecture.domain.user.entity.User;
-import com.sudurukBackBack.Modu_Lecture.domain.user.entity.enums.UserStatus;
-import com.sudurukBackBack.Modu_Lecture.domain.user.exception.AccountNotActiveException;
-import com.sudurukBackBack.Modu_Lecture.domain.user.exception.EmailAlreadyExistsException;
-import com.sudurukBackBack.Modu_Lecture.domain.user.repository.UserRepository;
+import com.sudurukbackback.modulecture.domain.user.entity.User;
+import com.sudurukbackback.modulecture.domain.user.entity.enums.UserStatus;
+import com.sudurukbackback.modulecture.domain.user.exception.AccountNotActiveException;
+import com.sudurukbackback.modulecture.domain.user.exception.EmailAlreadyExistsException;
+import com.sudurukbackback.modulecture.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

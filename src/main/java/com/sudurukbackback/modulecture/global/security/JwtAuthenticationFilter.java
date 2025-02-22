@@ -1,4 +1,4 @@
-package com.sudurukBackBack.Modu_Lecture.global.security;
+package com.sudurukbackback.modulecture.global.security;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

@@ -1,4 +1,4 @@
-package com.sudurukBackBack.Modu_Lecture.domain.community.exception;
+package com.sudurukbackback.modulecture.domain.community.exception;
 
 public class CommentNotFoundException {
 }

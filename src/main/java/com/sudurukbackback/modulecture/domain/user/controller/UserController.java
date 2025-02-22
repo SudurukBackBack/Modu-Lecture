@@ -1,10 +1,10 @@
-package com.sudurukBackBack.Modu_Lecture.domain.user.controller;
+package com.sudurukbackback.modulecture.domain.user.controller;
 
-import com.sudurukBackBack.Modu_Lecture.domain.user.dto.request.PasswordUpdateRequestDto;
-import com.sudurukBackBack.Modu_Lecture.domain.user.dto.request.UserDeleteRequestDto;
-import com.sudurukBackBack.Modu_Lecture.domain.user.dto.response.UpdatePasswordResponseDto;
-import com.sudurukBackBack.Modu_Lecture.domain.user.dto.response.UserDeleteResponseDto;
-import com.sudurukBackBack.Modu_Lecture.domain.user.service.UserService;
+import com.sudurukbackback.modulecture.domain.user.dto.request.PasswordUpdateRequestDto;
+import com.sudurukbackback.modulecture.domain.user.dto.request.UserDeleteRequestDto;
+import com.sudurukbackback.modulecture.domain.user.dto.response.UpdatePasswordResponseDto;
+import com.sudurukbackback.modulecture.domain.user.dto.response.UserDeleteResponseDto;
+import com.sudurukbackback.modulecture.domain.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;

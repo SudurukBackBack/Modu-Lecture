@@ -1,4 +1,4 @@
-package com.sudurukBackBack.Modu_Lecture.domain.lecture.dto.request;
+package com.sudurukbackback.modulecture.domain.lecture.dto.request;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;

@@ -1,6 +1,6 @@
-package com.sudurukBackBack.Modu_Lecture.domain.user.repository;
+package com.sudurukbackback.modulecture.domain.user.repository;
 
-import com.sudurukBackBack.Modu_Lecture.domain.user.entity.User;
+import com.sudurukbackback.modulecture.domain.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

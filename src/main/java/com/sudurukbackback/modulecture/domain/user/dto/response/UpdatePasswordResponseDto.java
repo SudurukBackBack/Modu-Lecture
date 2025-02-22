@@ -1,4 +1,4 @@
-package com.sudurukBackBack.Modu_Lecture.domain.user.dto.response;
+package com.sudurukbackback.modulecture.domain.user.dto.response;
 
 public record UpdatePasswordResponseDto(
         String message

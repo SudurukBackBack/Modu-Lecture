@@ -1,7 +1,6 @@
-package com.sudurukBackBack.Modu_Lecture.domain.lecture.dto.response;
+package com.sudurukbackback.modulecture.domain.lecture.dto.response;
 
-import com.sudurukBackBack.Modu_Lecture.domain.lecture.entity.Lecture;
-import lombok.Getter;
+import com.sudurukbackback.modulecture.domain.lecture.entity.Lecture;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDateTime;

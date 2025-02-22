@@ -1,4 +1,4 @@
-package com.sudurukBackBack.Modu_Lecture.global.security.config;
+package com.sudurukbackback.modulecture.global.security.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

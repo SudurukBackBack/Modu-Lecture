@@ -1,4 +1,4 @@
-package com.sudurukBackBack.Modu_Lecture.domain.community.service;
+package com.sudurukbackback.modulecture.domain.community.service;
 
 public class CommentServiceImpl {
 }

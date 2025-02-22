@@ -1,8 +1,8 @@
-package com.sudurukBackBack.Modu_Lecture.domain.storage.controller;
+package com.sudurukbackback.modulecture.domain.storage.controller;
 
-import com.sudurukBackBack.Modu_Lecture.domain.storage.dto.request.UploadContentRequestDto;
-import com.sudurukBackBack.Modu_Lecture.domain.storage.exception.ContentUploadException;
-import com.sudurukBackBack.Modu_Lecture.domain.storage.service.ContentService;
+import com.sudurukbackback.modulecture.domain.storage.dto.request.UploadContentRequestDto;
+import com.sudurukbackback.modulecture.domain.storage.exception.ContentUploadException;
+import com.sudurukbackback.modulecture.domain.storage.service.ContentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

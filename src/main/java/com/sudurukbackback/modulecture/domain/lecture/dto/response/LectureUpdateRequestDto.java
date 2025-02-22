@@ -1,4 +1,4 @@
-package com.sudurukBackBack.Modu_Lecture.domain.lecture.dto.response;
+package com.sudurukbackback.modulecture.domain.lecture.dto.response;
 
 public class LectureUpdateRequestDto {
 }

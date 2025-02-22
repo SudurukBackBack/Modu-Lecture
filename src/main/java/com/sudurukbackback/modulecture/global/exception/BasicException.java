@@ -1,4 +1,4 @@
-package com.sudurukBackBack.Modu_Lecture.global.exception;
+package com.sudurukbackback.modulecture.global.exception;
 
 import lombok.Getter;
 
