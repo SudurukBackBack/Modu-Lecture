@@ -1,19 +1,17 @@
 package com.sudurukbackback.modulecture.domain.user.service;
 
+import com.sudurukbackback.modulecture.domain.user.component.AuthComponent;
+import com.sudurukbackback.modulecture.domain.user.component.UserValidator;
 import com.sudurukbackback.modulecture.domain.user.dto.request.UserLoginRequestDto;
 import com.sudurukbackback.modulecture.domain.user.dto.request.UserRegistrationRequestDto;
 import com.sudurukbackback.modulecture.domain.user.entity.User;
 import com.sudurukbackback.modulecture.domain.user.entity.enums.UserGrade;
 import com.sudurukbackback.modulecture.domain.user.entity.enums.UserStatus;
-import com.sudurukbackback.modulecture.domain.user.exception.AccountNotActiveException;
-import com.sudurukbackback.modulecture.domain.user.exception.WrongAuthenticationException;
 import com.sudurukbackback.modulecture.domain.user.repository.UserRepository;
-import com.sudurukbackback.modulecture.global.util.UserValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,7 +22,7 @@ import java.time.LocalDateTime;
 public class AuthService implements UserDetailsService {
 
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
+    private final AuthComponent authComponent;
     private final UserValidator userValidator;
 
     @Override
@@ -41,11 +39,11 @@ public class AuthService implements UserDetailsService {
         String nickname = request.getNickname();
 
         // email 가입 가능 여부 확인
-        userValidator.validateEmailUniqueness(email);
+        authComponent.validateEmailUniqueness(email);
 
         return userRepository.save(User.builder()
                 .email(email)
-                .password(passwordEncoder.encode(password))
+                .password(authComponent.encodePassword(password))
                 .nickname(nickname)
                 .grade(UserGrade.ROLE_BRONZE)
                 .userStatus(UserStatus.ACTIVE)
@@ -56,52 +54,10 @@ public class AuthService implements UserDetailsService {
     @Transactional
     public User authenticate(UserLoginRequestDto request) {
 
-        var user = verifyEmailAndPassword(request.getEmail(), request.getPassword());
-        validateUserStatus(user);
+        var user = authComponent.findUserByEmail(request.getEmail());
+        authComponent.validatePassword(request.getPassword(), user.getPassword());
+        userValidator.validateUserStatus(user);
 
         return user;
-    }
-
-    /**
-     * 이메일 비밀번호 매칭 인증
-     *
-     * @param email
-     * @param password
-     * @return User
-     */
-    User verifyEmailAndPassword(String email, String password) {
-        var user = findUserByEmail(email);
-        validatePassword(password, user.getPassword());
-        return user;
-    }
-
-    // 이메일로 UserEntity 불러오기
-    private User findUserByEmail(String email) {
-        return userRepository.findByEmail(email)
-                .orElseThrow(WrongAuthenticationException::new);
-    }
-
-    // 비밀번호 검증
-    private void validatePassword(String password1, String password2) {
-        if (!passwordEncoder.matches(password1, password2)) {
-            throw new WrongAuthenticationException();
-        }
-    }
-
-    // 로그인 계정 상태 확인
-    private void validateUserStatus(User user) {
-        // Pending: Active 변환 (탈퇴 요청 철회)
-        if (user.getUserStatus() == UserStatus.PENDING) {
-            user.reactiveAccount();
-            userRepository.save(user);
-
-        // Deleted: 로그인 거부
-        } else if (user.getUserStatus() == UserStatus.DELETED) {
-            throw new WrongAuthenticationException();
-
-        // Active 제외한 나머지: 로그인 거부 -> 관리자 문의로 유도
-        } else if (user.getUserStatus() != UserStatus.ACTIVE) {
-            throw new AccountNotActiveException();
-        }
     }
 }
