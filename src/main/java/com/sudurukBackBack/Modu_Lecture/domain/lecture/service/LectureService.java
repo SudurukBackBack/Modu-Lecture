@@ -2,6 +2,7 @@ package com.sudurukBackBack.Modu_Lecture.domain.lecture.service;
 
 import com.sudurukBackBack.Modu_Lecture.domain.lecture.dto.request.LectureCreateRequestDto;
 import com.sudurukBackBack.Modu_Lecture.domain.lecture.dto.response.LectureResponseDto;
+import com.sudurukBackBack.Modu_Lecture.domain.lecture.dto.response.LectureUpdateRequestDto;
 import com.sudurukBackBack.Modu_Lecture.domain.lecture.entity.Lecture;
 import com.sudurukBackBack.Modu_Lecture.domain.lecture.entity.LectureStatus;
 import com.sudurukBackBack.Modu_Lecture.domain.lecture.exception.LectureNotFoundException;
@@ -45,6 +46,7 @@ public class LectureService {
 
         return lectureRepository.save(lecture);
     }
+
     //  강의 조회 메서드
     @Transactional(readOnly = true)
     public LectureResponseDto getLecture(Long lectureId) {
@@ -55,7 +57,7 @@ public class LectureService {
     }
 
     @Transactional
-    public LectureResponseDto updateLecture(Long lectureId, LectureUpdateRequestDto requestDto) {
+    public LectureResponseDto updateLecture(Long lectureId, @NotNull LectureUpdateRequestDto requestDto) {
         // 강의 존재 여부 확인
         Lecture lecture = lectureRepository.findById(lectureId)
                 .orElseThrow(LectureNotFoundException::new);

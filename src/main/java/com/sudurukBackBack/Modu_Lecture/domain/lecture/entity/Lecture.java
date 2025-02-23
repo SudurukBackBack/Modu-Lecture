@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "lecture")
 @Getter
-@Setter
+@Setter  // ✅ 모든 필드에 대한 setter 생성
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -31,10 +31,10 @@ public class Lecture {
     private String instructor;
 
     @Column(nullable = false)
-    private int category; //  기본형 int 사용
+    private int category;
 
     @Column(nullable = false)
-    private int price; //  기본형 int 사용
+    private int price;
 
     @Column(nullable = false)
     private LocalDateTime createdAt;
@@ -42,4 +42,10 @@ public class Lecture {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private LectureStatus status;
+
+    //  필요한 경우 개별 setter 메서드 추가 가능
+    @Setter
+    @Column(nullable = false)
+    private int duration; //  duration 필드 확인 및 추가
+
 }
