@@ -2,6 +2,7 @@ package com.sudurukbackback.modulecture.domain.user.controller;
 
 import com.sudurukbackback.modulecture.domain.user.dto.request.PasswordUpdateRequestDto;
 import com.sudurukbackback.modulecture.domain.user.dto.request.UserDeleteRequestDto;
+import com.sudurukbackback.modulecture.domain.user.dto.request.UserProfileUpdateRequestDto;
 import com.sudurukbackback.modulecture.domain.user.dto.response.UpdatePasswordResponseDto;
 import com.sudurukbackback.modulecture.domain.user.dto.response.UserDeleteResponseDto;
 import com.sudurukbackback.modulecture.domain.user.dto.response.UserProfileResponseDto;
@@ -39,9 +40,17 @@ public class UserController {
     }
 
     @GetMapping("/me")
-    public UserProfileResponseDto getUserInfo(
+    public UserProfileResponseDto getUserProfile(
             Authentication auth
     ) {
         return userService.getUserProfile(auth.getName());
+    }
+
+    @PutMapping("/me")
+    public UserProfileResponseDto updateUserProfile(
+            @Valid @RequestBody UserProfileUpdateRequestDto request,
+            Authentication auth
+    ) {
+        return userService.updateUserProfile(auth.getName(), request.getNickname());
     }
 }

@@ -24,3 +24,12 @@ Authorization: Bearer
 ### 사용자 정보 조회
 GET http://localhost:8080/users/me
 Authorization: Bearer
+
+### 사용자 정보 수정 (현재는 닉네임만 가능)
+PUT http://localhost:8080/users/me
+Content-Type: application/json
+Authorization: Bearer
+
+{
+  "nickname": "changeNickname"
+}

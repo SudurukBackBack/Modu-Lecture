@@ -2,7 +2,7 @@ package com.sudurukbackback.modulecture.global.exception;
 
 import org.springframework.http.HttpStatus;
 
-public class BasicServerException extends BasicException {
+public final class BasicServerException extends BasicException {
 
     @Override
     public int statusCode() {
