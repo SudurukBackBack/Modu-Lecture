@@ -17,24 +17,26 @@ spring:
     properties:
       hibernate.dialect: org.hibernate.dialect.MySQL8Dialect
 
-  datasource:
-    url: ${DB_URL}
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
-    driver-class-name: com.mysql.cj.jdbc.Driver
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+    mode: HTML
+    cache: false
+    encoding: UTF-8
 
-  #     AWS RDS DB 접속 정보
-  #     url: jdbc:mysql://${DB_ENDPOINT}:3306/modu_lecture?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true
-  #     username: ${DB_USERNAME}
-  #     password: ${DB_PASSWORD}
+  datasource:
+    url: ${spring.datasource.url}
+    username: ${spring.datasource.username}
+    password: ${spring.datasource.password}
+    driver-class-name: com.mysql.cj.jdbc.Driver
 
 cloud:
   aws:
-    region: 'ap-northeast-2'
+    region: ${cloud.aws.region}
     credentials:
-      access-key: '${access-key}'
-      secret-key: '${secret-key}'
+      access-key: ${cloud.aws.credentials.access-key}
+      secret-key: ${cloud.aws.credentials.secret-key}
     s3:
-      bucket-name: 'modu-s3-bucket'
+      bucket-name: ${cloud.aws.s3.bucket-name}
       video-prefix: 'videos/'
       image-prefix: 'images/'
