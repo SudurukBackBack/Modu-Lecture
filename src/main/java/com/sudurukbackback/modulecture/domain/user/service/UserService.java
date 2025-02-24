@@ -1,9 +1,10 @@
 package com.sudurukbackback.modulecture.domain.user.service;
 
+import com.sudurukbackback.modulecture.domain.user.component.AuthComponent;
+import com.sudurukbackback.modulecture.domain.user.component.UserValidator;
 import com.sudurukbackback.modulecture.domain.user.dto.request.PasswordUpdateRequestDto;
 import com.sudurukbackback.modulecture.domain.user.dto.request.UserDeleteRequestDto;
 import com.sudurukbackback.modulecture.domain.user.entity.User;
-import com.sudurukbackback.modulecture.global.util.UserValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -14,8 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class UserService {
 
-    private final AuthService authService;
     private final PasswordEncoder passwordEncoder;
+    private final AuthComponent authComponent;
     private final UserValidator userValidator;
 
     @Transactional
@@ -39,7 +40,7 @@ public class UserService {
 
     private User authenticateActiveUser(String email, String password) {
         // 이메일 비밀번호 인증
-        var user = authService.verifyEmailAndPassword(email, password);
+        var user = authComponent.verifyEmailAndPasswordMatch(email, password);
         userValidator.validateUserIsActive(user);
 
         return user;
