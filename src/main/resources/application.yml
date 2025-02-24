@@ -18,7 +18,7 @@ spring:
       hibernate.dialect: org.hibernate.dialect.MySQL8Dialect
 
   thymeleaf:
-    prefix: classpath:/templates/domain/
+    prefix: classpath:/templates/
     suffix: .html
     mode: HTML
     cache: false
