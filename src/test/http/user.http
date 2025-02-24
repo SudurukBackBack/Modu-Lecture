@@ -20,3 +20,7 @@ Authorization: Bearer
 {
   "currentPassword": "Test1234!"
 }
+
+### 사용자 정보 조회
+GET http://localhost:8080/users/me
+Authorization: Bearer

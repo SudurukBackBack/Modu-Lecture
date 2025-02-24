@@ -4,6 +4,7 @@ import com.sudurukbackback.modulecture.domain.user.dto.request.PasswordUpdateReq
 import com.sudurukbackback.modulecture.domain.user.dto.request.UserDeleteRequestDto;
 import com.sudurukbackback.modulecture.domain.user.dto.response.UpdatePasswordResponseDto;
 import com.sudurukbackback.modulecture.domain.user.dto.response.UserDeleteResponseDto;
+import com.sudurukbackback.modulecture.domain.user.dto.response.UserProfileResponseDto;
 import com.sudurukbackback.modulecture.domain.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -35,5 +36,12 @@ public class UserController {
         userService.deactivateAccount(auth, request);
 
         return UserDeleteResponseDto.of();
+    }
+
+    @GetMapping("/me")
+    public UserProfileResponseDto getUserInfo(
+            Authentication auth
+    ) {
+        return userService.getUserProfile(auth.getName());
     }
 }
