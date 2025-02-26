@@ -26,10 +26,11 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/sign-up", "/auth/sign-in", "/main", "/css/**", "/js/**", "/images/**", "/fragments/**").permitAll() // 인증 없이 접근 가능
+                        .requestMatchers("/auth/sign-up", "/auth/sign-in").permitAll() // 인증 없이 접근 가능 API
+                        .requestMatchers("/main", "/web/**", "/css/**", "/js/**", "/images/**", "/fragments/**").permitAll() // 인증 없이 접근 가능 Web
                         .requestMatchers("/gold/**").hasRole("GOLD") // GOLD 이상만 접근 가능
                         .requestMatchers("/platinum/**").hasRole("PLATINUM") // PLATINUM만 접근 가능
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .httpBasic(AbstractHttpConfigurer::disable);
