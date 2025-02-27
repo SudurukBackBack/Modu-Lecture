@@ -19,7 +19,7 @@ public class UserController {
 
     private final UserService userService;
 
-    @PutMapping("/password")
+    @PatchMapping("/password")
     public UpdatePasswordResponseDto updatePassword(
             @Valid @RequestBody PasswordUpdateRequestDto request,
             Authentication auth
@@ -46,7 +46,7 @@ public class UserController {
         return userService.getUserProfile(auth.getName());
     }
 
-    @PutMapping("/me")
+    @PatchMapping("/me")
     public UserProfileResponseDto updateUserProfile(
             @Valid @RequestBody UserProfileUpdateRequestDto request,
             Authentication auth
