@@ -49,18 +49,23 @@ public class PostController {
         Post createdPost = postService.createPost(postCreateDto);
         log.info("게시글 생성 :\n{}", createdPost);
 
-        return ResponseEntity.ok("게시글 등록 성공");
+        return ResponseEntity.ok("게시글 등록 완료");
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Post> updatePost(@Valid @PathVariable Long id, @RequestBody PostUpdateRequestDto request) {
-        Post updatedPost = postService.updatePost(id, request.getUserId(), request.getNewContent());
-        return ResponseEntity.ok(updatedPost);
+    public ResponseEntity<String> updatePost(@Valid @PathVariable Long id, @RequestBody PostUpdateRequestDto postUpdateDto, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            String errorMessage = bindingResult.getAllErrors().getFirst().getDefaultMessage();
+            return ResponseEntity.badRequest().body(errorMessage);
+        }
+        Post updatedPost = postService.updatePost(id, postUpdateDto.getUserId(), postUpdateDto.getNewContent());
+        log.info("게시글 수정 :\n{}", updatedPost);
+        return ResponseEntity.ok("게시글 수정 완료");
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deletePost(@PathVariable Long id) {
         postService.deletePost(id);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 }
