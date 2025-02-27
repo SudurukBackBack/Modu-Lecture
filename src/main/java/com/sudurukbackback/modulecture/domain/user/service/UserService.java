@@ -35,7 +35,7 @@ public class UserService {
         // 본인 인증
         User user = authenticateActiveUser(auth.getName(), request.getCurrentPassword());
 
-        user.deactivateAccount();
+        user.requestDeactivateAccount();
     }
 
     private User authenticateActiveUser(String email, String password) {

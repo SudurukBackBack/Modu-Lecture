@@ -93,11 +93,17 @@ public class User implements UserDetails {
         this.password = passwordEncoder.encode(newPassword);
     }
 
-    // 계정 비활성화(탈퇴)
-    public void deactivateAccount() {
-
+    // 계정 비활성화(탈퇴) 요청 생성
+    public void requestDeactivateAccount() {
         // 일정 시간이 흐르고 나서 정보를 삭제하는 것이 가능한가?
         this.userStatus = UserStatus.PENDING;
+        this.deletedAt = LocalDateTime.now();
+    }
+
+    // 계정 탈퇴 처리
+    public void deleteAccount() {
+        // 계정 상태 변경 및 탈퇴 날짜 갱신
+        this.userStatus = UserStatus.DELETED;
         this.deletedAt = LocalDateTime.now();
     }
 }
