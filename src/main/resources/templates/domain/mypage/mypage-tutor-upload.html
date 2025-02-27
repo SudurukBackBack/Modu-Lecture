@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+
+<head>
+    <!-- head 부분 포함 -->
+    <div th:replace="layout/head :: head"></div>
+</head>
+<body>
+<!-- navbar 부분 포함 -->
+<div th:insert="layout/navbar :: navbar"></div>
+
+<!-- Section -->
+<section class="py-5">
+    <div class="container px-4 px-lg-5">
+        <div class="row">
+            <!-- mypage vertical navigation bar -->
+            <!--            <div th:insert="layout/mypage-navbar :: mypage-navbar"></div>-->
+            <nav th:fragment="mypage-navbar" class="col-md-3">
+                <div class="border rounded p-4">
+                    <h4 class="mb-4 text-start">마이페이지</h4>
+                    <hr>
+                    <ul class="nav flex-column text-start">
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" href="/mypage">나의 정보</a>
+                        </li>
+                        <hr>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" href="/mypage-lecture">수강 목록</a>
+                        </li>
+                        <hr>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" href="/mypage-tutor">나의 강의 관리</a>
+                        </li>
+                        <hr>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" href="/mypage-account">계정</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <!-- 오른쪽 내용 -->
+            <div class="col-md-9">
+                <h2 class="mb-4 mt-3 ms-3">강의 등록</h2>
+                <hr>
+                <form th:action="@{/lectures/register}" method="post" enctype="multipart/form-data" class="ms-3">
+
+                    <!-- 영상 업로드 -->
+                    <div class="mb-3">
+                        <label for="videoUpload" class="form-label">영상 업로드</label>
+                        <input class="form-control form-control-sm" type="file" id="videoUpload" name="video">
+                    </div>
+
+                    <!-- 제목 입력 -->
+                    <div class="mb-3">
+                        <label for="titleInput" class="form-label">제목 입력</label>
+                        <input type="text" class="form-control form-control-sm" id="titleInput" name="title" placeholder="강의 제목을 입력하세요">
+                    </div>
+
+                    <!-- 가격 입력 -->
+                    <div class="mb-3">
+                        <label for="priceInput" class="form-label">가격 입력</label>
+                        <input type="number" class="form-control form-control-sm" id="priceInput" name="price" placeholder="가격을 입력하세요">
+                    </div>
+
+                    <!-- 카테고리 선택 (슬라이드) -->
+                    <div class="mb-3">
+                        <label class="form-label">카테고리 선택</label>
+                        <div>
+                            <div class="card card-body">
+                                <!-- 카테고리 리스트 -->
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="category1" name="categories" value="IT">
+                                    <label class="form-check-label" for="category1">IT</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="category2" name="categories" value="비즈니스">
+                                    <label class="form-check-label" for="category2">비즈니스</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="category3" name="categories" value="디자인">
+                                    <label class="form-check-label" for="category3">디자인</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="category4" name="categories" value="언어">
+                                    <label class="form-check-label" for="category4">언어</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 설명 입력 -->
+                    <div class="mb-3">
+                        <label for="descriptionInput" class="form-label">설명 입력</label>
+                        <textarea class="form-control" id="descriptionInput" name="description" rows="5" placeholder="강의 설명을 입력하세요"></textarea>
+                    </div>
+
+                    <!-- 경계선 -->
+                    <hr>
+
+                    <!-- 등록 버튼 -->
+                    <button type="submit" class="btn btn-primary">등록</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer-->
+<div th:insert="layout/footer :: footer"></div>
+
+<!-- JS CDN -->
+<div th:replace="layout/js-cdn :: js-cdn"></div>
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!-- head 부분 포함 -->
+    <div th:replace="layout/head :: head"></div>
+
+</head>
+<body class="d-flex flex-column min-vh-100">
+<!-- navbar 부분 포함 -->
+<div th:insert="layout/navbar :: navbar"></div>
+
+<!-- Section -->
+<main class="flex-fill">
+    <section class="py-5">
+        <div class="container px-4 px-lg-5">
+            <div class="row">
+
+                <!-- mypage vertical navigation bar -->
+                <div th:replace="layout/mypage-navbar :: mypage-navbar"></div>
+
+                <!-- 오른쪽 내용 -->
+                <div class="col-md-9">
+                    <!-- 카드 컴포넌트 시작 -->
+                    <div class="card">
+                        <div class="card-body">
+                            <h2 class="mb-4 mt-4 ms-3 me-4">나의 정보</h2>
+                            <form th:action="@{/lectures/register}" method="post" class="ms-3">
+                                <!-- 이름 입력 -->
+                                <div class="mb-3 row">
+                                    <label for="nameInput" class="col-sm-3 col-form-label">이름</label>
+                                    <div class="col-sm-9">
+                                        <input type="text" class="form-control form-control-sm" id="nameInput" name="name" value="김모두">
+                                    </div>
+                                </div>
+
+                                <!-- 이메일 입력 -->
+                                <div class="mb-3 row">
+                                    <label for="emailInput" class="col-sm-3 col-form-label">이메일</label>
+                                    <div class="col-sm-9">
+                                        <input type="email" class="form-control form-control-sm" id="emailInput" name="email" value="modu@gmail.com">
+                                    </div>
+                                </div>
+
+                                <!-- 비밀번호 입력 -->
+                                <div class="mb-3 row">
+                                    <label for="passwordInput" class="col-sm-3 col-form-label">비밀번호</label>
+                                    <div class="col-sm-9">
+                                        <input type="password" class="form-control" id="passwordInput" name="password" value="modu1234">
+                                    </div>
+                                </div>
+
+                                <!-- 경계선 -->
+                                <hr class="mt-4">
+
+                                <!-- 수정 버튼 -->
+                                <button type="submit" class="btn btn-primary mt-3">수정</button>
+                            </form>
+                        </div>
+                    </div>
+                    <!-- 카드 컴포넌트 끝 -->
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<!-- Footer -->
+<div th:insert="layout/footer :: footer"></div>
+
+<!-- JS CDN -->
+<div th:replace="layout/js-cdn :: js-cdn"></div>
+</body>
+</html>
