@@ -106,4 +106,10 @@ public class User implements UserDetails {
         this.userStatus = UserStatus.DELETED;
         this.deletedAt = LocalDateTime.now();
     }
+      
+    // 닉네임 변경
+    public void changeNickname(String newNickname) {
+        this.nickname = newNickname;
+
+    }
 }
