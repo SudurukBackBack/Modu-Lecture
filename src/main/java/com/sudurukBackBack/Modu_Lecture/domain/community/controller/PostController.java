@@ -7,6 +7,7 @@ import com.sudurukBackBack.Modu_Lecture.domain.community.entity.Post;
 import com.sudurukBackBack.Modu_Lecture.domain.community.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -14,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @RestController
 @RequestMapping("/posts")
 @RequiredArgsConstructor // final 필드에 대한 생성자 자동 생성
@@ -45,13 +47,13 @@ public class PostController {
             return ResponseEntity.badRequest().body(errorMessage);
         }
         Post createdPost = postService.createPost(postCreateDto);
-        System.out.println("게시글 생성 :\n"+createdPost);
+        log.info("게시글 생성 :\n{}", createdPost);
 
         return ResponseEntity.ok("게시글 등록 성공");
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Post> updatePost(@PathVariable Long id, @RequestBody PostUpdateRequestDto request) {
+    public ResponseEntity<Post> updatePost(@Valid @PathVariable Long id, @RequestBody PostUpdateRequestDto request) {
         Post updatedPost = postService.updatePost(id, request.getUserId(), request.getNewContent());
         return ResponseEntity.ok(updatedPost);
     }

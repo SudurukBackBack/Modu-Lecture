@@ -5,7 +5,7 @@ import com.sudurukBackBack.Modu_Lecture.domain.community.entity.Post;
 import com.sudurukBackBack.Modu_Lecture.domain.community.exception.PostNotFoundException;
 import com.sudurukBackBack.Modu_Lecture.domain.community.exception.UnauthorizedException;
 import com.sudurukBackBack.Modu_Lecture.domain.community.repository.PostRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -14,13 +14,9 @@ import org.springframework.web.util.HtmlUtils;
 import java.time.LocalDateTime;
 
 @Service
+@RequiredArgsConstructor
 public class PostService {
     private final PostRepository postRepository;
-
-    @Autowired
-    public PostService(PostRepository postRepository) {
-        this.postRepository = postRepository;
-    }
 
     public Page<Post> getAllPosts(Pageable pageable) {
         return postRepository.findAll(pageable);
