@@ -4,6 +4,7 @@ import com.sudurukBackBack.Modu_Lecture.global.security.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -26,7 +27,8 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/sign-up", "/auth/sign-in","/posts/**").permitAll() // 인증 없이 접근 가능
+                        .requestMatchers(HttpMethod.GET, "/posts/**").permitAll() // 조회 기능만
+                        .requestMatchers("/auth/sign-up", "/auth/sign-in").permitAll() // 인증 없이 접근 가능
                         .requestMatchers("/gold/**").hasRole("GOLD") // GOLD 이상만 접근 가능
                         .requestMatchers("/platinum/**").hasRole("PLATINUM") // PLATINUM만 접근 가능
                         .anyRequest().authenticated()
