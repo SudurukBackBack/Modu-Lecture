@@ -109,7 +109,8 @@ public class User implements UserDetails {
       
     // 닉네임 변경
     public void changeNickname(String newNickname) {
+        // 계정 업데이트 날짜 갱신
         this.nickname = newNickname;
-
+        this.updatedAt = LocalDateTime.now();
     }
 }
