@@ -2,8 +2,10 @@ package com.sudurukbackback.modulecture.domain.user.controller;
 
 import com.sudurukbackback.modulecture.domain.user.dto.request.PasswordUpdateRequestDto;
 import com.sudurukbackback.modulecture.domain.user.dto.request.UserDeleteRequestDto;
+import com.sudurukbackback.modulecture.domain.user.dto.request.UserProfileUpdateRequestDto;
 import com.sudurukbackback.modulecture.domain.user.dto.response.UpdatePasswordResponseDto;
 import com.sudurukbackback.modulecture.domain.user.dto.response.UserDeleteResponseDto;
+import com.sudurukbackback.modulecture.domain.user.dto.response.UserProfileResponseDto;
 import com.sudurukbackback.modulecture.domain.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +19,7 @@ public class UserController {
 
     private final UserService userService;
 
-    @PutMapping("/password")
+    @PatchMapping("/password")
     public UpdatePasswordResponseDto updatePassword(
             @Valid @RequestBody PasswordUpdateRequestDto request,
             Authentication auth
@@ -35,5 +37,20 @@ public class UserController {
         userService.deactivateAccount(auth, request);
 
         return UserDeleteResponseDto.of();
+    }
+
+    @GetMapping("/me")
+    public UserProfileResponseDto getUserProfile(
+            Authentication auth
+    ) {
+        return userService.getUserProfile(auth.getName());
+    }
+
+    @PatchMapping("/me")
+    public UserProfileResponseDto updateUserProfile(
+            @Valid @RequestBody UserProfileUpdateRequestDto request,
+            Authentication auth
+    ) {
+        return userService.updateUserProfile(auth.getName(), request.getNickname());
     }
 }
