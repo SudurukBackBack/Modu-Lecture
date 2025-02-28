@@ -18,16 +18,25 @@ public class MainController {
         return "domain/mypage/mypage";
     }
 
-    @GetMapping("/mypage-tutor-upload")
-    public String mypageTutorUpload(Model model) {
-        return "domain/mypage/mypage-tutor-upload";
-    }
-
     @GetMapping("/mypage-lecture")
     public String mypageLecture(Model model) {
         return "domain/mypage/mypage-lecture";
     }
 
+    @GetMapping("/mypage-tutor")
+    public String mypageTutor(Model model) {
+        return "domain/mypage/mypage-tutor";
+    }
+
+    @GetMapping("/mypage-tutor-upload")
+    public String mypageTutorUpload(Model model) {
+        return "domain/mypage/mypage-tutor-upload";
+    }
+
+    @GetMapping("/mypage-account")
+    public String mypageAccount(Model model) {
+        return "domain/mypage/mypage-account";
+    }
 
 
 }

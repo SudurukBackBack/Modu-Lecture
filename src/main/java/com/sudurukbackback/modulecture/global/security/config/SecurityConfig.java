@@ -26,7 +26,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/sign-up", "/auth/sign-in", "/main", "/css/**", "/js/**", "/images/**", "/fragments/**", "/mypage/**", "/mypage-tutor-upload/**", "/mypage-lecture").permitAll() // 인증 없이 접근 가능
+                        .requestMatchers("/auth/sign-up", "/auth/sign-in", "/main", "/css/**", "/js/**", "/images/**", "/fragments/**", "/mypage/**", "/mypage-tutor-upload/**", "/mypage-tutor", "/mypage-lecture", "/mypage-account").permitAll() // 인증 없이 접근 가능
                         .requestMatchers("/gold/**").hasRole("GOLD") // GOLD 이상만 접근 가능
                         .requestMatchers("/platinum/**").hasRole("PLATINUM") // PLATINUM만 접근 가능
                         .anyRequest().authenticated()

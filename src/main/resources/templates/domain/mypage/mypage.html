@@ -29,10 +29,11 @@
 
                 <!-- 오른쪽 내용 -->
                 <div class="col-md-9">
+                    <h2 class="mb-4 mt-4 me-4">나의 정보</h2>
+                    <hr>
                     <!-- 카드 컴포넌트 시작 -->
                     <div class="card">
                         <div class="card-body">
-                            <h2 class="mb-4 mt-4 ms-3 me-4">나의 정보</h2>
                             <form th:action="@{/lectures/register}" method="post" class="ms-3">
                                 <!-- 이름 입력 -->
                                 <div class="mb-3 row">
@@ -61,8 +62,10 @@
                                 <!-- 경계선 -->
                                 <hr class="mt-4">
 
-                                <!-- 수정 버튼 -->
-                                <button type="submit" class="btn btn-primary mt-3">수정</button>
+                                <!-- 등록 버튼 -->
+                                <div class="text-end">
+                                    <button type="submit" class="btn btn-primary">수정</button>
+                                </div>
                             </form>
                         </div>
                     </div>
