@@ -1,5 +1,6 @@
 package com.sudurukbackback.modulecture.domain.lecture.dto.request;
 
+import com.sudurukbackback.modulecture.domain.lecture.entity.LectureStatus; //  LectureStatus 추가
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -36,4 +37,7 @@ public class LectureCreateRequestDto {
     @Min(value = 10, message = "강의 시간은 최소 10분 이상이어야 합니다.")
     @Max(value = 600, message = "강의 시간은 최대 600분까지 가능합니다.")
     private Integer duration;
+
+    @NotNull(message = "강의 상태는 필수 입력값입니다.") //  필수 입력값 추가
+    private LectureStatus status; //  강의 상태 추가
 }

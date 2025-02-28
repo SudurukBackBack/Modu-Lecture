@@ -42,4 +42,9 @@ public class Lecture {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private LectureStatus status;
+
+    //  필요한 경우 개별 setter 메서드 추가 가능
+    @Setter
+    @Column(nullable = false)
+    private int duration; //  duration 필드 확인 및 추가
 }

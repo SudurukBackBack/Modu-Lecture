@@ -12,10 +12,8 @@ public final class LectureNotFoundException extends BasicException {
         return HttpStatus.NOT_FOUND.value();
     }
 
-    @NotNull
-    @Contract(pure = true)
     @Override
     public String errorMessage() {
-        return "강의를 찾을 수 없습니다.";
+        return "해당 강의를 찾을 수 없습니다.";
     }
 }
