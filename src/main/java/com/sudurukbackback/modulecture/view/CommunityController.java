@@ -24,4 +24,9 @@ public class CommunityController {
     public String postWrite(Model model) {
         return "domain/community/post-write";
     }
+
+    @GetMapping("/post-mine")
+    public String postMine(Model model) {
+        return "domain/community/post-mine";
+    }
 }
