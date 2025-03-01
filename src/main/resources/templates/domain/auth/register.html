@@ -113,9 +113,10 @@
         try {
             console.log("회원가입 요청 데이터:", requestData); // 요청 데이터 확인
 
-            const response = await axios.post("/auth/sign-up", requestData, {
-                headers: {"Content-Type": "application/json"}
-            });
+            const response = await axios.post("/auth/sign-up", requestData,
+                {
+                    headers: {"Content-Type": "application/json"}
+                });
 
             console.log("회원가입 응답 데이터:", response); // 응답 데이터 확인
 
@@ -154,7 +155,6 @@
             </div>
         </div>
     `;
-
         // 기존 모달 제거 후 새로 추가
         document.body.insertAdjacentHTML("beforeend", modalHtml);
         const modal = new bootstrap.Modal(document.getElementById("alertModal"));
