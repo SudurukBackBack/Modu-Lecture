@@ -40,7 +40,7 @@ public class UserService {
         // 본인 인증
         User user = authenticateActiveUser(auth.getName(), request.getCurrentPassword());
 
-        user.deactivateAccount();
+        user.requestDeactivateAccount();
     }
 
     public UserProfileResponseDto getUserProfile(String email) {

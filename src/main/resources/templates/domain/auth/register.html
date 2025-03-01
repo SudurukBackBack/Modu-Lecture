@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>회원가입</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+</head>
+<body>
+
+<!-- navbar 부분 포함 -->
+<div th:insert="layout/navbar :: navbar"></div>
+
+<section class="vh-100 bg-image"
+         style="background-image: url('https://mdbcdn.b-cdn.net/img/Photos/new-templates/search-box/img4.webp');">
+    <div class="mask d-flex align-items-center h-100 gradient-custom-3">
+        <div class="container h-100">
+            <div class="row d-flex justify-content-center align-items-center h-100">
+                <div class="col-12 col-md-9 col-lg-7 col-xl-6">
+                    <div class="card" style="border-radius: 15px;">
+                        <div class="card-body p-5">
+                            <h2 class="text-uppercase text-center mb-5">계정 생성</h2>
+
+                            <form>
+
+                                <div data-mdb-input-init class="form-outline mb-4">
+                                    <label class="form-label" for="input-nickname">닉네임</label>
+                                    <input type="text" id="input-nickname" class="form-control form-control-lg"/>
+                                </div>
+
+                                <div data-mdb-input-init class="form-outline mb-4">
+                                    <label class="form-label" for="input-email">이메일 주소</label>
+                                    <label class="form-label" for="input-email" style="color: red;"> (필수)</label>
+                                    <input type="email" id="input-email" class="form-control form-control-lg"/>
+                                </div>
+
+                                <div data-mdb-input-init class="form-outline mb-4">
+                                    <label class="form-label" for="input-password">비밀번호</label>
+                                    <label class="form-label" for="input-email" style="color: red;"> (필수)</label>
+                                    <small class="text-muted d-block">비밀번호는 대문자, 소문자, 숫자, 특수문자를 각각 최소 1자 이상 포함해야 합니다.</small>
+                                    <input type="password" id="input-password" class="form-control form-control-lg"/>
+                                </div>
+
+                                <div data-mdb-input-init class="form-outline mb-4">
+                                    <label class="form-label" for="password-check">비밀번호 확인</label>
+                                    <input type="password" id="password-check" class="form-control form-control-lg"/>
+                                </div>
+
+                                <div class="form-check d-flex justify-content-center mb-5">
+                                    <input class="form-check-input me-2" type="checkbox" value="" id="checkbox"/>
+                                    <label class="form-check-label" for="checkbox">
+                                        <a href="/term-documents" class="text-body"><u>이용약관</u></a>에 동의합니다.
+                                    </label>
+                                </div>
+
+                                <div class="d-flex justify-content-center">
+                                    <button id="register-btn" type="button" data-mdb-button-init
+                                            data-mdb-ripple-init
+                                            class="btn btn-dark btn-block btn-lg gradient-custom-4">회원가입
+                                    </button>
+                                </div>
+
+                                <p class="text-center text-muted mt-5 mb-0">이미 계정이 있으신가요? <a href="/web/login"
+                                                                                             class="fw-bold text-body"><u>로그인</u></a>
+                                </p>
+
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!--Bootstrap JS-->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Axios 추가 (필수) -->
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<!--사용자 정의 JS-->
+<script>
+    document.getElementById("register-btn").addEventListener("click", async function () {
+        // 입력값 가져오기
+        const nickname = document.getElementById("input-nickname").value.trim();
+        const email = document.getElementById("input-email").value.trim();
+        const password = document.getElementById("input-password").value.trim();
+        const confirmPassword = document.getElementById("password-check").value.trim();
+        const termsChecked = document.getElementById("checkbox").checked;
+
+        // 필수 입력값 검증
+        if (!termsChecked) {
+            showAlert("이용약관에 동의해야 합니다.", "danger");
+            return;
+        }
+        if (!email || !password || !confirmPassword) {
+            showAlert("모든 항목을 입력하세요.", "danger");
+            return;
+        }
+        if (password !== confirmPassword) {
+            showAlert("비밀번호가 일치하지 않습니다.", "danger");
+            return;
+        }
+
+        // 회원가입 요청 데이터
+        const requestData = {nickname, email, password};
+
+        try {
+            console.log("회원가입 요청 데이터:", requestData); // 요청 데이터 확인
+
+            const response = await axios.post("/auth/sign-up", requestData,
+                {
+                    headers: {"Content-Type": "application/json"}
+                });
+
+            console.log("회원가입 응답 데이터:", response); // 응답 데이터 확인
+
+            const statusCode = response.status;
+            const successMessage = response.data?.message || "회원가입이 완료되었습니다!";
+            showAlert(`[${statusCode}] ${successMessage}`, "success", function () {
+                window.location.href = "/web/login";
+            });
+
+        } catch (error) {
+            console.error("회원가입 요청 오류:", error);
+
+            const statusCode = error.response?.status || "400";
+            const errorMessage = error.response?.data?.errorMessage || "입력 조건에 맞추어 작성해주세요.";
+            showAlert(`[${statusCode}] ${errorMessage}`, "danger");
+        }
+    });
+
+    // 팝업(Alert) 메시지 표시 함수
+    function showAlert(message, type, callback) {
+        const modalHtml = `
+        <div class="modal fade" id="alertModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">${type === "success" ? "성공" : "오류"}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <pre style="white-space: pre-wrap; word-break: break-word;">${message}</pre>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">확인</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+        // 기존 모달 제거 후 새로 추가
+        document.body.insertAdjacentHTML("beforeend", modalHtml);
+        const modal = new bootstrap.Modal(document.getElementById("alertModal"));
+        modal.show();
+
+        // 모달 닫힐 때 콜백 실행 (성공 시 페이지 이동)
+        document.getElementById("alertModal").addEventListener("hidden.bs.modal", function () {
+            if (callback) callback();
+            document.getElementById("alertModal").remove(); // 모달 삭제
+        });
+    }
+</script>
+
+<!-- Footer-->
+<div th:insert="layout/footer :: footer"></div>
+
+<!-- JS CDN -->
+<div th:replace="layout/scriptcdn :: script"></div>
+
+</body>
+</html>
