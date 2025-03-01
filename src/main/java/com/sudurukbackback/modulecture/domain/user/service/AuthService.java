@@ -16,6 +16,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -36,7 +38,11 @@ public class AuthService implements UserDetailsService {
 
         String email = request.getEmail().toLowerCase();
         String password = request.getPassword();
-        String nickname = request.getNickname();
+
+        // 닉네임 미설정 시 임의의 닉네임 부여
+        String nickname = Optional.ofNullable(request.getNickname())
+                .filter(n -> !n.isEmpty())
+                .orElse("User" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")));
 
         // email 가입 가능 여부 확인
         authComponent.validateEmailUniqueness(email);
