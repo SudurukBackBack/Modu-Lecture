@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "lecture")
@@ -30,11 +31,17 @@ public class Lecture {
     @Column(nullable = false)
     private String instructor;
 
-    @Column(nullable = false)
-    private int category; //  기본형 int 사용
+    @ElementCollection //형식으로 categoryIds 저장 가능
+    private List<Long> categoryIds;
 
     @Column(nullable = false)
     private int price; //  기본형 int 사용
+
+    @Column(nullable = true)
+    private String videoUrl; // 강의 영상 URL 추가
+
+    @Column(nullable = true)
+    private String imageUrl; // 썸네일 이미지 URL 추가
 
     @Column(nullable = false)
     private LocalDateTime createdAt;
