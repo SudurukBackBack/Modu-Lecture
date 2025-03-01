@@ -2,45 +2,54 @@ package com.sudurukbackback.modulecture.domain.lecture.controller;
 
 import com.sudurukbackback.modulecture.domain.lecture.dto.request.LectureCreateRequestDto;
 import com.sudurukbackback.modulecture.domain.lecture.dto.response.LectureResponseDto;
-import com.sudurukbackback.modulecture.domain.lecture.entity.Lecture;
+import com.sudurukbackback.modulecture.domain.lecture.dto.response.LectureUpdateRequestDto;
 import com.sudurukbackback.modulecture.domain.lecture.service.LectureService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/lectures")
-@RequiredArgsConstructor  // Lombok 자동 생성자 사용 → 불필요한 생성자 제거
+@RequiredArgsConstructor
 public class LectureController {
     private final LectureService lectureService;
 
+    // 강의 생성 (파일 포함)
     @PostMapping
-    public ResponseEntity<?> createLecture(@Valid @RequestBody LectureCreateRequestDto requestDto, BindingResult bindingResult) {
-        // 유효성 검증 실패 시, 상세한 에러 메시지 반환
-        if (bindingResult.hasErrors()) {
-            Map<String, String> errors = new HashMap<>();
-            for (FieldError error : bindingResult.getFieldErrors()) {
-                errors.put(error.getField(), error.getDefaultMessage());
-            }
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
-        }
+    public ResponseEntity<LectureResponseDto> createLecture(
+            @RequestPart("requestDto") @Valid LectureCreateRequestDto requestDto,
+            @RequestPart(value = "file", required = false) MultipartFile file) throws IOException {
 
-        //  강의 생성 요청을 서비스로 전달
-        Lecture createdLecture = lectureService.createLecture(requestDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdLecture);
+        LectureResponseDto responseDto = lectureService.createLecture(requestDto, file);
+        return ResponseEntity.ok(responseDto);
     }
 
+    // 강의 상세 조회
     @GetMapping("/{lecture_id}")
     public ResponseEntity<LectureResponseDto> getLecture(@PathVariable Long lecture_id) {
-        //  강의 상세 조회 (없는 강의일 경우 예외 발생 처리)
         LectureResponseDto lecture = lectureService.getLecture(lecture_id);
         return ResponseEntity.ok(lecture);
+    }
+
+    // 강의 수정 (PATCH)
+    @PatchMapping("/{lecture_id}")
+    public ResponseEntity<LectureResponseDto> updateLecture(
+            @PathVariable Long lecture_id,
+            @RequestPart("requestDto") @Valid LectureUpdateRequestDto requestDto,
+            @RequestPart(value = "file", required = false) MultipartFile file) throws IOException {
+
+        LectureResponseDto updatedLecture = lectureService.updateLecture(lecture_id, requestDto, file);
+        return ResponseEntity.ok(updatedLecture);
+    }
+
+    // 강의 삭제 (파일 포함)
+    @DeleteMapping("/{lecture_id}")
+    public ResponseEntity<Void> deleteLecture(@PathVariable Long lecture_id) {
+        lectureService.deleteLecture(lecture_id);
+        return ResponseEntity.noContent().build();
     }
 }

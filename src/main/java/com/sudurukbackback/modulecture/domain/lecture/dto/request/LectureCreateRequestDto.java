@@ -1,11 +1,15 @@
 package com.sudurukbackback.modulecture.domain.lecture.dto.request;
 
+import com.sudurukbackback.modulecture.domain.lecture.entity.LectureStatus; //  LectureStatus 추가
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @Getter
 public class LectureCreateRequestDto {
@@ -21,11 +25,8 @@ public class LectureCreateRequestDto {
     @Size(max = 1000, message = "강의 설명은 최대 1000자까지 가능합니다.")
     private String description;
 
-    @NotBlank(message = "강사명은 필수 입력값입니다.")
-    private String instructor;
-
-    @NotBlank(message = "카테고리는 필수 입력값입니다.")
-    private String category;
+    @NotNull(message = "카테고리는 필수 입력값입니다.")
+    private List<Long> categoryIds; // List<Long> categoryIds 추가
 
     @NotNull(message = "가격은 필수 입력값입니다.")
     @Min(value = 0, message = "가격은 0원 이상이어야 합니다.")
@@ -36,4 +37,10 @@ public class LectureCreateRequestDto {
     @Min(value = 10, message = "강의 시간은 최소 10분 이상이어야 합니다.")
     @Max(value = 600, message = "강의 시간은 최대 600분까지 가능합니다.")
     private Integer duration;
+
+    @NotNull(message = "강의 상태는 필수 입력값입니다.") //  필수 입력값 추가
+    private LectureStatus status; //  강의 상태 추가
+
+    @NotNull(message = "강의 영상은 필수입니다.")
+    private MultipartFile video; //  강의 영상 추가
 }
