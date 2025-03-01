@@ -4,6 +4,7 @@ import com.sudurukbackback.modulecture.global.security.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -29,6 +30,7 @@ public class SecurityConfig {
                         .requestMatchers("/auth/sign-up", "/auth/sign-in", "/main", "/css/**", "/js/**", "/images/**", "/fragments/**", "/mypage/**", "/mypage-tutor-upload/**", "/mypage-tutor", "/mypage-tutor-update", "/mypage-lecture", "/mypage-account", "/community/**").permitAll() // 인증 없이 접근 가능
                         .requestMatchers("/gold/**").hasRole("GOLD") // GOLD 이상만 접근 가능
                         .requestMatchers("/platinum/**").hasRole("PLATINUM") // PLATINUM만 접근 가능
+                        .requestMatchers(HttpMethod.GET, "/posts/**").permitAll() // 커뮤니티 조회 기능만
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
