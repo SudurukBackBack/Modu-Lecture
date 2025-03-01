@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!-- 필요에 따라 다른 헤더 요소들 -->
+    <link
+            rel="stylesheet"
+            href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css"
+    />
+</head>
+<body>
+<!-- 에디터 컨테이너 -->
+<div id="editor"></div>
+
+<!-- JavaScript 파일 로드 -->
+<script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
+
+<!-- 에디터 초기화 스크립트 -->
+<script>
+    const Editor = toastui.Editor;
+
+    const editor = new Editor({
+        el: document.querySelector('#editor'),
+        height: '500px',
+        initialEditType: 'markdown', // 또는 'wysiwyg'
+        previewStyle: 'vertical', // 또는 'tab', 'vertical'
+        initialValue: '' // 초기 값 설정 가능
+    });
+</script>
+</body>
+</html>
