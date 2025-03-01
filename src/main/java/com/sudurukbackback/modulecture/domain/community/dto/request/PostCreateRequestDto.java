@@ -3,11 +3,11 @@ package com.sudurukbackback.modulecture.domain.community.dto.request;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+import lombok.ToString;
 
-@Getter
-@Setter
+@Data
+@ToString(exclude = "userId")
 public class PostCreateRequestDto {
     @NotNull(message = "아이디는 필수입력")
     private Long userId;
