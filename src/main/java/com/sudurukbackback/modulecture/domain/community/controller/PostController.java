@@ -3,7 +3,9 @@ package com.sudurukbackback.modulecture.domain.community.controller;
 import com.sudurukbackback.modulecture.domain.community.dto.request.PostCreateRequestDto;
 import com.sudurukbackback.modulecture.domain.community.dto.request.PostUpdateRequestDto;
 import com.sudurukbackback.modulecture.domain.community.dto.response.PostResponseDto;
+import com.sudurukbackback.modulecture.domain.community.entity.Comment;
 import com.sudurukbackback.modulecture.domain.community.entity.Post;
+import com.sudurukbackback.modulecture.domain.community.service.CommentService;
 import com.sudurukbackback.modulecture.domain.community.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -15,12 +17,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Slf4j
 @RestController
 @RequestMapping("/posts")
 @RequiredArgsConstructor // final 필드에 대한 생성자 자동 생성
 public class PostController {
     private final PostService postService;
+    private final CommentService commentService;
 
     // 게시글 전체 조회
     @GetMapping
@@ -36,6 +41,13 @@ public class PostController {
     public ResponseEntity<PostResponseDto> getPostById(@PathVariable Long id) {
         Post post = postService.getPostById(id);
         return ResponseEntity.ok(PostResponseDto.fromEntity(post));
+    }
+
+    // 게시글 내 댓글 조회
+    @GetMapping("/{postId}/comments")
+    public ResponseEntity<List<Comment>> getAllComments(@PathVariable Long postId) {
+        List<Comment> comments = commentService.getAllComments(postId);
+        return ResponseEntity.ok(comments);
     }
 
     // 게시글 생성
