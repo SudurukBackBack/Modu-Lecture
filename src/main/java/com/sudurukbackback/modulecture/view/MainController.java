@@ -9,7 +9,6 @@ public class MainController {
 
     @GetMapping("/main")
     public String main(Model model) {
-        model.addAttribute("pageTitle", "메인 페이지");
         return "domain/main";
     }
 
