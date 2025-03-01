@@ -33,6 +33,11 @@ public class MainController {
         return "domain/mypage/mypage-tutor-upload";
     }
 
+    @GetMapping("/mypage-tutor-update")
+    public String mypageTutorUpdate(Model model) {
+        return "domain/mypage/mypage-tutor-update";
+    }
+
     @GetMapping("/mypage-account")
     public String mypageAccount(Model model) {
         return "domain/mypage/mypage-account";
