@@ -3,22 +3,20 @@ package com.sudurukbackback.modulecture.domain.community.service;
 import com.sudurukbackback.modulecture.domain.community.dto.request.PostCreateRequestDto;
 import com.sudurukbackback.modulecture.domain.community.entity.Post;
 import com.sudurukbackback.modulecture.domain.community.exception.PostNotFoundException;
+import com.sudurukbackback.modulecture.domain.community.exception.UnauthorizedException;
 import com.sudurukbackback.modulecture.domain.community.repository.PostRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.util.HtmlUtils;
 
 import java.time.LocalDateTime;
 
+@RequiredArgsConstructor
 @Service
 public class PostService {
     private final PostRepository postRepository;
-
-    @Autowired
-    public PostService(PostRepository postRepository) {
-        this.postRepository = postRepository;
-    }
 
     public Page<Post> getAllPosts(Pageable pageable) {
         return postRepository.findAll(pageable);
@@ -41,10 +39,14 @@ public class PostService {
         return postRepository.save(post);
     }
 
-    public Post updatePost(Long id, String newContent) {
+    public Post updatePost(Long id, Long userId, String newContent) {
         Post post = getPostById(id);
-        post.updateContent(newContent);
-        post.setUpdatedAt(LocalDateTime.now());
+        // 권한 검사
+        if (!post.getUserId().equals(userId)) {
+            throw new UnauthorizedException();
+        }
+        String cleanContent = HtmlUtils.htmlEscape(newContent); // XSS 공격 방지
+        post.updateContent(cleanContent);
         return postRepository.save(post);
     }
 

@@ -204,3 +204,17 @@ const editorConfig = {
 };
 
 ClassicEditor.create(document.querySelector('#editor'), editorConfig);
+
+// ClassicEditor
+//     .create(document.querySelector('#descriptionInput'), {
+//         // CKEditor 설정 옵션
+//         // 에디터의 높이를 지정 (픽셀 단위)
+//         height: 200, // 원하는 높이로 설정 (예: 200px)
+//         width: 100
+//     })
+//     .then(editor => {
+//         console.log('CKEditor initialized', editor);
+//     })
+//     .catch(error => {
+//         console.error('There was a problem initializing the CKEditor.', error);
+//     });

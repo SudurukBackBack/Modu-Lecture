@@ -8,8 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class MainController {
 
     @GetMapping("/main")
-    public String index(Model model) {
-        model.addAttribute("pageTitle", "메인 페이지");
+    public String main(Model model) {
         return "domain/main";
     }
 
