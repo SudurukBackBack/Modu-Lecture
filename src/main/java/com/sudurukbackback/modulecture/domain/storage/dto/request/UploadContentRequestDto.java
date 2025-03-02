@@ -1,10 +1,13 @@
 package com.sudurukbackback.modulecture.domain.storage.dto.request;
 
 import lombok.Data;
+import lombok.Getter;
 
-@Data
+import java.util.List;
+
+@Getter
 public class UploadContentRequestDto {
-    private Integer lectureId;
-    private Integer categoryId;
+    private Long lectureId;
+    private List<Long> categoryIds;
     private String videoUrl;
 }

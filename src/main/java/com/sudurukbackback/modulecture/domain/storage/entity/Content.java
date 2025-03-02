@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Data
@@ -14,23 +15,19 @@ import java.time.LocalDateTime;
 public class Content {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @NonNull
     @Column(nullable = false)
-    private Integer lectureId;
+    private Long lectureId;
 
     @NonNull
     @Column(nullable = false)
-    private Integer categoryId;
+    private String imageUrl; // S3 스토리지 안의 이미지 객체 경로 정보
 
     @NonNull
     @Column(nullable = false)
-    private String imageUrl;
-
-    @NonNull
-    @Column(nullable = false)
-    private String videoUrl;
+    private String videoUrl; // S3 스토리지 안의 영상 객체 경로 정보
 
     @NonNull
     @Column(nullable = false)

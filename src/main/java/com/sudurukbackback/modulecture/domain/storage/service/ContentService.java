@@ -57,7 +57,6 @@ public class ContentService {
             // 7. Content 엔티티 생성
             Content content = Content.builder()
                     .lectureId(request.getLectureId())
-                    .categoryId(request.getCategoryId())
                     .videoUrl(videoUrl)
                     .imageUrl(imageUrl)
                     .duration(duration)
