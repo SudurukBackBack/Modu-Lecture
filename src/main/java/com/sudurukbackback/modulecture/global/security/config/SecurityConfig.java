@@ -34,6 +34,12 @@ public class SecurityConfig {
                         .requestMatchers("/platinum/**").hasRole("PLATINUM") // PLATINUM만 접근 가능
                         .anyRequest().permitAll() // 개발 과정 한정 인증 무효화
                 )
+                .logout(logout -> logout
+                        .logoutUrl("/auth/sign-out")
+                        .logoutSuccessUrl("/main")
+                        .invalidateHttpSession(true)
+                        .deleteCookies("jwtToken")
+                )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .httpBasic(AbstractHttpConfigurer::disable);
 
