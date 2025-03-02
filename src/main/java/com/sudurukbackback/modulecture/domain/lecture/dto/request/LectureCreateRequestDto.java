@@ -26,7 +26,7 @@ public class LectureCreateRequestDto {
     private String description;
 
     @NotNull(message = "카테고리는 필수 입력값입니다.")
-    private List<Long> categoryIds; // List<Long> categoryIds 추가
+    private Long categoryId;
 
     @NotNull(message = "가격은 필수 입력값입니다.")
     @Min(value = 0, message = "가격은 0원 이상이어야 합니다.")
