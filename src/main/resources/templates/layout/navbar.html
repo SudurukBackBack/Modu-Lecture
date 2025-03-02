@@ -25,16 +25,35 @@
             </ul>
             <form class="d-flex">
                 <!-- 로그인하지 않은 경우 -->
-                <div th:if="${#authentication == null || !#authentication.authenticated}">
-                    <a href="/web/login" class="btn btn-primary display-">로그인</a>
+                <div th:if="${!isAuthenticated}">
+                    <a href="/web/login" class="btn btn-primary">로그인</a>
                 </div>
 
                 <!-- 로그인한 경우 -->
-                <div th:if="${#authentication != null && #authentication.authenticated}">
-                    <span class="me-2 text-white">[[${#authentication.name}]]님</span>
-                    <a href="/logout" class="btn btn-white">로그아웃</a>
+                <div th:if="${isAuthenticated}">
+                    <span class="me-2 text-black">[[${username}]]님</span>
+
+                    <a href="/auth/sign-out" class="btn btn-primary" id="logout-btn">로그아웃</a>
                 </div>
             </form>
         </div>
     </div>
 </nav>
+
+<script>
+    document.getElementById("logout-btn").addEventListener("click", async function () {
+        try {
+            const response = await fetch("/auth/sign-out",
+                {
+                    method: "POST",
+                    credentials: "include"
+                });
+
+            if (response.ok) {
+                window.location.href = "/main";
+            }
+        } catch (error) {
+            console.error("로그아웃 요청 오류:", error);
+        }
+    });
+</script>
