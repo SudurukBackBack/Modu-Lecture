@@ -27,7 +27,7 @@ public class GlobalControllerAdvice {
 
             // Thymeleaf에서 사용할 로그인 정보 전달
             model.addAttribute("isAuthenticated", true);
-            model.addAttribute("username", userDetails.getUsername());
+            model.addAttribute("username", userDetails.getUsername().substring(0, userDetails.getUsername().indexOf("@")));
         } else {
             // 로그인되지 않은 경우
             model.addAttribute("isAuthenticated", false);

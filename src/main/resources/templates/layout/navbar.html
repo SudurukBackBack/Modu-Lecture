@@ -31,7 +31,7 @@
 
                 <!-- 로그인한 경우 -->
                 <div th:if="${isAuthenticated}">
-                    <span class="me-2 text-white">[[${username}]]님</span>
+                    <span class="me-2 text-black">[[${username}]]님</span>
 
                     <a href="/auth/sign-out" class="btn btn-primary" id="logout-btn">로그아웃</a>
                 </div>
