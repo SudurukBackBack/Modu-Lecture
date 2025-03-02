@@ -58,7 +58,7 @@ public class AuthService implements UserDetailsService {
     }
 
     @Transactional
-    public User authenticate(UserLoginRequestDto request) {
+    public User signIn(UserLoginRequestDto request) {
 
         var user = authComponent.findUserByEmail(request.getEmail());
         authComponent.validatePassword(request.getPassword(), user.getPassword());

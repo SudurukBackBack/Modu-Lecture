@@ -91,34 +91,34 @@
         const requestData = {email, password};
 
         try {
-            console.log("로그인 요청 데이터: ", requestData);
+            console.log("🚀 로그인 요청 데이터:", requestData);
 
-            const response = await axios.post("/auth/sign-in", requestData, {
-                headers: { "Content-Type": "application/json" }
+            // 로그인 API 요청 (쿠키 기반 인증)
+            const response = await fetch("/auth/sign-in", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(requestData),
+                credentials: "include"
             });
 
-            console.log("로그인 응답 데이터:", response.data);
+            // 응답 데이터 처리
+            const result = await response.json();
 
-            // API 응답에서 토큰 추출
-            const token = response.data?.token;
-
-            if (token) {
-                // 토큰을 localStorage에 저장 (Bearer 접두사 없음)
-                localStorage.setItem("jwtToken", token);
-                console.log("JWT 토큰 저장 완료:", token);
-
-                // /main 페이지로 이동
-                // window.location.href = "/main";
+            if (response.ok) {
+                console.log("✅ 로그인 성공:", result.message);
+                window.location.href = "/main";
             } else {
-                throw new Error("로그인 응답에 토큰이 없습니다.");
+                console.error("🚨 로그인 실패:", result);
+                // API 응답에서 `errorMessage` 값을 가져와서 showAlert로 표시
+                const errorMessage = result.errorMessage || "로그인에 실패했습니다.";
+                showAlert(`[${response.status}] ${errorMessage}`, "danger");
             }
 
         } catch (error) {
-            console.error("로그인 요청 오류", error);
+            console.error("🚨 로그인 요청 오류:", error);
 
-            const statusCode = error.response?.status || "500";
-            const errorMessage = error.response?.data?.errorMessage || "로그인에 실패했습니다.";
-            showAlert(`[${statusCode}] ${errorMessage}`, "danger");
+            // 서버 응답이 없는 경우 (네트워크 오류 등)
+            showAlert("서버와의 연결이 원활하지 않습니다.", "danger");
         }
     });
 
