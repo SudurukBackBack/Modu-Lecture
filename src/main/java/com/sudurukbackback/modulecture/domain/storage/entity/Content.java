@@ -21,9 +21,6 @@ public class Content {
     @Column(nullable = false)
     private Long lectureId;
 
-    @ElementCollection
-    private List<Long> categoryIds;
-
     @NonNull
     @Column(nullable = false)
     private String imageUrl; // S3 스토리지 안의 이미지 객체 경로 정보
