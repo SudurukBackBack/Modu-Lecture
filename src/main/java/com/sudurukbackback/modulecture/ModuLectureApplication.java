@@ -27,9 +27,6 @@ public class ModuLectureApplication {
 		System.setProperty("cloud.aws.credentials.access-key", Objects.requireNonNull(dotenv.get("ACCESS_KEY")));
 		System.setProperty("cloud.aws.credentials.secret-key", Objects.requireNonNull(dotenv.get("SECRET_KEY")));
 
-		// CKEditor License Key
-		System.setProperty("ckeditor-key", Objects.requireNonNull(dotenv.get("CKEDITOR_KEY")));
-
 		SpringApplication.run(ModuLectureApplication.class, args);
 
 
