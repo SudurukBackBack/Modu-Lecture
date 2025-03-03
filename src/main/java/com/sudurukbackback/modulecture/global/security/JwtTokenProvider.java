@@ -193,7 +193,6 @@ public class JwtTokenProvider {
             return !claims.getExpiration().before(new Date());
 
         } catch (JwtException | IllegalArgumentException e) {
-            log.error("JWT Token validation failed: {}", token);
             return false;
         }
     }
