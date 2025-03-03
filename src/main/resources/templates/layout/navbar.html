@@ -34,7 +34,7 @@
                 <div th:if="${isAuthenticated}">
                     <span class="me-2 text-black">[[${username}]]님</span>
 
-                    <a href="/auth/sign-out" class="btn btn-primary" id="logout-btn">로그아웃</a>
+                    <a href="/web/logout" class="btn btn-primary" id="logout-btn">로그아웃</a>
                 </div>
             </form>
         </div>
@@ -77,22 +77,5 @@
         document.getElementById("goLoginBtn").addEventListener("click", function () {
             window.location.href = "/web/login";
         });
-    });
-
-    // 로그아웃 버튼
-    document.getElementById("logout-btn").addEventListener("click", async function () {
-        try {
-            const response = await fetch("/auth/sign-out",
-                {
-                    method: "POST",
-                    credentials: "include"
-                });
-
-            if (response.ok) {
-                window.location.href = "/main";
-            }
-        } catch (error) {
-            console.error("로그아웃 요청 오류:", error);
-        }
     });
 </script>
