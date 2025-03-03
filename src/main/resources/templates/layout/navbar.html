@@ -13,6 +13,7 @@
             <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
                 <li class="nav-item"><a class="nav-link" aria-current="page" href="/main">홈</a></li>
                 <li class="nav-item"><a class="nav-link" href="/community">커뮤니티</a></li>
+                <!--마이페이지 드롭 다운-->
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button"
                        data-bs-toggle="dropdown" aria-expanded="false">마이페이지</a>
@@ -40,7 +41,45 @@
     </div>
 </nav>
 
+<!-- 로그인 필요 모달 -->
+<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="loginModalLabel">알림</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                로그인이 필요한 서비스입니다.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+                <button type="button" class="btn btn-primary" id="goLogin-btn">로그인</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
+    // 로그인 없이 마이페이지 접근 시
+    document.addEventListener("navbarDropdown", function () {
+        document.querySelectorAll(".require-login").forEach(item => {
+            item.addEventListener("click", function (event) {
+                if (!isAuthenticated) {
+                    event.preventDefault(); // 기본 동작 차단 (페이지 이동 방지)
+                    const loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
+                    loginModal.show();
+                }
+            });
+        });
+
+        // 로그인 페이지로 이동
+        document.getElementById("goLoginBtn").addEventListener("click", function () {
+            window.location.href = "/web/login";
+        });
+    });
+
+    // 로그아웃 버튼
     document.getElementById("logout-btn").addEventListener("click", async function () {
         try {
             const response = await fetch("/auth/sign-out",
