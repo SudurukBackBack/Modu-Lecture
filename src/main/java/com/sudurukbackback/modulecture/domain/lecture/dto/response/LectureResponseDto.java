@@ -10,24 +10,22 @@ import java.util.List;
 public class LectureResponseDto {
 
     private final Long lectureId;
-    private final Long userId;
     private final String title;
     private final String description;
-    private final List<Long> categoryIds;
+    private final Long categoryId;
     private final int price;
-    private final String videoUrl; //  비디오 URL 추가
-    private final String imageUrl; //  썸네일 이미지 URL 추가
+//    private final String videoUrl; //  비디오 URL 추가
+//    private final String imageUrl; //  썸네일 이미지 URL 추가
     private final LocalDateTime createdAt;
 
-    public LectureResponseDto(Lecture lecture, String videoUrl, String imageUrl) {
-        this.lectureId = lecture.getLectureId();
-        this.userId = lecture.getUserId();
+    public LectureResponseDto(Lecture lecture) {
+        this.lectureId = lecture.getId();
         this.title = lecture.getTitle();
         this.description = lecture.getDescription();
-        this.categoryIds = lecture.getCategoryIds();
+        this.categoryId = lecture.getCategoryId();
         this.price = lecture.getPrice();
-        this.videoUrl = videoUrl;
-        this.imageUrl = imageUrl;
+//        this.videoUrl = videoUrl;
+//        this.imageUrl = imageUrl;
         this.createdAt = lecture.getCreatedAt();
     }
 }

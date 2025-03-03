@@ -22,17 +22,17 @@ public class ContentController {
      * @param request   콘텐츠 메타데이터 요청 DTO
      * @return 성공 시 HTTP 200 응답
      */
-    @PostMapping("/upload")
-    public ResponseEntity<Void> uploadContent(
-            @RequestParam("videoFile") MultipartFile videoFile,
-            @ModelAttribute UploadContentRequestDto request) {
-        try {
-            contentService.uploadContent(videoFile, request);
-            return ResponseEntity.ok().build();
-        } catch (Exception e) {
-            throw new ContentUploadException();
-        }
-    }
+//    @PostMapping("/upload")
+//    public ResponseEntity<Void> uploadContent(
+//            @RequestParam("videoFile") MultipartFile videoFile,
+//            @ModelAttribute UploadContentRequestDto request) {
+//        try {
+//            contentService.uploadContent(request);
+//            return ResponseEntity.ok().build();
+//        } catch (Exception e) {
+//            throw new ContentUploadException();
+//        }
+//    }
 
     // 멀티파트 업로드 구현 (구현 중)
     // /**
