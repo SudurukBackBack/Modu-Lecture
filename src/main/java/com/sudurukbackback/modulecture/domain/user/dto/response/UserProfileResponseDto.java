@@ -1,17 +1,13 @@
 package com.sudurukbackback.modulecture.domain.user.dto.response;
 
-import com.sudurukbackback.modulecture.domain.user.entity.User;
-
 public record UserProfileResponseDto(
         String email,
-        String nickname,
-        String password
+        String nickname
 ) {
-    public static UserProfileResponseDto of(User user) {
+    public static UserProfileResponseDto of(String email, String nickname) {
         return new UserProfileResponseDto(
-                user.getEmail(),
-                user.getNickname(),
-                "********"
+                email,
+                nickname
         );
     }
 }

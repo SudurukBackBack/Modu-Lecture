@@ -3,34 +3,42 @@
 
 <!-- head 부분 포함 -->
 <head th:fragment="head" xmlns:th="http://www.thymeleaf.org">
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <meta name="description" content="" />
-    <meta name="author" content="" />
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    <meta name="description" content=""/>
+    <meta name="author" content=""/>
     <title>모두의강의 - 마이페이지 | 계정</title>
 
     <!-- CSS-CDN -->
-    <div th:replace="layout/css-cdn :: css-cdn"></div>
+    <div th:replace="~{layout/css-cdn :: css-cdn}"></div>
 </head>
 
 <body class="d-flex flex-column min-vh-100">
 <!-- navbar 부분 포함 -->
-<div th:insert="layout/navbar :: navbar"></div>
+<div th:insert="~{layout/navbar :: navbar}"></div>
 
+<!-- Section -->
 <!-- Section -->
 <section class="py-5 flex-fill">
     <div class="container px-4 px-lg-5">
         <div class="row">
 
             <!-- mypage vertical navigation bar -->
-            <div th:replace="layout/mypage-navbar :: mypage-navbar"></div>
+            <div th:replace="~{layout/mypage-navbar :: mypage-navbar}"></div>
 
             <!-- 오른쪽 내용 -->
             <div class="col-md-9">
                 <div class="d-flex justify-content-between align-items-center mt-3 mb-4">
-                    <h2>계정</h2>
-                    <!-- 강의 등록 버튼 -->
-                    <button type="submit" class="btn btn-dark opacity-50">탈퇴</button>
+                    <h3>보안</h3>
+                    <!-- 비밀번호 변경 버튼 -->
+                    <button id="changePassword-btn" class="btn btn-dark opacity-50">비밀번호 변경</button>
+                </div>
+                <hr>
+
+                <div class="d-flex justify-content-between align-items-center mt-3 mb-4">
+                    <h3>계정</h3>
+                    <!-- 계정 탈퇴 버튼 -->
+                    <button id="deleteAccount-btn" class="btn btn-dark opacity-50">계정 탈퇴</button>
                 </div>
                 <hr>
             </div>
@@ -38,10 +46,157 @@
     </div>
 </section>
 
+<!-- 비밀번호 변경 모달 -->
+<div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="changePasswordLabel">비밀번호 변경</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="current-password" class="form-label">현재 비밀번호</label>
+                    <input type="password" class="form-control" id="current-password">
+                </div>
+                <div class="mb-3">
+                    <label for="new-password" class="form-label">새 비밀번호</label>
+                    <input type="password" class="form-control" id="new-password">
+                </div>
+                <div class="mb-3">
+                    <label for="confirm-password" class="form-label">새 비밀번호 확인</label>
+                    <input type="password" class="form-control" id="confirm-password">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                <button type="button" class="btn btn-primary" id="confirmChangePassword">변경</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 계정 탈퇴 모달 -->
+<div class="modal fade" id="deleteAccountModal" tabindex="-1" aria-labelledby="deleteAccountLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteAccountLabel">계정 탈퇴</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>계정을 탈퇴하려면 현재 비밀번호를 입력하세요.</p>
+                <div class="mb-3">
+                    <label for="delete-password" class="form-label">현재 비밀번호</label>
+                    <input type="password" class="form-control" id="delete-password">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteAccount">탈퇴</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // 비밀번호 변경 모달 열기
+        document.getElementById("changePassword-btn").addEventListener("click", function () {
+            let modal = new bootstrap.Modal(document.getElementById("changePasswordModal"));
+            modal.show();
+        });
+
+        // 계정 탈퇴 모달 열기
+        document.getElementById("deleteAccount-btn").addEventListener("click", function () {
+            let modal = new bootstrap.Modal(document.getElementById("deleteAccountModal"));
+            modal.show();
+        });
+
+        // 비밀번호 변경 요청
+        document.getElementById("confirmChangePassword").addEventListener("click", async function () {
+            const currentPassword = document.getElementById("current-password").value;
+            const newPassword = document.getElementById("new-password").value;
+            const confirmPassword = document.getElementById("confirm-password").value;
+
+            if (!currentPassword || !newPassword || !confirmPassword) {
+                alert("모든 필드를 입력해주세요.");
+                return;
+            }
+            if (newPassword !== confirmPassword) {
+                alert("새 비밀번호가 일치하지 않습니다.");
+                return;
+            }
+
+            try {
+                const response = await fetch("/users/password",
+                    {
+                        method: "PATCH",
+                        headers: {"Content-Type": "application/json"},
+                        body: JSON.stringify({
+                            currentPassword: currentPassword,
+                            newPassword: newPassword
+                        }),
+                        credentials: "include"
+                    });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    alert("비밀번호가 성공적으로 변경되었습니다. 다시 로그인 해주세요.");
+                    window.location.href = "/web/logout";
+                } else {
+                    alert(`[${result.statusCode}] ${result.errorMessage}`);
+                }
+            } catch (error) {
+                console.error("비밀번호 변경 오류:", error);
+                alert("서버 오류 발생");
+            }
+        });
+
+        // 계정 탈퇴 요청
+        document.getElementById("confirmDeleteAccount").addEventListener("click", async function () {
+            const currentPassword = document.getElementById("delete-password").value;
+
+            if (!currentPassword) {
+                alert("비밀번호를 입력해주세요.");
+                return;
+            }
+
+            if (!confirm("정말로 계정을 탈퇴하시겠습니까?")) {
+                return;
+            }
+
+            try {
+                const response = await fetch("/users/deactivate",
+                    {
+                        method: "PATCH",
+                        headers: {"Content-Type": "application/json"},
+                        body: JSON.stringify({
+                            currentPassword: currentPassword
+                        }),
+                        credentials: "include"
+                    });
+
+                const result = await response.json();
+                if (response.ok) {
+                    alert("계정이 탈퇴되었습니다.");
+                    window.location.href = "/web/logout";
+                } else {
+                    alert(`[${result.statusCode}] ${result.errorMessage}`);
+                }
+            } catch (error) {
+                console.error("계정 탈퇴 오류:", error);
+                alert("서버 오류 발생");
+            }
+        });
+    });
+</script>
+
 <!-- Footer-->
-<div th:insert="layout/footer :: footer"></div>
+<div th:insert="~{layout/footer :: footer}"></div>
 
 <!-- JS CDN -->
-<div th:replace="layout/js-cdn :: js-cdn"></div>
+<div th:replace="~{layout/js-cdn :: js-cdn}"></div>
 </body>
 </html>

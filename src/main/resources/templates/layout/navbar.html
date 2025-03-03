@@ -13,6 +13,7 @@
             <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
                 <li class="nav-item"><a class="nav-link" aria-current="page" href="/main">홈</a></li>
                 <li class="nav-item"><a class="nav-link" href="/community">커뮤니티</a></li>
+                <!--마이페이지 드롭 다운-->
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button"
                        data-bs-toggle="dropdown" aria-expanded="false">마이페이지</a>
@@ -33,27 +34,28 @@
                 <div th:if="${isAuthenticated}">
                     <span class="me-2 text-black">[[${username}]]님</span>
 
-                    <a href="/auth/sign-out" class="btn btn-primary" id="logout-btn">로그아웃</a>
+                    <a href="/web/logout" class="btn btn-primary" id="logout-btn">로그아웃</a>
                 </div>
             </form>
         </div>
     </div>
 </nav>
 
-<script>
-    document.getElementById("logout-btn").addEventListener("click", async function () {
-        try {
-            const response = await fetch("/auth/sign-out",
-                {
-                    method: "POST",
-                    credentials: "include"
-                });
-
-            if (response.ok) {
-                window.location.href = "/main";
-            }
-        } catch (error) {
-            console.error("로그아웃 요청 오류:", error);
-        }
-    });
-</script>
+<!-- 로그인 필요 모달 -->
+<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="loginModalLabel">알림</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                로그인이 필요한 서비스입니다.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+                <button type="button" class="btn btn-primary" id="goLogin-btn">로그인</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -16,8 +16,7 @@ public class ExceptionHandler {
 
     // BasicException 처리
     @org.springframework.web.bind.annotation.ExceptionHandler(BasicException.class)
-    protected ResponseEntity<?> handleBasicException(BasicException e) {
-
+    protected ResponseEntity<ErrorResponse> handleBasicException(BasicException e) {
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .statusCode(e.statusCode())
                 .errorMessage(e.errorMessage())
@@ -28,16 +27,26 @@ public class ExceptionHandler {
 
     // @Valid 검증 예외 처리
     @org.springframework.web.bind.annotation.ExceptionHandler(MethodArgumentNotValidException.class)
-    protected ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
+    protected ResponseEntity<ErrorResponse> handleValidationExceptions(MethodArgumentNotValidException ex) {
         log.warn("Validation error: {}", ex.getBindingResult().getFieldErrors());
 
-        Map<String, String> errors = new HashMap<>();
+        // 필드별 에러 메시지를 맵으로 변환
+        Map<String, String> validationErrors = new HashMap<>();
         ex.getBindingResult().getFieldErrors().forEach(error ->
-                errors.put(error.getField(), error.getDefaultMessage())
+                validationErrors.put(error.getField(), error.getDefaultMessage())
         );
 
-        return ResponseEntity.badRequest().body(errors);
+        // ErrorResponse 객체 생성
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .errorMessage("유효성 검사 실패")
+                .validationErrors(validationErrors)
+                .build();
+
+        return ResponseEntity.badRequest().body(errorResponse);
     }
+
+
 
     // 그 외 예외 처리 (Custom Exception이 구현되지 않은 예외 처리)
     @org.springframework.web.bind.annotation.ExceptionHandler(Exception.class)

@@ -19,4 +19,8 @@ public class AuthWebController {
         return "/domain/auth/register";
     }
 
+    @GetMapping("/logout")
+    public String logout(Model model) {
+        return "/domain/auth/logout";
+    }
 }

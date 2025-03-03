@@ -31,34 +31,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             HttpServletResponse response,
             FilterChain filterChain) throws ServletException, IOException {
 
-        log.info("Starting JWT authentication filter: [{}] {}", request.getMethod(), request.getRequestURI());
-
         // Extract token
         String token = resolveToken(request);
 
-        if (token != null) {
-            log.debug("Extracted JWT token");
+        // Validate token
+        if (jwtTokenProvider.validateToken(token)) {
 
-            // Validate token
-            if (jwtTokenProvider.validateToken(token)) {
-                log.info("JWT Token is valid");
-
-                // Retrieve Authentication object
-                Authentication auth = jwtTokenProvider.getAuthentication(token);
-                SecurityContextHolder.getContext().setAuthentication(auth);
-                log.info("Authentication set for user: {}", auth.getName());
-
-            } else {
-                log.warn("Invalid or expired JWT token");
-            }
-        } else {
-            log.warn("No JWT token found in the request");
+            // Retrieve Authentication object
+            Authentication auth = jwtTokenProvider.getAuthentication(token);
+            SecurityContextHolder.getContext().setAuthentication(auth);
         }
 
         // Continue with the filter chain
         filterChain.doFilter(request, response);
-
-        log.debug("JWT authentication filter processing completed");
     }
 
     /**
@@ -68,7 +53,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         // 1. Authorization 헤더에서 토큰 가져오기
         String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
         if (bearerToken != null && bearerToken.startsWith(BEARER_PREFIX)) {
-            log.debug("Extracted Bearer Token from Authorization header");
             return bearerToken.substring(BEARER_PREFIX.length());
         }
 
@@ -76,13 +60,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (request.getCookies() != null) {
             for (Cookie cookie : request.getCookies()) {
                 if (COOKIE_NAME.equals(cookie.getName())) {
-                    log.debug("Extracted JWT Token from Cookie");
                     return cookie.getValue();
                 }
             }
         }
 
-        log.warn("No JWT token found in Authorization header or Cookie");
         return null;
     }
 }
