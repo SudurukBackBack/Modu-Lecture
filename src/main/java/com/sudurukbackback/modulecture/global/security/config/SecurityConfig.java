@@ -35,6 +35,11 @@ public class SecurityConfig {
                         .requestMatchers("/platinum/**").hasRole("PLATINUM") // PLATINUM만 접근 가능
                         .anyRequest().authenticated()
                 )
+                .formLogin(login -> login
+                        .loginPage("/web/login?error=unauthorized")
+                        .defaultSuccessUrl("/main")
+                        .permitAll()
+                )
                 .logout(logout -> logout
                         .logoutUrl("/web/logout")
                         .logoutSuccessUrl("/main")

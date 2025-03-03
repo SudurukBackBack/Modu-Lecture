@@ -78,6 +78,12 @@
 
 <!--사용자 정의 JS-->
 <script>
+    // URL에서 error 파라미터 확인
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('error') && urlParams.get('error') === 'unauthorized') {
+        alert("로그인이 필요한 서비스입니다.");
+    }
+
     document.getElementById("login-btn").addEventListener("click", async function () {
         // 값 가져오기
         const email = document.getElementById("input-email").value.trim();
