@@ -3,20 +3,20 @@
 
 <!-- head 부분 포함 -->
 <head th:fragment="head" xmlns:th="http://www.thymeleaf.org">
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <meta name="description" content="" />
-    <meta name="author" content="" />
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    <meta name="description" content=""/>
+    <meta name="author" content=""/>
     <title>모두의강의 - 마이페이지 | 나의정보</title>
 
     <!-- CSS-CDN -->
-    <div th:replace="layout/css-cdn :: css-cdn"></div>
+    <div th:replace="~{layout/css-cdn :: css-cdn}"></div>
 </head>
 
 <body class="d-flex flex-column min-vh-100">
 
 <!-- navbar 부분 포함 -->
-<div th:insert="layout/navbar :: navbar"></div>
+<div th:insert="~{layout/navbar :: navbar}"></div>
 
 <!-- Section -->
 <main class="flex-fill">
@@ -25,7 +25,7 @@
             <div class="row">
 
                 <!-- mypage vertical navigation bar -->
-                <div th:replace="layout/mypage-navbar :: mypage-navbar"></div>
+                <div th:replace="~{layout/mypage-navbar :: mypage-navbar}"></div>
 
                 <!-- 오른쪽 내용 -->
                 <div class="col-md-9">
@@ -34,38 +34,40 @@
                     <!-- 카드 컴포넌트 시작 -->
                     <div class="card">
                         <div class="card-body">
-                            <form th:action="@{/lectures/register}" method="post" class="ms-3">
-                                <!-- 이름 입력 -->
+                            <form id="profile-form" class="ms-3">
+                                <!-- 이름 입력 (닉네임) -->
                                 <div class="mb-3 row">
-                                    <label for="nameInput" class="col-sm-3 col-form-label">이름</label>
-                                    <div class="col-sm-9">
-                                        <input type="text" class="form-control form-control-sm" id="nameInput" name="name" value="김모두">
+                                    <label for="name-text" class="col-sm-3 col-form-label">닉네임</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control form-control-sm" id="name-text"
+                                               name="name" value="username" readonly>
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <button type="button" class="btn btn-outline-primary btn-sm" id="edit-nickname-btn">수정</button>
+                                        <button type="button" class="btn btn-success btn-sm d-none" id="save-nickname-btn">완료</button>
                                     </div>
                                 </div>
 
                                 <!-- 이메일 입력 -->
                                 <div class="mb-3 row">
-                                    <label for="emailInput" class="col-sm-3 col-form-label">이메일</label>
+                                    <label for="email-text" class="col-sm-3 col-form-label">이메일</label>
                                     <div class="col-sm-9">
-                                        <input type="email" class="form-control form-control-sm" id="emailInput" name="email" value="modu@gmail.com">
+                                        <input type="email" class="form-control form-control-sm" id="email-text"
+                                               name="email" value="example@example.com" readonly>
                                     </div>
                                 </div>
 
                                 <!-- 비밀번호 입력 -->
                                 <div class="mb-3 row">
-                                    <label for="passwordInput" class="col-sm-3 col-form-label">비밀번호</label>
+                                    <label for="password-text" class="col-sm-3 col-form-label">비밀번호</label>
                                     <div class="col-sm-9">
-                                        <input type="password" class="form-control" id="passwordInput" name="password" value="modu1234">
+                                        <input type="password" class="form-control" id="password-text" name="password"
+                                               value="password" readonly>
                                     </div>
                                 </div>
 
                                 <!-- 경계선 -->
                                 <hr class="mt-4">
-
-                                <!-- 등록 버튼 -->
-                                <div class="text-end">
-                                    <button type="submit" class="btn btn-primary">수정</button>
-                                </div>
                             </form>
                         </div>
                     </div>
@@ -77,9 +79,80 @@
 </main>
 
 <!-- Footer -->
-<div th:insert="layout/footer :: footer"></div>
+<div th:insert="~{layout/footer :: footer}"></div>
 
 <!-- JS CDN -->
-<div th:replace="layout/js-cdn :: js-cdn"></div>
+<div th:replace="~{layout/js-cdn :: js-cdn}"></div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', async function () {
+        try {
+            const response = await fetch("/users/me", {
+                method: "GET",
+                credentials: "include"
+            });
+
+            if (!response.ok) {
+                throw new Error('API 응답 실패');
+            }
+
+            const userData = await response.json();
+
+            document.getElementById("name-text").value = userData.nickname;
+            document.getElementById("email-text").value = userData.email;
+            document.getElementById("password-text").value = "********"; // 비밀번호 보안 처리
+
+        } catch (error) {
+            console.error("사용자 정보 불러오기 오류: ", error);
+            alert("사용자 정보를 불러오는 데 실패했습니다.");
+        }
+    });
+
+    document.getElementById("edit-nickname-btn").addEventListener("click", function () {
+        const nicknameInput = document.getElementById("name-text");
+        const editButton = document.getElementById("edit-nickname-btn");
+        const saveButton = document.getElementById("save-nickname-btn");
+
+        nicknameInput.removeAttribute("readonly");
+        nicknameInput.focus();
+
+        editButton.classList.add("d-none");
+        saveButton.classList.remove("d-none");
+    });
+
+    document.getElementById("save-nickname-btn").addEventListener("click", async function () {
+        const nicknameInput = document.getElementById("name-text");
+        const newNickname = nicknameInput.value.trim();
+
+        if (!newNickname) {
+            alert("닉네임을 입력하세요.");
+            return;
+        }
+
+        try {
+            const response = await fetch("/users/me", {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ nickname: newNickname }),
+                credentials: "include"
+            });
+
+            const responseData = await response.json(); // API 응답 파싱
+
+            if (response.ok) {
+                alert(responseData.message || "닉네임이 변경되었습니다.");
+                location.reload();
+            } else {
+                const errorCode = responseData.statusCode || "UNKNOWN_ERROR";
+                const errorMessage = responseData.errorMessage || "알 수 없는 오류가 발생했습니다.";
+                alert(`[${errorCode}] ${errorMessage}`);
+            }
+        } catch (error) {
+            console.error("닉네임 변경 오류:", error);
+            alert("서버 오류 발생");
+        }
+
+    });
+</script>
 </body>
 </html>
