@@ -27,13 +27,13 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/sign-up", "/auth/sign-in").permitAll() // 인증 없이 접근 가능 API
-                        .requestMatchers("/main", "/css/**", "/js/**", "/images/**", "/images/logo.svg", "/fragments/**", "/mypage/**", "/community/**").permitAll() // 인증 없이 접근 가능
-                        .requestMatchers("/users/**").authenticated() // 사용자 정보 관련 작업
+                        .requestMatchers("/auth/sign-up", "/auth/sign-in", "/web/**").permitAll() // 회원가입, 로그인
+                        .requestMatchers("/main", "/css/**", "/js/**", "/images/**", "/images/logo.svg", "/fragments/**", "/community/**").permitAll() // 인증 없이 접근 가능
+                        .requestMatchers("/users/**", "/mypage/**").authenticated() // 사용자 정보 관련 작업
                         .requestMatchers(HttpMethod.GET, "/posts/**").permitAll() // 커뮤니티 조회 기능만
                         .requestMatchers("/gold/**").hasRole("GOLD") // GOLD 이상만 접근 가능
                         .requestMatchers("/platinum/**").hasRole("PLATINUM") // PLATINUM만 접근 가능
-                        .anyRequest().permitAll() // 개발 과정 한정 인증 무효화
+                        .anyRequest().authenticated()
                 )
                 .logout(logout -> logout
                         .logoutUrl("/auth/sign-out")
