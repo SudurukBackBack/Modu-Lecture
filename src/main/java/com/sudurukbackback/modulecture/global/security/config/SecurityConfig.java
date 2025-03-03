@@ -36,7 +36,7 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
                 .logout(logout -> logout
-                        .logoutUrl("/auth/sign-out")
+                        .logoutUrl("/web/logout")
                         .logoutSuccessUrl("/main")
                         .invalidateHttpSession(true)
                         .deleteCookies("jwtToken")

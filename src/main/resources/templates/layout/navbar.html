@@ -62,7 +62,7 @@
 
 <script>
     // 로그인 없이 마이페이지 접근 시
-    document.addEventListener("navbarDropdown", function () {
+    document.addEventListener("DOMContentLoaded", function () {
         document.querySelectorAll(".require-login").forEach(item => {
             item.addEventListener("click", function (event) {
                 if (!isAuthenticated) {
