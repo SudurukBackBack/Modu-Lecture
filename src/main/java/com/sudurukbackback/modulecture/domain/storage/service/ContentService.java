@@ -27,11 +27,11 @@ public class ContentService {
     /**
      * 콘텐츠를 업로드하고 처리합니다.
      *
-     * @param videoFile 업로드할 비디오 파일
      * @param request   콘텐츠 생성 요청 DTO
      */
     @Transactional
-    public void uploadContent(MultipartFile videoFile, UploadContentRequestDto request) {
+    public void uploadContent(Long lectureId, MultipartFile videoFile) {
+
         try {
             // 1. 비디오 파일을 로컬에 저장
             String localVideoPath = fileService.saveVideoFileLocally(videoFile);
@@ -56,7 +56,7 @@ public class ContentService {
 
             // 7. Content 엔티티 생성
             Content content = Content.builder()
-                    .lectureId(request.getLectureId())
+                    .lectureId(lectureId)
                     .videoUrl(videoUrl)
                     .imageUrl(imageUrl)
                     .duration(duration)

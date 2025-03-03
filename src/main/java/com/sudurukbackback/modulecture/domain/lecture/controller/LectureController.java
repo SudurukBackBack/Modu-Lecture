@@ -2,11 +2,14 @@ package com.sudurukbackback.modulecture.domain.lecture.controller;
 
 import com.sudurukbackback.modulecture.domain.lecture.dto.request.LectureCreateRequestDto;
 import com.sudurukbackback.modulecture.domain.lecture.dto.response.LectureResponseDto;
-import com.sudurukbackback.modulecture.domain.lecture.dto.response.LectureUpdateRequestDto;
+import com.sudurukbackback.modulecture.domain.lecture.dto.request.LectureUpdateRequestDto;
 import com.sudurukbackback.modulecture.domain.lecture.service.LectureService;
+import com.sudurukbackback.modulecture.domain.storage.service.ContentService;
+import com.sudurukbackback.modulecture.domain.user.entity.User;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,25 +20,60 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class LectureController {
     private final LectureService lectureService;
+    private final ContentService contentService;
 
-    // 강의 생성 (파일 포함)
+    /**
+     * 새로운 강의를 생성합니다. (파일 업로드 포함)
+     *
+     * @param request 강의 생성 요청 데이터를 담은 DTO 객체
+     * @param file 업로드할 파일 (선택 사항)
+     * @param auth 현재 인증된 사용자 정보를 담은 Authentication 객체
+     * @return 생성된 강의 정보를 담은 LectureResponseDto를 포함한 ResponseEntity
+     * @throws IOException 파일 처리 중 발생할 수 있는 예외
+     */
     @PostMapping
     public ResponseEntity<LectureResponseDto> createLecture(
-            @RequestPart("requestDto") @Valid LectureCreateRequestDto requestDto,
-            @RequestPart(value = "file", required = false) MultipartFile file) throws IOException {
+            @RequestPart("requestDto") @Valid LectureCreateRequestDto request,
+            @RequestPart(value = "file", required = false) MultipartFile file,
+            Authentication auth) throws IOException {
 
-        LectureResponseDto responseDto = lectureService.createLecture(requestDto, file);
-        return ResponseEntity.ok(responseDto);
+        // 현재 인증된 사용자의 id 가져오기
+        User user = (User) auth.getPrincipal();
+        Long userId = user.getId();
+
+        LectureResponseDto response = lectureService.createLecture(request, userId, file);
+        Long lectureId = response.getLectureId();
+
+        // contentService: uploadContent - S3에 파일 업로드 과정 진행
+        contentService.uploadContent(lectureId, file);
+
+        return ResponseEntity.ok(response);
     }
 
-    // 강의 상세 조회
+    /**
+     * 특정 강의의 상세 정보를 조회합니다.
+     *
+     * @param lecture_id 조회할 강의의 ID
+     * @return 조회된 강의 정보를 담은 LectureResponseDto를 포함한 ResponseEntity
+     */
     @GetMapping("/{lecture_id}")
     public ResponseEntity<LectureResponseDto> getLecture(@PathVariable Long lecture_id) {
         LectureResponseDto lecture = lectureService.getLecture(lecture_id);
+
+        // contentService: getContent - S3에서 video, image 조회 (추후 구현)
+
         return ResponseEntity.ok(lecture);
     }
 
-    // 강의 수정 (PATCH)
+    /**
+     * 특정 강의의 정보를 수정합니다.
+     *
+     * @param lecture_id 수정할 강의의 ID
+     * @param requestDto 강의 수정 요청 데이터를 담은 DTO 객체
+     * @param file 업로드할 파일 (선택 사항)
+     * @return 수정된 강의 정보를 담은 LectureResponseDto를 포함한 ResponseEntity
+     * @throws IOException 파일 처리 중 발생할 수 있는 예외
+     */
     @PatchMapping("/{lecture_id}")
     public ResponseEntity<LectureResponseDto> updateLecture(
             @PathVariable Long lecture_id,
@@ -46,10 +84,18 @@ public class LectureController {
         return ResponseEntity.ok(updatedLecture);
     }
 
-    // 강의 삭제 (파일 포함)
+    /**
+     * 특정 강의를 삭제합니다. (파일 삭제 포함)
+     *
+     * @param lecture_id 삭제할 강의의 ID
+     * @return 내용이 없는 응답(ResponseEntity<Void>)으로, HTTP 상태 코드는 204 No Content입니다.
+     */
     @DeleteMapping("/{lecture_id}")
     public ResponseEntity<Void> deleteLecture(@PathVariable Long lecture_id) {
         lectureService.deleteLecture(lecture_id);
+
+        // contentService: deleteContent - S3에서 video, image 삭제 (추후 구현)
+
         return ResponseEntity.noContent().build();
     }
 }

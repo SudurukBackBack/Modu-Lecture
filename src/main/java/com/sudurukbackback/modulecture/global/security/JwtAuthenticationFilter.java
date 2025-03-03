@@ -2,6 +2,7 @@ package com.sudurukbackback.modulecture.global.security;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private static final String AUTHORIZATION_HEADER = "Authorization";
     private static final String BEARER_PREFIX = "Bearer ";
+    private static final String COOKIE_NAME = "jwtToken";
 
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -59,17 +61,28 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         log.debug("JWT authentication filter processing completed");
     }
 
+    /**
+     * JWT 토큰을 Authorization 헤더 또는 Cookie에서 가져오는 메서드
+     */
     private String resolveToken(HttpServletRequest request) {
+        // 1. Authorization 헤더에서 토큰 가져오기
         String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
-
         if (bearerToken != null && bearerToken.startsWith(BEARER_PREFIX)) {
-            String token = bearerToken.substring(BEARER_PREFIX.length());
-            log.debug("Extracted Bearer Token");
-
-            return token;
+            log.debug("Extracted Bearer Token from Authorization header");
+            return bearerToken.substring(BEARER_PREFIX.length());
         }
 
-        log.warn("No Bearer Token found in the Authorization header");
+        // 2. Cookie에서 토큰 가져오기
+        if (request.getCookies() != null) {
+            for (Cookie cookie : request.getCookies()) {
+                if (COOKIE_NAME.equals(cookie.getName())) {
+                    log.debug("Extracted JWT Token from Cookie");
+                    return cookie.getValue();
+                }
+            }
+        }
+
+        log.warn("No JWT token found in Authorization header or Cookie");
         return null;
     }
 }

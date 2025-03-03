@@ -1,4 +1,4 @@
-package com.sudurukbackback.modulecture.domain.lecture.dto.response;
+package com.sudurukbackback.modulecture.domain.lecture.dto.request;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -22,7 +22,7 @@ public class LectureUpdateRequestDto {
     @Size(max = 1000, message = "강의 설명은 최대 1000자까지 가능합니다.")
     private String description;
 
-    private List<Long> categoryIds; // List<Long> categoryIds 추가
+    private Long categoryId; // List<Long> categoryIds 추가
 
     @Min(value = 0, message = "가격은 0원 이상이어야 합니다.")
     @Max(value = 1000000, message = "가격은 최대 1,000,000원까지 설정할 수 있습니다.")
