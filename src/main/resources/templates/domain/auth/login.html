@@ -94,12 +94,13 @@
             console.log("로그인 요청 데이터:", requestData);
 
             // 로그인 API 요청 (쿠키 기반 인증)
-            const response = await fetch("/auth/sign-in", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(requestData),
-                credentials: "include"
-            });
+            const response = await fetch("/auth/sign-in",
+                {
+                    method: "POST",
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify(requestData),
+                    credentials: "include"
+                });
 
             // 응답 데이터 처리
             const result = await response.json();

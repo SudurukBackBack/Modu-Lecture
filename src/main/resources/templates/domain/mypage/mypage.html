@@ -43,8 +43,12 @@
                                                name="name" value="username" readonly>
                                     </div>
                                     <div class="col-sm-2">
-                                        <button type="button" class="btn btn-outline-primary btn-sm" id="edit-nickname-btn">수정</button>
-                                        <button type="button" class="btn btn-success btn-sm d-none" id="save-nickname-btn">완료</button>
+                                        <button type="button" class="btn btn-outline-primary btn-sm"
+                                                id="edit-nickname-btn">닉네임 변경
+                                        </button>
+                                        <button type="button" class="btn btn-success btn-sm d-none"
+                                                id="save-nickname-btn">변경 완료
+                                        </button>
                                     </div>
                                 </div>
 
@@ -52,22 +56,10 @@
                                 <div class="mb-3 row">
                                     <label for="email-text" class="col-sm-3 col-form-label">이메일</label>
                                     <div class="col-sm-9">
-                                        <input type="email" class="form-control form-control-sm" id="email-text"
-                                               name="email" value="example@example.com" readonly>
+                                        <span class="form-control-plaintext fw-bold" id="email-text">example@example.com</span>
                                     </div>
                                 </div>
 
-                                <!-- 비밀번호 입력 -->
-                                <div class="mb-3 row">
-                                    <label for="password-text" class="col-sm-3 col-form-label">비밀번호</label>
-                                    <div class="col-sm-9">
-                                        <input type="password" class="form-control" id="password-text" name="password"
-                                               value="password" readonly>
-                                    </div>
-                                </div>
-
-                                <!-- 경계선 -->
-                                <hr class="mt-4">
                             </form>
                         </div>
                     </div>
@@ -87,10 +79,11 @@
 <script>
     document.addEventListener('DOMContentLoaded', async function () {
         try {
-            const response = await fetch("/users/me", {
-                method: "GET",
-                credentials: "include"
-            });
+            const response = await fetch("/users/me",
+                {
+                    method: "GET",
+                    credentials: "include"
+                });
 
             if (!response.ok) {
                 throw new Error('API 응답 실패');
@@ -99,8 +92,7 @@
             const userData = await response.json();
 
             document.getElementById("name-text").value = userData.nickname;
-            document.getElementById("email-text").value = userData.email;
-            document.getElementById("password-text").value = "********"; // 비밀번호 보안 처리
+            document.getElementById("email-text").textContent = userData.email;
 
         } catch (error) {
             console.error("사용자 정보 불러오기 오류: ", error);
@@ -130,12 +122,13 @@
         }
 
         try {
-            const response = await fetch("/users/me", {
-                method: "PATCH",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ nickname: newNickname }),
-                credentials: "include"
-            });
+            const response = await fetch("/users/me",
+                {
+                    method: "PATCH",
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify({nickname: newNickname}),
+                    credentials: "include"
+                });
 
             const responseData = await response.json(); // API 응답 파싱
 
@@ -151,7 +144,6 @@
             console.error("닉네임 변경 오류:", error);
             alert("서버 오류 발생");
         }
-
     });
 </script>
 </body>
