@@ -3,8 +3,9 @@ spring:
 
   servlet:
     multipart:
-      max-file-size: 500MB
-      max-request-size: 500MB
+      enabled: true
+      max-file-size: 3GB
+      max-request-size: 3GB
 
   server:
     tomcat:
@@ -25,9 +26,9 @@ spring:
     encoding: UTF-8
 
   datasource:
-    url: ${spring.datasource.url}
-    username: ${spring.datasource.username}
-    password: ${spring.datasource.password}
+    url: jdbc:mysql://localhost:3306/modu_test?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true
+    username: root
+    password: 1
     driver-class-name: com.mysql.cj.jdbc.Driver
   
 cloud:

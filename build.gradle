@@ -68,7 +68,6 @@ dependencies {
 
 		// Thymeleaf
 		implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-		// implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect:3.2.0'
 	}
 
 }

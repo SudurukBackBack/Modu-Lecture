@@ -47,7 +47,7 @@ public class UserService {
         // 사용자 정보 가져오기
         User user = getUserByEmail(email);
 
-        return UserProfileResponseDto.of(user.getEmail(), user.getNickname());
+        return UserProfileResponseDto.of(user);
     }
 
     @Transactional
@@ -61,7 +61,7 @@ public class UserService {
         User user = getUserByEmail(email);
         user.changeNickname(newNickname);
 
-        return UserProfileResponseDto.of(user.getEmail(), user.getNickname());
+        return UserProfileResponseDto.of(user);
     }
 
     /**

@@ -30,15 +30,16 @@ public class JwtTokenProvider {
     private final AuthService authService;
 
     private static final String KEY_ROLE = "role";
-    private static final long EXPIRATION_TIME = 60 * 60 * 7 * 1000L;
+    private static final long EXPIRATION_TIME = 60 * 60 * 7 * 1000L; // 7 hours
 
     private Key key;
 
     @PostConstruct
     public void init() {
-
         String secretKey = getSecretKey();
         this.key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
+
+        log.info("JWT Secret Key initialized successfully.");
     }
 
     // `.env`에서 secretKey 추출
@@ -67,6 +68,7 @@ public class JwtTokenProvider {
      * @return 생성된 JWT 토큰 문자열.
      */
     public String generateToken(User user) {
+
         // 역할을 `int`에서 `List<String>`으로 변환
         List<String> roles = user.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
@@ -91,6 +93,7 @@ public class JwtTokenProvider {
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
 
+        log.info("JWT Token generated for user: {} (Expires: {})", email, expirationDate);
         return token;
     }
 
@@ -106,6 +109,7 @@ public class JwtTokenProvider {
         UserDetails userDetails = authService.loadUserByUsername(username);
 
         List<GrantedAuthority> authorities = getAuthorities(token);
+        log.info("Authentication created for user: {}", username);
 
         return new UsernamePasswordAuthenticationToken(userDetails, null, authorities);
     }
@@ -131,6 +135,7 @@ public class JwtTokenProvider {
      * @return 권한 리스트.
      */
     public List<GrantedAuthority> getAuthorities(String token) {
+
         // Claims에서 roles 추출
         Claims claims = parseClaims(token);
         Object rolesObject = claims.get(KEY_ROLE);
@@ -190,9 +195,18 @@ public class JwtTokenProvider {
         try {
             // Claims를 파싱하여 만료 시간 확인
             Claims claims = parseClaims(token);
-            return !claims.getExpiration().before(new Date());
+            boolean isValid = !claims.getExpiration().before(new Date());
+
+            if (isValid) {
+                log.info("JWT Token is valid for user: {}", claims.getSubject());
+            } else {
+                log.warn("JWT Token has expired for user: {}", claims.getSubject());
+            }
+
+            return isValid;
 
         } catch (JwtException | IllegalArgumentException e) {
+            log.error("JWT Token validation failed: {}", token);
             return false;
         }
     }

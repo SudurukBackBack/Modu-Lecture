@@ -3,8 +3,12 @@ package com.sudurukbackback.modulecture.domain.lecture.service;
 import com.sudurukbackback.modulecture.domain.lecture.dto.request.LectureCreateRequestDto;
 import com.sudurukbackback.modulecture.domain.lecture.dto.response.LectureResponseDto;
 import com.sudurukbackback.modulecture.domain.lecture.dto.request.LectureUpdateRequestDto;
+import com.sudurukbackback.modulecture.domain.lecture.entity.CategoryRel;
 import com.sudurukbackback.modulecture.domain.lecture.entity.Lecture;
+import com.sudurukbackback.modulecture.domain.lecture.entity.LectureStatus;
 import com.sudurukbackback.modulecture.domain.lecture.exception.LectureNotFoundException;
+import com.sudurukbackback.modulecture.domain.lecture.repository.CategoryRelRepository;
+import com.sudurukbackback.modulecture.domain.lecture.repository.CategoryRepository;
 import com.sudurukbackback.modulecture.domain.lecture.repository.LectureRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,27 +17,42 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class LectureService {
 
     private final LectureRepository lectureRepository;
+    private final CategoryRelRepository categoryRelRepository;
 
-    //강의 생성 (S3 파일 업로드 포함)
+    //강의 생성
     @Transactional
-    public LectureResponseDto createLecture(LectureCreateRequestDto request, Long userId, MultipartFile file) throws IOException {
-        // 강의 정보 DB 저장
+    public LectureResponseDto createLecture(LectureCreateRequestDto request, Long userId) throws IOException {
+
+        // 강의 정보 저장
         Lecture lecture = Lecture.builder()
                 .userId(userId)
                 .title(request.getTitle())
                 .description(request.getDescription())
-                .categoryId(request.getCategoryId())
                 .price(request.getPrice())
+                .status(LectureStatus.ACTIVE)
                 .createdAt(LocalDateTime.now())
                 .build();
 
         Lecture savedLecture = lectureRepository.save(lecture);
+
+        // 선택된 카테고리와의 관계 저장
+        List<Long> categoryIds = request.getCategoryIds();
+        if (categoryIds != null && !categoryIds.isEmpty()) {
+            for (Long categoryId : categoryIds) {
+                CategoryRel categoryRel = CategoryRel.builder()
+                        .lectureId(savedLecture.getId())
+                        .categoryId(categoryId)
+                        .build();
+                categoryRelRepository.save(categoryRel);
+            }
+        }
 
         return new LectureResponseDto(savedLecture);
     }
@@ -61,9 +80,6 @@ public class LectureService {
         }
         if (requestDto.getDescription() != null) {
             lecture.setDescription(requestDto.getDescription());
-        }
-        if (requestDto.getCategoryId() != null) {
-            lecture.setCategoryId(requestDto.getCategoryId());
         }
         if (requestDto.getPrice() != null) {
             lecture.setPrice(requestDto.getPrice());

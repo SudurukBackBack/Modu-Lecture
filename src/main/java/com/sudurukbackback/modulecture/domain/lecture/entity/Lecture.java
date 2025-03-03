@@ -25,11 +25,9 @@ public class Lecture {
     @Column(nullable = false, length = 100)
     private String title;
 
-    @Column(nullable = false, length = 1000)
-    private String description;
-
+    @Lob
     @Column(nullable = false)
-    private Long categoryId;
+    private String description; // HTML로 저장되어 Markdown으로 표기됨
 
     @Column(nullable = false)
     private int price;

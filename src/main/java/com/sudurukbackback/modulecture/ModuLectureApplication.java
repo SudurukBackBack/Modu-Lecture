@@ -16,11 +16,11 @@ public class ModuLectureApplication {
 
 		Dotenv dotenv = Dotenv.load();
 
-		// RDS 인증 정보 설정
-		System.setProperty("spring.datasource.url", Objects.requireNonNull(dotenv.get("RDS_URL")));
-		System.setProperty("spring.datasource.username", Objects.requireNonNull(dotenv.get("RDS_USERNAME")));
-		System.setProperty("spring.datasource.password", Objects.requireNonNull(dotenv.get("RDS_PASSWORD")));
-
+//		// RDS 인증 정보 설정
+//		System.setProperty("spring.datasource.url", Objects.requireNonNull(dotenv.get("RDS_URL")));
+//		System.setProperty("spring.datasource.username", Objects.requireNonNull(dotenv.get("RDS_USERNAME")));
+//		System.setProperty("spring.datasource.password", Objects.requireNonNull(dotenv.get("RDS_PASSWORD")));
+//
 		// S3 인증 정보 설정
 		System.setProperty("cloud.aws.region", Objects.requireNonNull(dotenv.get("REGION")));
 		System.setProperty("cloud.aws.s3.bucket-name", Objects.requireNonNull(dotenv.get("BUCKET_NAME")));
