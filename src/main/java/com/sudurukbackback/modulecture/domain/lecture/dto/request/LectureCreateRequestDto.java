@@ -17,7 +17,6 @@ public class LectureCreateRequestDto {
     private String title;
 
     @NotBlank(message = "강의 설명은 필수 입력값입니다.")
-    @Size(max = 1000, message = "강의 설명은 최대 1000자까지 가능합니다.")
     private String description;
 
     @NotEmpty(message = "카테고리는 필수 입력값입니다.")

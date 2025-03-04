@@ -26,7 +26,7 @@ public class ContentService {
     /**
      * 콘텐츠를 업로드하고 처리합니다.
      *
-     * @param request   콘텐츠 생성 요청 DTO
+     * @param videoFile   콘텐츠 생성 요청 DTO
      */
     @Transactional
     public void uploadContent(Long lectureId, MultipartFile videoFile) {

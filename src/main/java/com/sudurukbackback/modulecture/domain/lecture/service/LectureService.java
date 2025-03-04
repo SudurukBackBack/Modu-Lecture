@@ -1,14 +1,18 @@
 package com.sudurukbackback.modulecture.domain.lecture.service;
 
 import com.sudurukbackback.modulecture.domain.lecture.dto.request.LectureCreateRequestDto;
-import com.sudurukbackback.modulecture.domain.lecture.dto.response.LectureResponseDto;
+import com.sudurukbackback.modulecture.domain.lecture.dto.response.LectureCreateResponseDto;
 import com.sudurukbackback.modulecture.domain.lecture.dto.request.LectureUpdateRequestDto;
+import com.sudurukbackback.modulecture.domain.lecture.dto.response.LectureGetResponseDto;
 import com.sudurukbackback.modulecture.domain.lecture.entity.CategoryRel;
 import com.sudurukbackback.modulecture.domain.lecture.entity.Lecture;
 import com.sudurukbackback.modulecture.domain.lecture.entity.LectureStatus;
+import com.sudurukbackback.modulecture.domain.lecture.exception.InstructorNotFoundException;
 import com.sudurukbackback.modulecture.domain.lecture.exception.LectureNotFoundException;
 import com.sudurukbackback.modulecture.domain.lecture.repository.CategoryRelRepository;
 import com.sudurukbackback.modulecture.domain.lecture.repository.LectureRepository;
+import com.sudurukbackback.modulecture.domain.user.entity.User;
+import com.sudurukbackback.modulecture.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,14 +28,15 @@ public class LectureService {
 
     private final LectureRepository lectureRepository;
     private final CategoryRelRepository categoryRelRepository;
+    private final UserRepository userRepository;
 
     // 강의 생성
     @Transactional
-    public LectureResponseDto createLecture(LectureCreateRequestDto request, Long userId) throws IOException {
+    public LectureCreateResponseDto createLecture(LectureCreateRequestDto request, Long instructorId) throws IOException {
 
         // 강의 정보 저장
         Lecture lecture = Lecture.builder()
-                .userId(userId)
+                .instructorId(instructorId)
                 .title(request.getTitle())
                 .description(request.getDescription())
                 .price(request.getPrice())
@@ -53,26 +58,30 @@ public class LectureService {
             }
         }
 
-        return new LectureResponseDto(savedLecture);
+        return new LectureCreateResponseDto(savedLecture);
     }
 
     // 강의 상세 조회 (S3 파일 URL 포함)
     @Transactional(readOnly = true) // 읽기 전용 트랜잭션
-    public LectureResponseDto getLecture(Long lectureId) {
+    public LectureGetResponseDto getLecture(Long lectureId) {
         Lecture lecture = lectureRepository.findById(lectureId)
-                .orElseThrow(() -> new LectureNotFoundException("해당 강의를 찾을 수 없습니다.")); // 강의가 없으면 예외 발생
+                .orElseThrow(LectureNotFoundException::new); // 강의가 없으면 예외 발생
+
+        User user = userRepository.findById(lecture.getInstructorId())
+                .orElseThrow(InstructorNotFoundException::new); // 강사가 없으면 예외 발생
+
+        String instructor = user.getNickname();
 
         // + contentService단의 조회 로직
 
-        // return new LectureResponseDto(lecture, lecture.getVideoUrl(), lecture.getImageUrl());
-        return new LectureResponseDto(lecture);
+        return new LectureGetResponseDto(instructor, lecture);
     }
 
     // 강의 수정 (PATCH)
     @Transactional
-    public LectureResponseDto updateLecture(Long lectureId, LectureUpdateRequestDto requestDto, MultipartFile file) {
+    public LectureCreateResponseDto updateLecture(Long lectureId, LectureUpdateRequestDto requestDto, MultipartFile file) {
         Lecture lecture = lectureRepository.findById(lectureId)
-                .orElseThrow(() -> new LectureNotFoundException("해당 강의를 찾을 수 없습니다.")); // 강의가 없으면 예외 발생
+                .orElseThrow(LectureNotFoundException::new); // 강의가 없으면 예외 발생
 
         // 요청된 필드가 있는 경우에만 업데이트
         if (requestDto.getTitle() != null) {
@@ -85,14 +94,14 @@ public class LectureService {
             lecture.setPrice(requestDto.getPrice());
         }
 
-        return new LectureResponseDto(lecture); // 업데이트된 강의 정보를 DTO로 변환하여 반환
+        return new LectureCreateResponseDto(lecture); // 업데이트된 강의 정보를 DTO로 변환하여 반환
     }
 
     // 강의 삭제
     @Transactional
     public void deleteLecture(Long lectureId) {
         Lecture lecture = lectureRepository.findById(lectureId)
-                .orElseThrow(() -> new LectureNotFoundException("해당 강의를 찾을 수 없습니다.")); // 강의가 없으면 예외 발생
+                .orElseThrow(LectureNotFoundException::new); // 강의가 없으면 예외 발생
 
         lectureRepository.delete(lecture); // 강의 삭제
     }

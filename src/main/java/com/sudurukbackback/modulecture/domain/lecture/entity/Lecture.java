@@ -20,13 +20,13 @@ public class Lecture {
     private Long id;
 
     @Column(nullable = false)
-    private Long userId;
+    private Long instructorId;
 
     @Column(nullable = false, length = 100)
     private String title;
 
     @Lob
-    @Column(nullable = false)
+    @Column(name = "description", columnDefinition = "TEXT", nullable = false) // 긴 문장 저장이 가능하도록 TEXT 데이터 타입 미리 지정
     private String description;
 
     @Column(nullable = false)
