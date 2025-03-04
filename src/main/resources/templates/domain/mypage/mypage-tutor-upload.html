@@ -32,27 +32,24 @@
                 <hr>
                 <!-- 모서리가 둥근 테두리 시작 -->
                 <div class="border rounded p-4">
-                    <form th:action="@{/lectures}" th:object="${lectureCreateRequestDto}" method="post" enctype="multipart/form-data">
+                    <form id="lectureForm" enctype="multipart/form-data">
 
                         <!-- 제목 입력 -->
                         <div class="mb-3">
-                            <input type="text" class="form-control form-control-lg" id="title" placeholder="제목을 입력하세요" th:field="*{title}">
+                            <input type="text" class="form-control form-control-lg" id="titleInput" placeholder="제목을 입력하세요" name="title">
                         </div>
 
                         <!-- 가격 입력 -->
                         <div class="mb-3 row">
                             <div class="mb-3">
-                                <input type="number" class="form-control form-control-sm" id="priceInput"
-                                       th:field="*{price}" placeholder="가격을 입력하세요">
+                                <input type="number" class="form-control form-control-sm" id="priceInput" name="price" placeholder="가격을 입력하세요">
                             </div>
                         </div>
 
                         <!-- 영상 업로드 -->
                         <div class="mb-3 row">
                             <div class="mb-3">
-                                <!-- 수정 후 -->
-                                <input class="form-control form-control-sm" type="file" id="videoUpload"
-                                       th:field="*{video}">
+                                <input class="form-control form-control-sm" type="file" id="videoUpload" name="video">
                             </div>
                         </div>
 
@@ -66,12 +63,10 @@
                                                 <label>
                                                     <input class="form-check-input" type="checkbox"
                                                            th:id="${'category' + category.id}"
-                                                           th:field="*{categoryIds}"
+                                                           name="categoryIds"
                                                            th:value="${category.id}">
                                                 </label>
-                                                <label class="form-check-label"
-                                                       th:for="'category' + ${category.id}"
-                                                       th:text="${category.categoryName}"></label>
+                                                <label class="form-check-label" th:for="'category' + ${category.id}" th:text="${category.categoryName}"></label>
                                             </div>
                                         </div>
                                     </div>
@@ -82,10 +77,10 @@
                         <!-- 설명 입력 -->
                         <div class="mb-3 row">
                             <div class="mb-3 w-100">
+                                <!-- Toast UI Editor -->
+                                <div id="editor"></div>
                                 <!-- Hidden input to store editor content -->
-                                <textarea th:field="*{description}"></textarea>
-                                <!--                                <div id="editor"></div>-->
-                                <!--                                <input type="hidden" th:field="*{description}" id="descriptionInput" name="description">-->
+                                <input type="hidden" id="descriptionInput" name="description">
                             </div>
                         </div>
 
@@ -94,11 +89,10 @@
 
                         <!-- 등록 버튼 -->
                         <div class="text-end">
-                            <button type="submit" class="btn btn-primary">등록</button>
+                            <button type="button" class="btn btn-primary" onclick="submitForm()">등록</button>
                         </div>
                     </form>
                 </div>
-                <!-- 모서리가 둥근 테두리 종료 -->
             </div>
         </div>
     </div>
@@ -111,39 +105,107 @@
 <div th:replace="~{layout/js-cdn :: js-cdn}"></div>
 
 <!-- Toast UI Editor 스크립트 포함 -->
-<div th:insert="~{fragments/toast-editor :: toastEditorScript}"></div>
+<!--<div th:insert="~{fragments/toast-editor :: toastEditorScript}"></div>-->
 
 <!-- Toast UI Editor 스크립트 포함 -->
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const editor = new toastui.Editor({
-            el: document.querySelector('#editor'),
-            height: '500px',
-            initialEditType: 'markdown',
-            initialValue: '',
-            previewStyle: 'vertical',
-            placeholder: '내용을 입력해 주세요.',
-        });
-
-        document.querySelector('form').addEventListener('submit', function (event) {
-            event.preventDefault(); // 기본 제출 막기
-
-            const descriptionInput = document.getElementById('descriptionInput');
-            const editorValue = editor.getMarkdown();
-            descriptionInput.value = editorValue;
-
-            console.log("최종 description 값:", descriptionInput.value);
-
-            if (!descriptionInput.value.trim()) {
-                alert("강의 설명을 입력해주세요!");
-                return;
-            }
-
-            this.submit(); // 강제로 폼 제출
-        });
-
+    // Toast UI Editor 초기화
+    const editor = new toastui.Editor({
+        el: document.querySelector('#editor'),
+        height: '400px',
+        initialEditType: 'markdown',
+        previewStyle: 'vertical',
     });
 
+    // 폼 제출시 호출되는 함수
+    function submitForm() {
+        // 에디터의 내용을 숨겨진 인풋 필드에 저장
+        document.querySelector('#descriptionInput').value = editor.getMarkdown();
+
+        // 유효성 검사
+        if (!validateForm()) {
+            return; // 유효성 검사 실패 시 함수 종료
+        }
+
+        // 폼 데이터 생성
+        const formData = new FormData(document.querySelector('#lectureForm'));
+
+        // AJAX 요청
+        fetch('/lectures', {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    return response.json().then(errorData => {
+                        throw new Error(errorData);
+                    });
+                }
+            })
+            .then(data => {
+                alert('강의가 성공적으로 등록되었습니다!');
+                // 필요 시 페이지 리다이렉션
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('강의 등록에 실패했습니다. 서버 오류가 발생했습니다.');
+            });
+    }
+
+    // 폼 유효성 검사 함수
+    function validateForm() {
+        const title = document.querySelector('#titleInput').value.trim();
+        const price = document.querySelector('#priceInput').value;
+        const video = document.querySelector('#videoUpload').files;
+        const categoryIds = document.querySelectorAll('input[name="categoryIds"]:checked');
+        const description = editor.getHTML().trim();
+
+        // 제목 유효성 검사
+        if (title.length < 5 || title.length > 100) {
+            alert('강의 제목은 최소 5자 이상, 최대 100자 이하여야 합니다.');
+            return false;
+        }
+
+        // 가격 유효성 검사(입력 여부)
+        if (price==="") {
+            alert('가격은 필수 입력값입니다.');
+            return false;
+        }
+
+        // 가격 유효성 검사(가격 범위)
+        if (price < 0 || price >= 1000000) {
+            alert('가격은 0원 이상, 최대 1,000,000원까지 설정할 수 있습니다.');
+            return false;
+        }
+
+        // 강의 영상 유효성 검사
+        if (video.length === 0) {
+            alert('강의 영상을 업로드해 주세요.');
+            return false;
+        }
+
+        // 카테고리 유효성 검사
+        if (categoryIds.length === 0) {
+            alert('카테고리를 하나 이상 선택해 주세요.');
+            return false;
+        }
+
+        // 설명 유효성 검사
+        if (description.length === 0 || description.length > 1000) {
+            alert('강의 설명은 필수 입력값입니다. 최대 1000자까지 가능합니다.');
+            return false;
+        }
+
+        return true; // 모든 유효성 검사를 통과한 경우
+    }
+
+    // 기본 폼 제출을 막고 AJAX로 처리
+    document.querySelector('#lectureForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        submitForm();
+    });
 </script>
 
 </body>
