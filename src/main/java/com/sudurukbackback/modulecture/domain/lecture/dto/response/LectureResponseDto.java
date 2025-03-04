@@ -12,9 +12,8 @@ public class LectureResponseDto {
     private final Long lectureId;
     private final String title;
     private final String description;
-    private final Long categoryId;
     private final int price;
-//    private final String videoUrl; //  비디오 URL 추가
+    //    private final String videoUrl; //  비디오 URL 추가
 //    private final String imageUrl; //  썸네일 이미지 URL 추가
     private final LocalDateTime createdAt;
 
@@ -22,7 +21,6 @@ public class LectureResponseDto {
         this.lectureId = lecture.getId();
         this.title = lecture.getTitle();
         this.description = lecture.getDescription();
-        this.categoryId = lecture.getCategoryId();
         this.price = lecture.getPrice();
 //        this.videoUrl = videoUrl;
 //        this.imageUrl = imageUrl;
