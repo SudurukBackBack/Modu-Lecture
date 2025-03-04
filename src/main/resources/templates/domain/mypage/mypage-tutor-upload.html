@@ -120,7 +120,7 @@
     // 폼 제출시 호출되는 함수
     function submitForm() {
         // 에디터의 내용을 숨겨진 인풋 필드에 저장
-        document.querySelector('#descriptionInput').value = editor.getMarkdown();
+        document.querySelector('#descriptionInput').value = editor.getHTML();
 
         // 유효성 검사
         if (!validateForm()) {
