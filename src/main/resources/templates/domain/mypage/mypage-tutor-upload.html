@@ -10,13 +10,13 @@
     <title>모두의강의 - 마이페이지 | 강의등록</title>
 
     <!-- CSS-CDN -->
-    <div th:replace="layout/css-cdn :: css-cdn"></div>
+    <div th:replace="~{layout/css-cdn :: css-cdn}"></div>
 </head>
 
 <body class="d-flex flex-column min-vh-100">
 
 <!-- navbar 부분 포함 -->
-<div th:insert="layout/navbar :: navbar"></div>
+<div th:insert="~{layout/navbar :: navbar}"></div>
 
 <!-- Section -->
 <section class="py-5 flex-fill">
@@ -24,7 +24,7 @@
         <div class="row">
 
             <!-- mypage vertical navigation bar -->
-            <div th:replace="layout/mypage-navbar :: mypage-navbar"></div>
+            <div th:replace="~{layout/mypage-navbar :: mypage-navbar}"></div>
 
             <!-- 오른쪽 내용 -->
             <div class="col-md-9">
@@ -183,7 +183,7 @@
                         <!-- 설명 입력 -->
                         <div class="mb-3 row">
                             <div class="mb-3">
-                                <div th:replace="layout/toast-editor :: toast-editor"></div>
+                                <div th:replace="~{layout/toast-editor :: toast-editor}"></div>
                             </div>
                         </div>
 
@@ -203,9 +203,10 @@
 </section>
 
 <!-- Footer-->
-<div th:insert="layout/footer :: footer"></div>
+<div th:insert="~{layout/footer :: footer}"></div>
 
 <!-- JS CDN -->
-<div th:replace="layout/js-cdn :: js-cdn"></div>
+<div th:replace="~{layout/js-cdn :: js-cdn}"></div>
+
 </body>
 </html>
