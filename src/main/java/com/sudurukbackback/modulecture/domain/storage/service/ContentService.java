@@ -1,6 +1,5 @@
 package com.sudurukbackback.modulecture.domain.storage.service;
 
-import com.sudurukbackback.modulecture.domain.storage.dto.request.UploadContentRequestDto;
 import com.sudurukbackback.modulecture.domain.storage.entity.Content;
 import com.sudurukbackback.modulecture.domain.storage.exception.ContentProcessingException;
 import com.sudurukbackback.modulecture.domain.storage.repository.ContentRepository;
