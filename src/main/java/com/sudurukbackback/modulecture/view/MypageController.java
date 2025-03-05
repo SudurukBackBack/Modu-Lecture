@@ -30,11 +30,6 @@ public class MypageController {
         return "domain/mypage/mypage";
     }
 
-    @GetMapping("/lecture")
-    public String mypageLecture(Model model) {
-        return "domain/mypage/mypage-lecture";
-    }
-
     @GetMapping("/tutor")
     public String mypageTutor(Model model) {
         return "domain/mypage/mypage-tutor";
