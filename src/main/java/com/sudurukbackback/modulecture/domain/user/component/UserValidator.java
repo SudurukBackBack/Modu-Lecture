@@ -28,11 +28,11 @@ public class UserValidator {
             user.reactiveAccount();
             userRepository.save(user);
 
-            // Deleted: 로그인 거부
+        // Deleted: 로그인 거부
         } else if (user.getUserStatus() == UserStatus.DELETED) {
             throw new WrongAuthenticationException();
 
-            // Active 제외한 나머지: 로그인 거부 -> 관리자 문의로 유도
+        // Active 제외한 나머지: 로그인 거부 -> 관리자 문의로 유도
         } else if (user.getUserStatus() != UserStatus.ACTIVE) {
             throw new AccountNotActiveException();
         }

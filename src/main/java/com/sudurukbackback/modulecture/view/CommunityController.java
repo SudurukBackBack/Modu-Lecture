@@ -15,8 +15,18 @@ public class CommunityController {
         return "domain/community/community";
     }
 
+    @GetMapping("/post-detail")
+    public String postDetail(Model model) {
+        return "domain/community/post-detail";
+    }
+
     @GetMapping("/post-write")
     public String postWrite(Model model) {
         return "domain/community/post-write";
+    }
+
+    @GetMapping("/post-mine")
+    public String postMine(Model model) {
+        return "domain/community/post-mine";
     }
 }

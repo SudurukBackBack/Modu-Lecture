@@ -1,14 +1,22 @@
 package com.sudurukbackback.modulecture.domain.lecture.entity;
 
+import com.sudurukbackback.modulecture.domain.enrollment.entity.Enrollment;
+import com.sudurukbackback.modulecture.domain.enrollment.entity.enums.EnrollmentStatus;
+import com.sudurukbackback.modulecture.domain.user.entity.User;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "lecture")
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -16,25 +24,20 @@ public class Lecture {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long lectureId;
+    private Long id;
 
     @Column(nullable = false)
-    private Long userId;
+    private Long instructorId;
 
     @Column(nullable = false, length = 100)
     private String title;
 
-    @Column(nullable = false, length = 1000)
+    @Lob
+    @Column(name = "description", columnDefinition = "TEXT", nullable = false) // 긴 문장 저장이 가능하도록 TEXT 데이터 타입 미리 지정
     private String description;
 
     @Column(nullable = false)
-    private String instructor;
-
-    @Column(nullable = false)
-    private int category; //  기본형 int 사용
-
-    @Column(nullable = false)
-    private int price; //  기본형 int 사용
+    private int price;
 
     @Column(nullable = false)
     private LocalDateTime createdAt;
@@ -42,4 +45,15 @@ public class Lecture {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private LectureStatus status;
+
+    @OneToMany(mappedBy = "lecture", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Enrollment> enrollments = new ArrayList<>();
+
+    // 수강 중인 사용자 목록
+    public List<User> getEnrolledUsers() {
+        return enrollments.stream()
+                .filter(user -> user.getEnrollmentStatus() == EnrollmentStatus.ENROLLED)
+                .map(Enrollment::getUser)
+                .collect(Collectors.toList());
+    }
 }

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+
+<!-- head 부분 포함 -->
+<head th:fragment="head" xmlns:th="http://www.thymeleaf.org">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>모두의강의 - 커뮤니티 | 나의글 </title>
+
+    <!-- CSS-CDN -->
+    <div th:replace="~{layout/css-cdn :: css-cdn}"></div>
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+
+<!-- navbar 부분 포함 -->
+<div th:insert="~{layout/navbar :: navbar}"></div>
+
+<!-- Section -->
+<main class="flex-fill">
+    <section class="py-5">
+        <div class="container px-4 px-lg-5">
+            <div class="row">
+
+                <!-- mypage vertical navigation bar -->
+                <div th:replace="~{layout/community-navbar :: community-navbar}"></div>
+
+                <!-- 오른쪽 내용 -->
+                <div class="col-md-9">
+                    <h2 class="mb-4 mt-4 me-4">나의 글 보기</h2>
+                    <hr>
+
+                    <!-- 게시판 시작 -->
+                    <div class="table-responsive border rounded overflow-hidden">
+                        <table class="table align-middle table-hover mb-0">
+                            <tbody>
+                            <!-- 공지사항 게시글 먼저 표시 -->
+                            <!-- 테스트 데이터 행 1 (공지사항) -->
+                            <tr onclick="window.location='/community/post-detail';" style="cursor: pointer;">
+                                <td>
+                                    <span class="badge bg-primary bg-opacity-75 text-align-top ms-3">공지사항</span>
+                                </td>
+                                <td>
+                                    <p class="text-dark fw-bold mb-1">첫 번째 게시글</p>
+                                    <p class="mb-0">안녕하세요, 첫 번째 게시글입니다...</p>
+                                </td>
+                                <td>관리자</td>
+                                <td class="text-center">
+                                    <i class="bi bi-chat"></i>
+                                    <span>2</span>
+                                </td>
+                            </tr>
+                            <!-- 다른 게시글들 -->
+                            <!-- 테스트 데이터 행 2 -->
+                            <tr onclick="window.location='/post/2';" style="cursor: pointer;">
+                                <td>
+                                    <span class="badge bg-success bg-opacity-75 text-align-top ms-3">자유게시판</span>
+                                </td>
+                                <td>
+                                    <p class="text-dark fw-bold mb-1">두 번째 게시글</p>
+                                    <p class="mb-0">여러분 안녕하세요!</p>
+                                </td>
+                                <td>유저1</td>
+                                <td class="text-center">
+                                    <i class="bi bi-chat"></i>
+                                    <span>5</span>
+                                </td>
+                            </tr>
+                            <!-- 테스트 데이터 행 3 -->
+                            <tr onclick="window.location='/post/3';" style="cursor: pointer;">
+                                <td>
+                                    <span class="badge bg-warning bg-opacity-75 text-align-top ms-3">질문답변</span>
+                                </td>
+                                <td>
+                                    <p class="text-dark fw-bold mb-1">질문이 있습니다.</p>
+                                    <p class="mb-0">Java에 대해 질문이 있습니다...</p>
+                                </td>
+                                <td>유저2</td>
+                                <td class="text-center">
+                                    <i class="bi bi-chat"></i>
+                                    <span>3</span>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- 게시판 끝 -->
+
+                    <!-- 페이지네이션 시작 -->
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination justify-content-center mt-4">
+                            <li class="page-item disabled">
+                                <a class="page-link" href="#" tabindex="-1" aria-disabled="true">이전</a>
+                            </li>
+                            <li class="page-item"><a class="page-link text-dark text-opacity-75" href="#">1</a></li>
+                            <li class="page-item"><a class="page-link text-dark text-opacity-7" href="#">2</a></li>
+                            <li class="page-item"><a class="page-link text-dark text-opacity-7" href="#">3</a></li>
+                            <li class="page-item">
+                                <a class="page-link text-dark" href="#">다음</a>
+                            </li>
+                        </ul>
+                    </nav>
+                    <!-- 페이지네이션 끝 -->
+
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<!-- Footer-->
+<div th:insert="~{layout/footer :: footer}"></div>
+
+<!-- JS CDN -->
+<div th:replace="~{layout/js-cdn :: js-cdn}"></div>
+
+</body>
+</html>

@@ -4,6 +4,7 @@ import com.sudurukbackback.modulecture.global.exception.BasicException;
 import org.springframework.http.HttpStatus;
 
 public class CommentNotFoundException extends BasicException {
+
     @Override
     public int statusCode() {
         return HttpStatus.NOT_FOUND.value();

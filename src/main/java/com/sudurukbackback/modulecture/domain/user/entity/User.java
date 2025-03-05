@@ -1,5 +1,7 @@
 package com.sudurukbackback.modulecture.domain.user.entity;
 
+import com.sudurukbackback.modulecture.domain.enrollment.entity.Enrollment;
+import com.sudurukbackback.modulecture.domain.lecture.entity.Lecture;
 import com.sudurukbackback.modulecture.domain.user.entity.enums.UserGrade;
 import com.sudurukbackback.modulecture.domain.user.entity.enums.UserStatus;
 import com.sudurukbackback.modulecture.domain.user.exception.SamePasswordException;
@@ -17,7 +19,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 @Data
 @Builder
@@ -54,6 +58,9 @@ public class User implements UserDetails {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private UserStatus userStatus;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Enrollment> enrollments = new ArrayList<>();
 
     @NotNull
     @Column(nullable = false, updatable = false)
@@ -93,16 +100,30 @@ public class User implements UserDetails {
         this.password = passwordEncoder.encode(newPassword);
     }
 
-    // 계정 비활성화(탈퇴)
-    public void deactivateAccount() {
-
+    // 계정 비활성화(탈퇴) 요청 생성
+    public void requestDeactivateAccount() {
         // 일정 시간이 흐르고 나서 정보를 삭제하는 것이 가능한가?
         this.userStatus = UserStatus.PENDING;
         this.deletedAt = LocalDateTime.now();
     }
 
+    // 계정 탈퇴 처리
+    public void deactivateAccount() {
+        // 계정 상태 변경 및 탈퇴 날짜 갱신
+        this.userStatus = UserStatus.DELETED;
+        this.deletedAt = LocalDateTime.now();
+    }
+      
     // 닉네임 변경
     public void changeNickname(String newNickname) {
+        // 계정 업데이트 날짜 갱신
         this.nickname = newNickname;
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    // 수강 신청 추가 메서드
+    public void enrollInLecture(Lecture lecture) {
+        Enrollment enrollment = new Enrollment(this, lecture);
+        this.enrollments.add(enrollment);
     }
 }
