@@ -17,9 +17,9 @@ public class UserValidator {
 
     // 닉네임 중복 체크
     public void validateNicknameUniqueness(String nickname) {
-        boolean emailExists = userRepository.existsByNickname(nickname);
+        boolean nicknameExists = userRepository.existsByNickname(nickname);
 
-        if (emailExists) {
+        if (nicknameExists) {
             throw new SameNicknameException();
         }
     }
