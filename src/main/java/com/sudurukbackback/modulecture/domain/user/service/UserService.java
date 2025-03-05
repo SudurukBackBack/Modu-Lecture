@@ -77,13 +77,13 @@ public class UserService {
         log.info("탈퇴 처리 대상 계정 조회 시작");
 
         // 탈퇴 처리 대상 계정 조회
-        List<User> deleteUsers = userRepository.findAllByUserStatusAndDeletedAtBefore(
+        List<User> users = userRepository.findAllByUserStatusAndDeletedAtBefore(
                 UserStatus.PENDING,
                 LocalDateTime.now().minusWeeks(1)
         );
-        log.info("탈퇴 처리 계정: {}개", deleteUsers.size());
+        log.info("탈퇴 처리 계정: {}개", users.size());
 
-        deleteUsers.forEach(User::deleteAccount); // 엔티티 상태 변경
+        users.forEach(User::deactivateAccount); // 엔티티 상태 변경
         log.info("탈퇴 처리 작업 완료");
     }
 

@@ -42,7 +42,7 @@ public class LectureService {
     @Transactional(readOnly = true)
     public LectureResponseDto getLecture(Long lectureId) {
         Lecture lecture = lectureRepository.findById(lectureId)
-                .orElseThrow(() -> new LectureNotFoundException("해당 강의를 찾을 수 없습니다."));
+                .orElseThrow(LectureNotFoundException::new);
 
         // + contentService단의 조회 로직
 
@@ -54,7 +54,7 @@ public class LectureService {
     @Transactional
     public LectureResponseDto updateLecture(Long lectureId, LectureUpdateRequestDto requestDto, MultipartFile file) {
         Lecture lecture = lectureRepository.findById(lectureId)
-                .orElseThrow(() -> new LectureNotFoundException("해당 강의를 찾을 수 없습니다."));
+                .orElseThrow(LectureNotFoundException::new);
 
         if (requestDto.getTitle() != null) {
             lecture.setTitle(requestDto.getTitle());
@@ -76,7 +76,7 @@ public class LectureService {
     @Transactional
     public void deleteLecture(Long lectureId) {
         Lecture lecture = lectureRepository.findById(lectureId)
-                .orElseThrow(() -> new LectureNotFoundException("해당 강의를 찾을 수 없습니다."));
+                .orElseThrow(LectureNotFoundException::new);
 
         lectureRepository.delete(lecture);
     }

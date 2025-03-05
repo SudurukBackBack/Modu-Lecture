@@ -1,12 +1,17 @@
 package com.sudurukbackback.modulecture.domain.user.entity;
 
+import com.sudurukbackback.modulecture.domain.enrollment.entity.Enrollment;
+import com.sudurukbackback.modulecture.domain.lecture.entity.Lecture;
 import com.sudurukbackback.modulecture.domain.user.entity.enums.UserGrade;
 import com.sudurukbackback.modulecture.domain.user.entity.enums.UserStatus;
 import com.sudurukbackback.modulecture.domain.user.exception.SamePasswordException;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -14,7 +19,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 @Data
 @Builder
@@ -51,6 +58,9 @@ public class User implements UserDetails {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private UserStatus userStatus;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Enrollment> enrollments = new ArrayList<>();
 
     @NotNull
     @Column(nullable = false, updatable = false)
@@ -98,7 +108,7 @@ public class User implements UserDetails {
     }
 
     // 계정 탈퇴 처리
-    public void deleteAccount() {
+    public void deactivateAccount() {
         // 계정 상태 변경 및 탈퇴 날짜 갱신
         this.userStatus = UserStatus.DELETED;
         this.deletedAt = LocalDateTime.now();
@@ -109,5 +119,11 @@ public class User implements UserDetails {
         // 계정 업데이트 날짜 갱신
         this.nickname = newNickname;
         this.updatedAt = LocalDateTime.now();
+    }
+
+    // 수강 신청 추가 메서드
+    public void enrollInLecture(Lecture lecture) {
+        Enrollment enrollment = new Enrollment(this, lecture);
+        this.enrollments.add(enrollment);
     }
 }
