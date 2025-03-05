@@ -22,12 +22,12 @@ public class Content {
     private Long lectureId;
 
     @NonNull
-    @Column(nullable = false)
-    private String imageUrl; // S3 스토리지 안의 이미지 객체 경로 정보
+    @Column(columnDefinition = "TEXT", nullable = false)
+    private String imagePath; // S3 스토리지 안의 이미지 객체 경로 정보
 
     @NonNull
-    @Column(nullable = false)
-    private String videoUrl; // S3 스토리지 안의 영상 객체 경로 정보
+    @Column(columnDefinition = "TEXT", nullable = false)
+    private String videoPath; // S3 스토리지 안의 영상 객체 경로 정보
 
     @NonNull
     @Column(nullable = false)
