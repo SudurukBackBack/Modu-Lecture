@@ -1,28 +1,26 @@
 package com.sudurukbackback.modulecture.domain.lecture.dto.response;
 
 import com.sudurukbackback.modulecture.domain.lecture.entity.Lecture;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Getter
-public class LectureResponseDto {
-
-    private final Long lectureId;
+@AllArgsConstructor
+public class LectureGetResponseDto {
+    private final String instructor;
     private final String title;
     private final String description;
-    private final Long categoryId;
     private final int price;
 //    private final String videoUrl; //  비디오 URL 추가
 //    private final String imageUrl; //  썸네일 이미지 URL 추가
     private final LocalDateTime createdAt;
 
-    public LectureResponseDto(Lecture lecture) {
-        this.lectureId = lecture.getId();
+    public LectureGetResponseDto(String instructor, Lecture lecture) {
+        this.instructor = instructor;
         this.title = lecture.getTitle();
         this.description = lecture.getDescription();
-        this.categoryId = lecture.getCategoryId();
         this.price = lecture.getPrice();
 //        this.videoUrl = videoUrl;
 //        this.imageUrl = imageUrl;

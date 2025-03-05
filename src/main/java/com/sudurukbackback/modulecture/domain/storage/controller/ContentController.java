@@ -1,12 +1,8 @@
 package com.sudurukbackback.modulecture.domain.storage.controller;
 
-import com.sudurukbackback.modulecture.domain.storage.dto.request.UploadContentRequestDto;
-import com.sudurukbackback.modulecture.domain.storage.exception.ContentUploadException;
 import com.sudurukbackback.modulecture.domain.storage.service.ContentService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/contents")

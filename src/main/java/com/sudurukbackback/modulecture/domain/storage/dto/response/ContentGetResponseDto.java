@@ -5,10 +5,7 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-public class UploadContentResponseDto {
-    private Integer lectureId;
-    private Integer categoryId;
+public class ContentGetResponseDto {
     private String videoUrl;
     private String imageUrl;
-    private LocalDateTime createdAt;
 }
