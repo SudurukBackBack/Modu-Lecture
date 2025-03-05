@@ -10,9 +10,8 @@ import com.sudurukbackback.modulecture.domain.lecture.repository.LectureReposito
 import com.sudurukbackback.modulecture.domain.user.entity.User;
 import com.sudurukbackback.modulecture.domain.user.exception.UserNotExistException;
 import com.sudurukbackback.modulecture.domain.user.repository.UserRepository;
-import com.sudurukbackback.modulecture.domain.enrollment.service.EnrollmentService;
 import lombok.RequiredArgsConstructor;
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
