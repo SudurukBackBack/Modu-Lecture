@@ -1,11 +1,13 @@
 package com.sudurukbackback.modulecture.view;
 
+import com.sudurukbackback.modulecture.domain.enrollment.service.EnrollmentService;
 import com.sudurukbackback.modulecture.domain.lecture.dto.request.LectureCreateRequestDto;
 import com.sudurukbackback.modulecture.domain.lecture.dto.response.LectureGetResponseDto;
 import com.sudurukbackback.modulecture.domain.lecture.entity.Category;
 import com.sudurukbackback.modulecture.domain.lecture.service.CategoryService;
 import com.sudurukbackback.modulecture.domain.lecture.service.LectureService;
 import lombok.RequiredArgsConstructor;
+import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +23,7 @@ public class MypageController {
 
     private final CategoryService categoryService;
     private final LectureService lectureService;
+    private final EnrollmentService enrollmentService;
 
     @GetMapping
     public String mypage(Model model) {
@@ -67,6 +70,11 @@ public class MypageController {
         return "domain/lecture/lecture";
     }
 
-
+    @GetMapping("/lecture")
+    public String mypageLecture(Model model, Authentication auth) {
+        List<LectureGetResponseDto> enrolledLectures = enrollmentService.getEnrolledLectures(auth);
+        model.addAttribute("enrolledLectures", enrolledLectures);
+        return "domain/mypage/mypage-lecture";
+    }
 
 }

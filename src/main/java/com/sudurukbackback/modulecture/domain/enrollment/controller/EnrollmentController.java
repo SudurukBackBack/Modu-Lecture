@@ -1,12 +1,12 @@
 package com.sudurukbackback.modulecture.domain.enrollment.controller;
 
 import com.sudurukbackback.modulecture.domain.enrollment.service.EnrollmentService;
-import com.sudurukbackback.modulecture.domain.lecture.dto.response.LectureGetResponseDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RequestMapping("/enroll")
 @RestController
@@ -18,10 +18,13 @@ public class EnrollmentController {
         this.enrollmentService = enrollmentService;
     }
 
-    @GetMapping("/my-lectures")
-    public ResponseEntity<List<LectureGetResponseDto>> getEnrolledLectures(Authentication auth) {
-        String email = auth.getName();
-        List<LectureGetResponseDto> lectures = enrollmentService.getEnrolledLectures(email);
-        return ResponseEntity.ok(lectures);
+    @PostMapping("/{lecture_id}")
+    public ResponseEntity<?> enrollInLecture(
+            @PathVariable Long lecture_id,
+            Authentication auth
+    ) {
+        enrollmentService.enrollInLecture(auth.getName(), lecture_id);
+
+        return ResponseEntity.ok("강의 등록이 완료되었습니다.");
     }
 }
