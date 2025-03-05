@@ -6,15 +6,21 @@ import com.sudurukbackback.modulecture.domain.user.dto.request.PasswordUpdateReq
 import com.sudurukbackback.modulecture.domain.user.dto.request.UserDeleteRequestDto;
 import com.sudurukbackback.modulecture.domain.user.dto.response.UserProfileResponseDto;
 import com.sudurukbackback.modulecture.domain.user.entity.User;
+import com.sudurukbackback.modulecture.domain.user.entity.enums.UserStatus;
 import com.sudurukbackback.modulecture.domain.user.exception.SameNicknameException;
 import com.sudurukbackback.modulecture.domain.user.repository.UserRepository;
 import com.sudurukbackback.modulecture.global.exception.BasicServerException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class UserService {
@@ -64,9 +70,27 @@ public class UserService {
         return UserProfileResponseDto.of(user.getEmail(), user.getNickname());
     }
 
+    // Batch (PENDING 상태인 계정 최종 탈퇴 처리)
+    @Transactional
+    public void deactivateAccountBatch() {
+
+        log.info("탈퇴 처리 대상 계정 조회 시작");
+
+        // 탈퇴 처리 대상 계정 조회
+        List<User> users = userRepository.findAllByUserStatusAndDeletedAtBefore(
+                UserStatus.PENDING,
+                LocalDateTime.now().minusWeeks(1)
+        );
+        log.info("탈퇴 처리 계정: {}개", users.size());
+
+        users.forEach(User::deactivateAccount); // 엔티티 상태 변경
+        log.info("탈퇴 처리 작업 완료");
+    }
+
     /**
      * ACTIVE 계정 로그인
-     * @param email 이메일
+     *
+     * @param email    이메일
      * @param password 비밀번호
      * @return User
      */
@@ -80,6 +104,7 @@ public class UserService {
 
     /**
      * 이메일을 사용해 User 가져오기
+     *
      * @param email 이메일
      * @return User
      */
