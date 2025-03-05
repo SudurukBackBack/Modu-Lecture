@@ -1,6 +1,7 @@
 package com.sudurukbackback.modulecture.domain.enrollment.controller;
 
 import com.sudurukbackback.modulecture.domain.enrollment.service.EnrollmentService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -8,15 +9,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@RequiredArgsConstructor
 @RequestMapping("/enroll")
 @RestController
 public class EnrollmentController {
 
     private final EnrollmentService enrollmentService;
-
-    public EnrollmentController(EnrollmentService enrollmentService) {
-        this.enrollmentService = enrollmentService;
-    }
 
     @PostMapping("/{lecture_id}")
     public ResponseEntity<?> enrollInLecture(

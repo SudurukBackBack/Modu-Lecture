@@ -1,6 +1,5 @@
 package com.sudurukbackback.modulecture.domain.enrollment.entity;
 
-import com.sudurukbackback.modulecture.domain.enrollment.entity.enums.EnrollmentStatus;
 import com.sudurukbackback.modulecture.domain.lecture.entity.Lecture;
 import com.sudurukbackback.modulecture.domain.user.entity.User;
 import jakarta.persistence.*;
@@ -33,9 +32,6 @@ public class Enrollment {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @Enumerated(EnumType.STRING)
-    private EnrollmentStatus enrollmentStatus;
-
     @Column(nullable = false, updatable = false)
     private LocalDateTime enrolledAt;
 
@@ -43,12 +39,6 @@ public class Enrollment {
     public Enrollment(User user, Lecture lecture) {
         this.user = user;
         this.lecture = lecture;
-        this.enrollmentStatus = EnrollmentStatus.ENROLLED;
         this.enrolledAt = LocalDateTime.now();
-    }
-
-    // 수강 취소
-    public void cancelEnrollment() {
-        this.enrollmentStatus = EnrollmentStatus.CANCELLED;
     }
 }

@@ -1,7 +1,6 @@
 package com.sudurukbackback.modulecture.domain.lecture.entity;
 
 import com.sudurukbackback.modulecture.domain.enrollment.entity.Enrollment;
-import com.sudurukbackback.modulecture.domain.enrollment.entity.enums.EnrollmentStatus;
 import com.sudurukbackback.modulecture.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -52,7 +51,6 @@ public class Lecture {
     // 수강 중인 사용자 목록
     public List<User> getEnrolledUsers() {
         return enrollments.stream()
-                .filter(user -> user.getEnrollmentStatus() == EnrollmentStatus.ENROLLED)
                 .map(Enrollment::getUser)
                 .collect(Collectors.toList());
     }

@@ -72,7 +72,7 @@ public class UserService {
 
     // Batch (PENDING 상태인 계정 최종 탈퇴 처리)
     @Transactional
-    public void deactivateAccountBatch() {
+    public void batchDeactivateAccounts() {
 
         log.info("탈퇴 처리 대상 계정 조회 시작");
 
