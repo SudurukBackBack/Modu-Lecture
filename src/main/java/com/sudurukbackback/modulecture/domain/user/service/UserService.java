@@ -7,7 +7,6 @@ import com.sudurukbackback.modulecture.domain.user.dto.request.UserDeleteRequest
 import com.sudurukbackback.modulecture.domain.user.dto.response.UserProfileResponseDto;
 import com.sudurukbackback.modulecture.domain.user.entity.User;
 import com.sudurukbackback.modulecture.domain.user.entity.enums.UserStatus;
-import com.sudurukbackback.modulecture.domain.user.exception.SameNicknameException;
 import com.sudurukbackback.modulecture.domain.user.repository.UserRepository;
 import com.sudurukbackback.modulecture.global.exception.BasicServerException;
 import lombok.RequiredArgsConstructor;
@@ -58,10 +57,8 @@ public class UserService {
 
     @Transactional
     public UserProfileResponseDto updateUserProfile(String email, String newNickname) {
-        // 닉네임 중복 여부 확인
-        if (userRepository.existsByNickname(newNickname)) {
-            throw new SameNicknameException();
-        }
+        // 닉네임 중복 확인
+        userValidator.validateNicknameUniqueness(newNickname);
 
         // 사용자 정보 가져오기
         User user = getUserByEmail(email);

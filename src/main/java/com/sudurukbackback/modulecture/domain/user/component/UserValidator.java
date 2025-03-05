@@ -3,6 +3,7 @@ package com.sudurukbackback.modulecture.domain.user.component;
 import com.sudurukbackback.modulecture.domain.user.entity.User;
 import com.sudurukbackback.modulecture.domain.user.entity.enums.UserStatus;
 import com.sudurukbackback.modulecture.domain.user.exception.AccountNotActiveException;
+import com.sudurukbackback.modulecture.domain.user.exception.SameNicknameException;
 import com.sudurukbackback.modulecture.domain.user.exception.WrongAuthenticationException;
 import com.sudurukbackback.modulecture.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +14,15 @@ import org.springframework.stereotype.Component;
 public class UserValidator {
 
     private final UserRepository userRepository;
+
+    // 닉네임 중복 체크
+    public void validateNicknameUniqueness(String nickname) {
+        boolean emailExists = userRepository.existsByNickname(nickname);
+
+        if (emailExists) {
+            throw new SameNicknameException();
+        }
+    }
 
     // 계좌 활성화 여부 확인
     public void validateUserIsActive(User user) {
