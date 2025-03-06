@@ -48,6 +48,11 @@ public class Lecture {
     @OneToMany(mappedBy = "lecture", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Enrollment> enrollments = new ArrayList<>();
 
+    // 강사와 연관된 관계 설정
+    @ManyToOne(fetch = FetchType.LAZY) // lazy 로딩을 사용해 성능 향상
+    @JoinColumn(name = "instructorId", referencedColumnName = "id", insertable = false, updatable = false) // instructorId와 User의 id 매핑
+    private User instructor;
+
     // 수강 중인 사용자 목록
     public List<User> getEnrolledUsers() {
         return enrollments.stream()

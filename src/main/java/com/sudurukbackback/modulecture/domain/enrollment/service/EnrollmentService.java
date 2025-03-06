@@ -25,12 +25,12 @@ public class EnrollmentService {
     private final LectureRepository lectureRepository;
     private final EnrollmentRepository enrollmentRepository;
 
-    public void enrollInLecture(String email, Long lecture_id) {
+    public void enrollInLecture(String email, Long lectureId) {
 
         User user = userRepository.findByEmail(email)
                 .orElseThrow(UserNotExistException::new);
 
-        Lecture lecture = lectureRepository.findById(lecture_id)
+        Lecture lecture = lectureRepository.findById(lectureId)
                 .orElseThrow(LectureNotFoundException::new);
 
         if (enrollmentRepository.existsByUserAndLecture(user, lecture)) {

@@ -131,7 +131,7 @@
         const formData = new FormData(document.querySelector('#lectureForm'));
 
         // AJAX 요청
-        fetch('/lectures', {
+        fetch('/lectures/create', {
             method: 'POST',
             body: formData
         })

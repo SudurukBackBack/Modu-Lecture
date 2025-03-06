@@ -30,6 +30,17 @@ public class LectureService {
     private final CategoryRelRepository categoryRelRepository;
     private final UserRepository userRepository;
 
+    // 모든 강의 목록 조회
+    public List<Lecture> getAllLectures() {
+        List<Lecture> lectures = lectureRepository.findAll();
+        for (Lecture lecture : lectures) {
+            User instructor = userRepository.findById(lecture.getInstructorId())
+                    .orElseThrow(() -> new RuntimeException("Instructor not found"));
+            lecture.setInstructor(instructor); // 강사 정보 설정
+        }
+        return lectures;
+    }
+
     // 강의 생성
     @Transactional
     public LectureCreateResponseDto createLecture(LectureCreateRequestDto request, Long instructorId) throws IOException {

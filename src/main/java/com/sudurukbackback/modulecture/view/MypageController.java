@@ -25,16 +25,19 @@ public class MypageController {
     private final LectureService lectureService;
     private final EnrollmentService enrollmentService;
 
+    // 마이페이지 = 나의 정보
     @GetMapping
     public String mypage(Model model) {
         return "domain/mypage/mypage";
     }
 
+    // 나의 강의 관리
     @GetMapping("/tutor")
     public String mypageTutor(Model model) {
         return "domain/mypage/mypage-tutor";
     }
 
+    // 나의 강의 관리 > 강의 등록 페이지
     @GetMapping("/tutor-upload")
     public String mypageTutorUpload(Model model) {
 
@@ -48,17 +51,19 @@ public class MypageController {
         return "domain/mypage/mypage-tutor-upload";
     }
 
+    // 나의 강의 관리 > 수정하기 > 강의 수정 페이지
     @GetMapping("/tutor-update")
     public String mypageTutorUpdate(Model model) {
         return "domain/mypage/mypage-tutor-update";
     }
 
+    // 계정 관리
     @GetMapping("/account")
     public String mypageAccount(Model model) {
         return "domain/mypage/mypage-account";
     }
 
-    // 마이페이지 > 수강 목록 View
+    // 수강 목록
     @GetMapping("/lecture")
     public String mypageLecture(Model model, Authentication auth) {
         List<LectureGetResponseDto> enrolledLectures = enrollmentService.getEnrolledLectures(auth);
