@@ -48,13 +48,18 @@ public class EnrollmentService {
         // 사용자가 수강 중인 강의 ID 목록 가져오기
         List<Long> lectureIds = enrollmentRepository.findLectureIdsByUserId(user.getId());
 
-        // 강의 정보 조회 후 DTO로 변환
-        return lectureIds.stream()
-                .map(lectureId -> {
-                    Lecture lecture = lectureRepository.findById(lectureId)
-                            .orElseThrow(LectureNotFoundException::new);
-                    return new LectureGetResponseDto(user.getNickname(), lecture);
-                })
+        // 강의 정보를 일괄로 조회
+        List<Lecture> lectures = lectureRepository.findAllById(lectureIds);
+
+        // 조회한 강의 갯수가 맞지 않는 경우: 예외처리
+        if (lectures.size() != lectureIds.size()) {
+            throw new LectureNotFoundException();
+        }
+
+        // DTO 변환
+        return lectures.stream()
+                .map(lecture -> new LectureGetResponseDto(user.getNickname(), lecture))
                 .collect(Collectors.toList());
+
     }
 }

@@ -58,13 +58,7 @@ public class MypageController {
         return "domain/mypage/mypage-account";
     }
 
-    @GetMapping("/lecture/{lectureId}")
-    public String lecture(@PathVariable Long lectureId, Model model) {
-        LectureGetResponseDto lecture = lectureService.getLecture(lectureId);
-        model.addAttribute("lecture", lecture);
-        return "domain/lecture/lecture";
-    }
-
+    // 마이페이지 > 수강 목록 View
     @GetMapping("/lecture")
     public String mypageLecture(Model model, Authentication auth) {
         List<LectureGetResponseDto> enrolledLectures = enrollmentService.getEnrolledLectures(auth);
