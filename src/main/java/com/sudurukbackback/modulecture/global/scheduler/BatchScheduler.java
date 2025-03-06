@@ -17,7 +17,7 @@ public class BatchScheduler {
     public void batchDeactivateAccounts() {
 
         log.info("계정 탈퇴 Batch scheduler 작동 시작");
-        userService.deactivateAccountBatch();
+        userService.batchDeactivateAccounts();
         log.info("계정 탈퇴 Batch scheduler 작동 완료");
     }
 }

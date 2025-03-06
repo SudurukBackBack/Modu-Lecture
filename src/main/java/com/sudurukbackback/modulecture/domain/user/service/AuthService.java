@@ -46,6 +46,8 @@ public class AuthService implements UserDetailsService {
 
         // email 가입 가능 여부 확인
         authComponent.validateEmailUniqueness(email);
+        // 닉네임 중복 확인
+        userValidator.validateNicknameUniqueness(nickname);
 
         return userRepository.save(User.builder()
                 .email(email)
