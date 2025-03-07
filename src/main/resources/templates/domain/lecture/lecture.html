@@ -26,7 +26,14 @@
 
                 <!-- 강의 타이틀 -->
                 <div class="col-12">
+                    <div class="mb-3">
+                        <span class="badge bg-primary">컴퓨터공학</span>
+                    </div>
                     <h2 class="fw-bold" th:text="${lecture.title}"></h2>
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-person-circle me-2 fs-4"></i>
+                        <span class="fs-5" th:text="${lecture.instructor}"></span>
+                    </div>
                     <hr>
                 </div>
 
@@ -42,29 +49,6 @@
                             </video>
                         </div>
                         <p class="mt-3 ms-3 mb-3"><strong>강의 길이 :</strong> <span>15:00:00</span></p>
-                    </div>
-
-                    <!-- 강의 상세 정보 -->
-                    <div class="col-md-4 d-flex flex-column">
-                        <div class="card shadow-sm p-3 bg-white rounded flex-grow-1">
-                            <table class="table mb-3">
-                                <tbody>
-                                <tr>
-                                    <th>카테고리</th>
-                                    <td>컴퓨터공학</td>
-                                </tr>
-                                <tr>
-                                    <th>가격</th>
-                                    <td th:text="${lecture.price}">무료</td>
-                                </tr>
-                                <tr>
-                                    <th>강사</th>
-                                    <td th:text="${lecture.instructor}">김모두</td>
-                                </tr>
-                                </tbody>
-                            </table>
-                            <a href="#" class="btn btn-primary w-100 mt-auto">수강 신청</a>
-                        </div>
                     </div>
                 </div>
 

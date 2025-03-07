@@ -10,6 +10,53 @@
 
     <!-- CSS-CDN -->
     <div th:replace="~{layout/css-cdn :: css-cdn}"></div>
+
+    <style>
+        /* 기본 링크 스타일 제거 */
+        a {
+            text-decoration: none; /* 링크의 기본 밑줄 제거 */
+        }
+
+        .thumbnail-box {
+            position: relative;
+            width: 100%;
+            padding-bottom: 65%; /* 5:3 비율을 유지하기 위한 패딩 */
+            background-color: #f0f0f0; /* 기본 배경색 (이미지가 없는 경우를 대비) */
+        }
+
+        .thumbnail-box img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* 이미지를 박스에 맞게 자름 */
+        }
+
+        .card-body {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100%;
+        }
+
+        .card-body2 {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            height: 100%;
+        }
+
+        /* 카드 호버 시 살짝 올라가는 효과 */
+        .card {
+            transition: transform 0.3s ease; /* 변환 효과 */
+        }
+
+        .card:hover {
+            transform: translateY(-10px); /* 위로 10px 올라가게 */
+        }
+    </style>
+
 </head>
 
 <body class="d-flex flex-column min-vh-100">
@@ -32,16 +79,15 @@
 
                 <!-- 수강중인 강의 목록 시작 -->
                 <div class="row">
-                    <!-- 수강 강의가 없을 경우 -->
-                    <div th:if="${lectures.isEmpty()}" class="col-md-12 text-center">
-                        <p class="text-muted">현재 수강 중인 강의가 없습니다.</p>
+                    <div div th:if="${enrolledLectures == null}" class="col-md-12 text-center">
+                        <p class="text-muted"><i class="bi bi-archive"></i> 현재 수강 중인 강의가 없습니다.</p>
                     </div>
 
-                    <!-- 수강 강의가 있을 경우 -->
-                    <div th:each="lecture : ${lectures}" class="col-md-4 mb-4">
-                        <div class="card h-100">
-                            <div class="position-relative">
-                                <img src="/images/test.jpg" class="card-img-top" alt="강의 이미지">
+                    <!-- 강의 카드를 반복문으로 출력 -->
+                    <div th:each="lecture : ${enrolledLectures}" class="col-md-4 mb-4">
+                        <div class="card">
+                            <div class="thumbnail-box">
+                                <img src="/images/thumbnail.png" class="card-img-top" alt="썸네일">
                                 <!-- 플레이 아이콘 -->
                                 <div class="position-absolute top-50 start-50 translate-middle">
                                     <i class="bi bi-play-circle-fill" style="font-size: 40px; color: rgba(255, 255, 255, 0.8);"></i>
@@ -49,10 +95,7 @@
                             </div>
                             <div class="card-body">
                                 <h5 class="card-title" th:text="${lecture.title}">강의 제목</h5>
-                                <h6 class="text-dark text-opacity-75" th:text="${lecture.instructor}">강사명</h6>
-                                <hr>
-                                <p class="card-text" th:text="${lecture.description}">강의 소개</p>
-                                <a th:href="@{/mypage/lecture/{id}(id=${lecture.id})}" class="btn btn-primary">학습하기</a>
+                                <a th:href="@{/e-learning/{lectureId}(lectureId=${lecture.lectureId})}" class="btn btn-primary block">수강하기</a>
                             </div>
                         </div>
                     </div>
