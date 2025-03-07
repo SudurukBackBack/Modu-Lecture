@@ -1,5 +1,5 @@
 <!-- Navigation -->
-<nav th:fragment="navbar" class="navbar navbar-expand-lg navbar-light bg-light shadow">
+<nav th:fragment="navbar" class="navbar navbar-expand-lg navbar-light bg-light shadow fixed-top">
     <div class="container px-4 px-lg-5">
         <a class="navbar-brand" href="/main">
             <img src="/images/logo.svg" alt="Logo">
@@ -40,22 +40,3 @@
         </div>
     </div>
 </nav>
-
-<!-- 로그인 필요 모달 -->
-<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="loginModalLabel">알림</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                로그인이 필요한 서비스입니다.
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
-                <button type="button" class="btn btn-primary" id="goLogin-btn">로그인</button>
-            </div>
-        </div>
-    </div>
-</div>

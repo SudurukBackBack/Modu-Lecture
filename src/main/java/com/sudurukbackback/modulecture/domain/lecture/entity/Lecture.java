@@ -1,11 +1,17 @@
 package com.sudurukbackback.modulecture.domain.lecture.entity;
 
+import com.sudurukbackback.modulecture.domain.enrollment.entity.Enrollment;
+import com.sudurukbackback.modulecture.domain.user.entity.User;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "lecture")
@@ -38,4 +44,19 @@ public class Lecture {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private LectureStatus status;
+
+    @OneToMany(mappedBy = "lecture", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Enrollment> enrollments = new ArrayList<>();
+
+    // 강사와 연관된 관계 설정
+    @ManyToOne(fetch = FetchType.LAZY) // lazy 로딩을 사용해 성능 향상
+    @JoinColumn(name = "instructorId", referencedColumnName = "id", insertable = false, updatable = false) // instructorId와 User의 id 매핑
+    private User instructor;
+
+    // 수강 중인 사용자 목록
+    public List<User> getEnrolledUsers() {
+        return enrollments.stream()
+                .map(Enrollment::getUser)
+                .collect(Collectors.toList());
+    }
 }

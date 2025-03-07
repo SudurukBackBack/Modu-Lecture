@@ -5,6 +5,7 @@ import com.sudurukbackback.modulecture.domain.lecture.dto.response.ErrorResponse
 import com.sudurukbackback.modulecture.domain.lecture.dto.response.LectureCreateResponseDto;
 import com.sudurukbackback.modulecture.domain.lecture.dto.request.LectureUpdateRequestDto;
 import com.sudurukbackback.modulecture.domain.lecture.dto.response.LectureGetResponseDto;
+import com.sudurukbackback.modulecture.domain.lecture.entity.Lecture;
 import com.sudurukbackback.modulecture.domain.lecture.service.CategoryService;
 import com.sudurukbackback.modulecture.domain.lecture.service.LectureService;
 import com.sudurukbackback.modulecture.domain.storage.service.ContentService;
@@ -31,7 +32,7 @@ import java.util.stream.Collectors;
 public class LectureController {
     private final LectureService lectureService;
 //    private final ContentService contentService;
-//    private final CategoryService categoryService;
+
 
     /**
      * 새로운 강의를 생성합니다. (파일 업로드 포함)
@@ -41,7 +42,7 @@ public class LectureController {
      * @return 생성된 강의 정보를 담은 LectureCreateResponseDto를 포함한 ResponseEntity
      * @throws IOException 파일 처리 중 발생할 수 있는 예외
      */
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<?> createLecture(
             @ModelAttribute @Valid LectureCreateRequestDto request,
             BindingResult bindingResult,
@@ -79,6 +80,8 @@ public class LectureController {
     }
 
 
+
+
     /**
      * 특정 강의의 상세 정보를 조회합니다.
      *
@@ -86,13 +89,14 @@ public class LectureController {
      * @return 조회된 강의 정보를 담은 LectureGetResponseDto를 포함한 ResponseEntity
      */
     @GetMapping("/{lectureId}")
-    public ResponseEntity<LectureGetResponseDto> getLecture(@PathVariable Long lectureId) {
+    public ResponseEntity<LectureGetResponseDto> getLecturesById(@PathVariable Long lectureId) {
         LectureGetResponseDto lecture = lectureService.getLecture(lectureId);
 
         // contentService: getContent - S3에서 video, image 조회 (추후 구현)
 
         return ResponseEntity.ok(lecture);
     }
+
 
     /**
      * 특정 강의의 정보를 수정합니다.

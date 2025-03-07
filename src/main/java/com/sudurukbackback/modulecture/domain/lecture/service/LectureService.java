@@ -30,6 +30,17 @@ public class LectureService {
     private final CategoryRelRepository categoryRelRepository;
     private final UserRepository userRepository;
 
+    // 모든 강의 목록 조회
+    public List<Lecture> getAllLectures() {
+        List<Lecture> lectures = lectureRepository.findAll();
+        for (Lecture lecture : lectures) {
+            User instructor = userRepository.findById(lecture.getInstructorId())
+                    .orElseThrow(() -> new RuntimeException("Instructor not found"));
+            lecture.setInstructor(instructor); // 강사 정보 설정
+        }
+        return lectures;
+    }
+
     // 강의 생성
     @Transactional
     public LectureCreateResponseDto createLecture(LectureCreateRequestDto request, Long instructorId) throws IOException {
@@ -64,15 +75,14 @@ public class LectureService {
     // 강의 상세 조회 (S3 파일 URL 포함)
     @Transactional(readOnly = true) // 읽기 전용 트랜잭션
     public LectureGetResponseDto getLecture(Long lectureId) {
-        Lecture lecture = lectureRepository.findById(lectureId)
-                .orElseThrow(LectureNotFoundException::new); // 강의가 없으면 예외 발생
+        
+      Lecture lecture = lectureRepository.findById(lectureId)
+                .orElseThrow(LectureNotFoundException::new);
 
         User user = userRepository.findById(lecture.getInstructorId())
-                .orElseThrow(InstructorNotFoundException::new); // 강사가 없으면 예외 발생
+                .orElseThrow(InstructorNotFoundException::new);
 
         String instructor = user.getNickname();
-
-        // + contentService단의 조회 로직
 
         return new LectureGetResponseDto(instructor, lecture);
     }
@@ -81,7 +91,8 @@ public class LectureService {
     @Transactional
     public LectureCreateResponseDto updateLecture(Long lectureId, LectureUpdateRequestDto requestDto, MultipartFile file) {
         Lecture lecture = lectureRepository.findById(lectureId)
-                .orElseThrow(LectureNotFoundException::new); // 강의가 없으면 예외 발생
+                .orElseThrow(LectureNotFoundException::new);
+
 
         // 요청된 필드가 있는 경우에만 업데이트
         if (requestDto.getTitle() != null) {
@@ -101,7 +112,7 @@ public class LectureService {
     @Transactional
     public void deleteLecture(Long lectureId) {
         Lecture lecture = lectureRepository.findById(lectureId)
-                .orElseThrow(LectureNotFoundException::new); // 강의가 없으면 예외 발생
+                .orElseThrow(LectureNotFoundException::new);
 
         lectureRepository.delete(lecture); // 강의 삭제
     }

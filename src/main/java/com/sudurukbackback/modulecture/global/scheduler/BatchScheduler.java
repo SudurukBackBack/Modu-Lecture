@@ -1,9 +1,8 @@
 package com.sudurukbackback.modulecture.global.scheduler;
 
+import com.sudurukbackback.modulecture.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.batch.core.launch.JobLauncher;
-import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -12,24 +11,13 @@ import org.springframework.stereotype.Service;
 @Service
 public class BatchScheduler {
 
-    private final JobLauncher jobLauncher;
-    private final ApplicationContext applicationContext;
+    private final UserService userService;
 
-    @Scheduled(cron = "0 0 0 * * *") // 매일 자정 실행
-    public void runDeletePendingUsersJob() {
-        // TODO: 추후 여력이 있을 때 Batch 구성
+    @Scheduled(cron = "0 0 * * * *")
+    public void batchDeactivateAccounts() {
 
-//        try {
-//            // Job을 동적으로 가져옴 (Bean 로딩 문제 방지)
-//            Job deletePendingUsersJob = applicationContext.getBean("deletePendingUsersJob", Job.class);
-//
-//            JobParameters jobParameters = new JobParametersBuilder()
-//                    .addLong("time", System.currentTimeMillis())
-//                    .toJobParameters();
-//
-//            jobLauncher.run(deletePendingUsersJob, jobParameters);
-//        } catch (Exception e) {
-//            log.error("Error running batch job", e);
-//        }
+        log.info("계정 탈퇴 Batch scheduler 작동 시작");
+        userService.batchDeactivateAccounts();
+        log.info("계정 탈퇴 Batch scheduler 작동 완료");
     }
 }

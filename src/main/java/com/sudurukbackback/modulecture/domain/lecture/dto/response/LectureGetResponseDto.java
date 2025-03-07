@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 @Getter
 @AllArgsConstructor
 public class LectureGetResponseDto {
+    private final Long lectureId;
     private final String instructor;
     private final String title;
     private final String description;
@@ -18,6 +19,7 @@ public class LectureGetResponseDto {
     private final LocalDateTime createdAt;
 
     public LectureGetResponseDto(String instructor, Lecture lecture) {
+        this.lectureId = lecture.getId();
         this.instructor = instructor;
         this.title = lecture.getTitle();
         this.description = lecture.getDescription();
