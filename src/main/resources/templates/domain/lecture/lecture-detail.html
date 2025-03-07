@@ -168,23 +168,24 @@
                 }
             })
                 .then(response => {
-                    if (response.ok) {
-                        return response.json();
-                    } else if (response.status === 409) {
+                    if (response.status === 409) {
                         // 이미 수강 신청한 강의인 경우 모달 띄우기
                         var modal = new bootstrap.Modal(document.getElementById('alreadyEnrolledModal'));
                         modal.show();
                         throw new Error("이미 수강 신청한 강의입니다.");
                     }
-                    throw new Error("수강 신청에 실패했습니다.");
-                })
-                .then(data => {
-                    // 수강 신청 성공 시 모달 띄우기
-                    var modal = new bootstrap.Modal(document.getElementById('enrollmentModal'));
-                    modal.show();
 
-                    // "수강하러 가기" 버튼에 강의 ID 적용
-                    document.getElementById("goToLecture").setAttribute("href", `/e-learning/${lectureId}`);
+                    if (response.ok) {
+                        // 수강 신청 성공 시 모달 띄우기
+                        var modal = new bootstrap.Modal(document.getElementById('enrollmentModal'));
+                        modal.show();
+
+                        // "수강하러 가기" 버튼에 강의 ID 적용
+                        document.getElementById("goToLecture").setAttribute("href", `/e-learning/${lectureId}`);
+                        return;
+                    }
+
+                    throw new Error("수강 신청에 실패했습니다.");
                 })
                 .catch(error => {
                     console.error("Error:", error);
