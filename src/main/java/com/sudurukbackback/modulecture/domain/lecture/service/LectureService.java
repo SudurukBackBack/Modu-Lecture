@@ -51,6 +51,7 @@ public class LectureService {
                 .title(request.getTitle())
                 .description(request.getDescription())
                 .price(request.getPrice())
+                .duration(request.getDuration())
                 .status(LectureStatus.ACTIVE) // 강의 상태를 ACTIVE로 설정
                 .createdAt(LocalDateTime.now())
                 .build();

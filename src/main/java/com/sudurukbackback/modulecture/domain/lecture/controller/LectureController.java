@@ -45,25 +45,9 @@ public class LectureController {
     @PostMapping("/create")
     public ResponseEntity<?> createLecture(
             @ModelAttribute @Valid LectureCreateRequestDto request,
-            BindingResult bindingResult,
             Authentication auth) throws IOException {
 
         log.info("요청된 데이터:" + request.toString());
-
-        if (bindingResult.hasErrors()) {
-            // 유효성 검사 에러 메세지
-            log.info("유효성 검사 에러:" + bindingResult.getAllErrors());
-
-            List<String> errorMessages = bindingResult.getAllErrors()
-                    .stream()
-                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
-                    .collect(Collectors.toList());
-
-            ErrorResponseDto errorResponse = new ErrorResponseDto("유효성 검사 실패", errorMessages);
-
-
-            return ResponseEntity.badRequest().body(errorResponse);
-        }
 
         // 현재 인증된 사용자의 id 가져오기
         User user = (User) auth.getPrincipal();

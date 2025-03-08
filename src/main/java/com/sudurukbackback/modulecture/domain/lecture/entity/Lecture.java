@@ -32,11 +32,14 @@ public class Lecture {
     private String title;
 
     @Lob
-    @Column(name = "description", columnDefinition = "TEXT", nullable = false) // 긴 문장 저장이 가능하도록 TEXT 데이터 타입 미리 지정
+    @Column(name = "description", columnDefinition = "TEXT", nullable = false) // HTML 저장이 가능하도록 TEXT 데이터 타입 미리 지정
     private String description;
 
     @Column(nullable = false)
     private int price;
+
+    @Column(nullable = false)
+    private String duration;
 
     @Column(nullable = false)
     private LocalDateTime createdAt;

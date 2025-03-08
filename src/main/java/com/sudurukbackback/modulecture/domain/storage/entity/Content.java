@@ -30,10 +30,6 @@ public class Content {
     private String videoPath; // S3 스토리지 안의 영상 객체 경로 정보
 
     @NonNull
-    @Column(nullable = false)
-    private Integer duration;
-
-    @NonNull
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 }

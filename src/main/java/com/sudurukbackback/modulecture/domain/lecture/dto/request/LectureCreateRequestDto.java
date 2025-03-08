@@ -27,6 +27,9 @@ public class LectureCreateRequestDto {
     @Max(value = 1000000, message = "가격은 최대 1,000,000원까지 설정할 수 있습니다.")
     private Integer price;
 
+    @NotNull(message = "재생시간은 필수 입력값입니다.")
+    private String duration;
+
     @NotNull(message = "강의 영상은 필수입니다.")
     private MultipartFile video;
 }
