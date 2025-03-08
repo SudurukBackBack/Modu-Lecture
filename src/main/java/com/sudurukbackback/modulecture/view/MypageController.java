@@ -31,12 +31,6 @@ public class MypageController {
         return "domain/mypage/mypage";
     }
 
-    // 나의 강의 관리
-    @GetMapping("/tutor")
-    public String mypageTutor(Model model) {
-        return "domain/mypage/mypage-tutor";
-    }
-
     // 나의 강의 관리 > 강의 등록 페이지
     @GetMapping("/tutor-upload")
     public String mypageTutorUpload(Model model) {
@@ -70,5 +64,11 @@ public class MypageController {
         model.addAttribute("enrolledLectures", enrolledLectures);
         return "domain/mypage/mypage-lecture";
     }
-
+    // 나의 강의 관리
+    @GetMapping("/tutor")
+    public String mypageTutor(Model model, Authentication auth) {
+        List<LectureGetResponseDto> instructorLectures = enrollmentService.getInstructorLectures(auth);
+        model.addAttribute("instructorLectures", instructorLectures);
+        return "domain/mypage/mypage-tutor";
+    }
 }

@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="ko">
 
 <!-- head 부분 포함 -->
-<head th:fragment="head" xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head">
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <meta name="description" content="" />
@@ -30,81 +30,42 @@
             <div class="col-md-9">
                 <div class="d-flex justify-content-between align-items-center mt-3 mb-4">
                     <h2>나의 강의 관리</h2>
-                    <!-- 강의 등록 버튼 -->
                     <a href="/mypage/tutor-upload" class="btn btn-primary">강의 등록</a>
                 </div>
 
                 <hr>
 
-                <!-- 수강중인 강의 목록 시작 -->
-                <!-- 강의를 추가할 때에는 타임리프 문법을 사용하여 강의 카드 단위로 <div class="row"> 안에 추가해주시면 됩니다. -->
+                <!-- 강의 목록 -->
                 <div class="row">
-                    <!-- 강의 카드 1 -->
-                    <div class="col-md-4 mb-4">
+                    <div th:if="${#lists.isEmpty(instructorLectures)}" class="text-center">
+                        <p class="text-muted">등록된 강의가 없습니다.</p>
+                    </div>
+
+                    <div th:each="lecture : ${instructorLectures}" class="col-md-4 mb-4">
                         <div class="card h-100">
                             <div class="position-relative">
-                                <img src="/images/test.jpg" class="card-img-top" alt="강의 이미지 1">
-                                <!-- 플레이 아이콘 -->
+                                <img src="/images/test.jpg" class="card-img-top" th:alt="${lecture.title}">
                                 <div class="position-absolute top-50 start-50 translate-middle">
                                     <i class="bi bi-play-circle-fill" style="font-size: 40px; color: rgba(255, 255, 255, 0.8);"></i>
                                 </div>
                             </div>
                             <div class="card-body">
-                                <h5 class="card-title">강의 제목 1</h5>
-                                <h6 class="text-dark text-opacity-75">김모두 강사</h6>
+                                <h5 class="card-title" th:text="${lecture.title}"></h5>
+                                <h6 class="text-dark text-opacity-75" th:text="${lecture.instructor}"></h6>
                                 <hr>
-                                <p class="card-text">강의 소개 내용 1입니다.</p>
-                                <a href="/mypage/tutor-update" class="btn btn-primary">수정하기</a>
+                                <p class="card-text" th:text="${lecture.description}"></p>
+                                <a th:href="@{/mypage/tutor-update(id=${lecture.lectureId})}" class="btn btn-primary">수정하기</a>
                             </div>
                         </div>
                     </div>
-                    <!-- 강의 카드 2 -->
-                    <div class="col-md-4 mb-4">
-                        <div class="card h-100">
-                            <div class="position-relative">
-                                <img src="/images/test.jpg" class="card-img-top" alt="강의 이미지 2">
-                                <!-- 플레이 아이콘 -->
-                                <div class="position-absolute top-50 start-50 translate-middle">
-                                    <i class="bi bi-play-circle-fill" style="font-size: 40px; color: rgba(255, 255, 255, 0.8);"></i>
-                                </div>
-                            </div>
-                            <div class="card-body">
-                                <h5 class="card-title">강의 제목 1</h5>
-                                <h6 class="text-dark text-opacity-75">김모두 강사</h6>
-                                <hr>
-                                <p class="card-text">강의 소개 내용 1입니다.</p>
-                                <a href="#" class="btn btn-primary">수정하기</a>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- 강의 카드 3 -->
-                    <div class="col-md-4 mb-4">
-                        <div class="card h-100">
-                            <div class="position-relative">
-                                <img src="/images/test.jpg" class="card-img-top" alt="강의 이미지 3">
-                                <!-- 플레이 아이콘 -->
-                                <div class="position-absolute top-50 start-50 translate-middle">
-                                    <i class="bi bi-play-circle-fill" style="font-size: 40px; color: rgba(255, 255, 255, 0.8);"></i>
-                                </div>
-                            </div>
-                            <div class="card-body">
-                                <h5 class="card-title">강의 제목 1</h5>
-                                <h6 class="text-dark text-opacity-75">김모두 강사</h6>
-                                <hr>
-                                <p class="card-text">강의 소개 내용 1입니다.</p>
-                                <a href="#" class="btn btn-primary">수정하기</a>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- 필요에 따라 추가 강의 카드를 여기에 추가하세요 -->
                 </div>
-                <!-- 수강 중인 강의 목록 종료 -->
+                <!-- 강의 목록 종료 -->
             </div>
         </div>
     </div>
 </section>
 
-<!-- Footer-->
+<!-- Footer -->
 <div th:insert="~{layout/footer :: footer}"></div>
 
 <!-- JS CDN -->
