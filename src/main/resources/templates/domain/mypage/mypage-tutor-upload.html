@@ -50,6 +50,7 @@
                         <div class="mb-3 row">
                             <div class="mb-3">
                                 <input class="form-control form-control-sm" type="file" id="videoUpload" name="video">
+                                <input type="hidden" id="videoDuration" name="duration">
                             </div>
                         </div>
 
@@ -154,8 +155,8 @@
             });
     }
 
-    // 폼 유효성 검사 함수
-    function validateForm() {
+    // 폼 유효성 검사 함수 (async로 변경)
+    async function validateForm() {
         const title = document.querySelector('#titleInput').value.trim();
         const price = document.querySelector('#priceInput').value;
         const video = document.querySelector('#videoUpload').files;
@@ -169,7 +170,7 @@
         }
 
         // 가격 유효성 검사(입력 여부)
-        if (price==="") {
+        if (price === "") {
             alert('가격은 필수 입력값입니다.');
             return false;
         }
@@ -204,13 +205,85 @@
             return false;
         }
 
-        return true; // 모든 유효성 검사를 통과한 경우
+        // **비디오 길이 유효성 검사 (await 사용)**
+        const isValidDuration = await validateVideoDuration(video[0]);
+        if (!isValidDuration) {
+            return false;
+        }
+
+        return true;
+    }
+
+    // 비디오 길이 검사 함수 (Promise 반환)
+    function validateVideoDuration(file) {
+        return new Promise((resolve) => {
+            const fileURL = URL.createObjectURL(file);
+            const videoElement = document.createElement('video');
+            videoElement.src = fileURL;
+            videoElement.preload = 'metadata';
+
+            videoElement.onloadedmetadata = function () {
+                URL.revokeObjectURL(fileURL); // 메모리 해제
+                const duration = videoElement.duration;
+
+                if (duration < 60 || duration > 900) { // 최소 1분(60초), 최대 15분(900초)
+                    alert('강의 영상은 최소 1분 이상, 최대 15분 이하여야 합니다.');
+                    resolve(false);
+                } else {
+                    console.log('영상 길이:', duration, '초');
+                    document.querySelector('#videoDuration').value = duration; // 숨겨진 input에 저장
+                    resolve(true);
+                }
+            };
+        });
+    }
+
+    // 폼 제출 함수 수정 (async로 변경)
+    async function submitForm() {
+        document.querySelector('#descriptionInput').value = editor.getHTML();
+
+        // 유효성 검사 실행 (await 추가)
+        const isValid = await validateForm();
+        if (!isValid) {
+            return; // 유효성 검사 실패 시 제출 중단
+        }
+
+        // 폼 데이터 생성
+        const formData = new FormData(document.querySelector('#lectureForm'));
+
+        // AJAX 요청
+        fetch('/lectures/create', {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    return response.json().then(errorData => {
+                        throw new Error(errorData);
+                    });
+                }
+            })
+            .then(data => {
+                alert('강의가 성공적으로 등록되었습니다!');
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('강의 등록에 실패했습니다. 서버 오류가 발생했습니다.');
+            });
     }
 
     // 기본 폼 제출을 막고 AJAX로 처리
-    document.querySelector('#lectureForm').addEventListener('submit', function(event) {
+    document.querySelector('#lectureForm').addEventListener('submit', async function(event) {
         event.preventDefault();
-        submitForm();
+
+        const isValid = await validateForm();
+        if (isValid) {
+            submitForm();
+        } else {
+            console.warn('영상 길이 조건 불충족으로 제출이 중단되었습니다.');
+        }
     });
 </script>
 
