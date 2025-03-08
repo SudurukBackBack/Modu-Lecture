@@ -3,6 +3,7 @@ package com.sudurukbackback.modulecture.domain.enrollment.service;
 import com.sudurukbackback.modulecture.domain.enrollment.entity.Enrollment;
 import com.sudurukbackback.modulecture.domain.enrollment.exception.EnrollmentAlreadyExistException;
 import com.sudurukbackback.modulecture.domain.enrollment.repository.EnrollmentRepository;
+import com.sudurukbackback.modulecture.domain.lecture.dto.request.LectureUpdateRequestDto;
 import com.sudurukbackback.modulecture.domain.lecture.dto.response.LectureGetResponseDto;
 import com.sudurukbackback.modulecture.domain.lecture.entity.Lecture;
 import com.sudurukbackback.modulecture.domain.lecture.exception.InstructorNotFoundException;
@@ -79,5 +80,49 @@ public class EnrollmentService {
         return lectures.stream()
                 .map(lecture -> new LectureGetResponseDto(instructor.getNickname(), lecture))
                 .toList();
+    }
+    // 강의 상세 정보 조회
+    @Transactional
+    public LectureGetResponseDto getLectureDetail(Long lectureId, Authentication auth) {
+        User instructor = userRepository.findByEmail(auth.getName())
+                .orElseThrow(() -> new RuntimeException("Instructor not found"));
+
+        Lecture lecture = lectureRepository.findById(lectureId)
+                .orElseThrow(LectureNotFoundException::new);
+
+        // 강사가 본인의 강의를 조회하는지 검증
+        if (!lecture.getInstructorId().equals(instructor.getId())) {
+            throw new SecurityException("본인의 강의만 조회할 수 있습니다.");
+        }
+
+        return new LectureGetResponseDto(instructor.getNickname(), lecture);
+    }
+
+    // 강의 정보 수정 (PATCH)
+    @Transactional
+    public void updateLecture(Long lectureId, LectureUpdateRequestDto requestDto, Authentication auth) {
+        User instructor = userRepository.findByEmail(auth.getName())
+                .orElseThrow(() -> new RuntimeException("Instructor not found"));
+
+        Lecture lecture = lectureRepository.findById(lectureId)
+                .orElseThrow(LectureNotFoundException::new);
+
+        // 강사가 본인의 강의를 수정하는지 검증
+        if (!lecture.getInstructorId().equals(instructor.getId())) {
+            throw new SecurityException("본인의 강의만 수정할 수 있습니다.");
+        }
+
+        // 강의 정보 업데이트
+        if (requestDto.getTitle() != null) {
+            lecture.setTitle(requestDto.getTitle());
+        }
+        if (requestDto.getDescription() != null) {
+            lecture.setDescription(requestDto.getDescription());
+        }
+        if (requestDto.getPrice() != null) {
+            lecture.setPrice(requestDto.getPrice());
+        }
+
+        lectureRepository.save(lecture);
     }
 }

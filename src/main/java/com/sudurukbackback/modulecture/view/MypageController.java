@@ -2,6 +2,7 @@ package com.sudurukbackback.modulecture.view;
 
 import com.sudurukbackback.modulecture.domain.enrollment.service.EnrollmentService;
 import com.sudurukbackback.modulecture.domain.lecture.dto.request.LectureCreateRequestDto;
+import com.sudurukbackback.modulecture.domain.lecture.dto.request.LectureUpdateRequestDto;
 import com.sudurukbackback.modulecture.domain.lecture.dto.response.LectureGetResponseDto;
 import com.sudurukbackback.modulecture.domain.lecture.entity.Category;
 import com.sudurukbackback.modulecture.domain.lecture.service.CategoryService;
@@ -10,9 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -45,12 +44,6 @@ public class MypageController {
         return "domain/mypage/mypage-tutor-upload";
     }
 
-    // 나의 강의 관리 > 수정하기 > 강의 수정 페이지
-    @GetMapping("/tutor-update")
-    public String mypageTutorUpdate(Model model) {
-        return "domain/mypage/mypage-tutor-update";
-    }
-
     // 계정 관리
     @GetMapping("/account")
     public String mypageAccount(Model model) {
@@ -70,5 +63,22 @@ public class MypageController {
         List<LectureGetResponseDto> instructorLectures = enrollmentService.getInstructorLectures(auth);
         model.addAttribute("instructorLectures", instructorLectures);
         return "domain/mypage/mypage-tutor";
+    }
+
+    //  강의 수정 페이지 (강의 정보 불러오기)  나의 강의 관리 > 수정하기 > 강의 수정 페이지
+    @GetMapping("/tutor-update")
+    public String mypageTutorUpdate(@RequestParam("id") Long lectureId, Model model, Authentication auth) {
+        LectureGetResponseDto lecture = enrollmentService.getLectureDetail(lectureId, auth);
+        model.addAttribute("lecture", lecture);
+        return "domain/mypage/mypage-tutor-update";
+    }
+
+    // 강의 수정 처리 (PATCH)
+    @PatchMapping("/tutor-update/{lectureId}")
+    public String updateLecture(@PathVariable Long lectureId,
+                                @ModelAttribute LectureUpdateRequestDto requestDto,
+                                Authentication auth) {
+        enrollmentService.updateLecture(lectureId, requestDto, auth);
+        return "redirect:/mypage/tutor";
     }
 }
