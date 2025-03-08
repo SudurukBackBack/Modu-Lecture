@@ -14,7 +14,6 @@ import com.sudurukbackback.modulecture.domain.lecture.repository.LectureReposito
 import com.sudurukbackback.modulecture.domain.user.entity.User;
 import com.sudurukbackback.modulecture.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -117,21 +116,4 @@ public class LectureService {
 
         lectureRepository.delete(lecture); // 강의 삭제
     }
-    // 현재 로그인한 강사의 강의 목록 조회 (id 기준 내림차순 정렬)
-    @Transactional(readOnly = true)
-    public List<LectureGetResponseDto> getInstructorLectures(Authentication auth) {
-        User instructor = userRepository.findByEmail(auth.getName())
-                .orElseThrow(() -> new RuntimeException("Instructor not found"));
-
-        List<Lecture> lectures = lectureRepository.findByInstructorIdOrderByIdDesc(instructor.getId());
-
-        return lectures.stream()
-                .map(lecture -> new LectureGetResponseDto(instructor.getNickname(), lecture))
-                .toList();
-    }
-
-    public List<LectureGetResponseDto> getInstructorLectures(org.springframework.security.core.Authentication auth) {
-    }
-}
-
 }

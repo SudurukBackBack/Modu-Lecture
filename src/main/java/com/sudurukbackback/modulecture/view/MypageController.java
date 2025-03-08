@@ -73,10 +73,8 @@ public class MypageController {
     // 나의 강의 관리
     @GetMapping("/tutor")
     public String mypageTutor(Model model, Authentication auth) {
-        List<LectureGetResponseDto> instructorLectures = lectureService.getInstructorLectures(auth);
+        List<LectureGetResponseDto> instructorLectures = enrollmentService.getInstructorLectures(auth);
         model.addAttribute("instructorLectures", instructorLectures);
         return "domain/mypage/mypage-tutor";
     }
-
-
 }

@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="ko">
 
 <!-- head 부분 포함 -->
-<head th:fragment="head" xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head">
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <meta name="description" content="" />
@@ -30,7 +30,6 @@
             <div class="col-md-9">
                 <div class="d-flex justify-content-between align-items-center mt-3 mb-4">
                     <h2>나의 강의 관리</h2>
-                    <!-- 강의 등록 버튼 -->
                     <a href="/mypage/tutor-upload" class="btn btn-primary">강의 등록</a>
                 </div>
 
@@ -38,17 +37,14 @@
 
                 <!-- 강의 목록 -->
                 <div class="row">
-                    <!-- 강의 목록이 없을 경우 메시지 출력 -->
                     <div th:if="${#lists.isEmpty(instructorLectures)}" class="text-center">
                         <p class="text-muted">등록된 강의가 없습니다.</p>
                     </div>
 
-                    <!-- 강의 카드 -->
                     <div th:each="lecture : ${instructorLectures}" class="col-md-4 mb-4">
                         <div class="card h-100">
                             <div class="position-relative">
                                 <img src="/images/test.jpg" class="card-img-top" th:alt="${lecture.title}">
-                                <!-- 플레이 아이콘 -->
                                 <div class="position-absolute top-50 start-50 translate-middle">
                                     <i class="bi bi-play-circle-fill" style="font-size: 40px; color: rgba(255, 255, 255, 0.8);"></i>
                                 </div>

@@ -10,6 +10,7 @@ import com.sudurukbackback.modulecture.domain.lecture.repository.LectureReposito
 import com.sudurukbackback.modulecture.domain.user.entity.User;
 import com.sudurukbackback.modulecture.domain.user.exception.UserNotExistException;
 import com.sudurukbackback.modulecture.domain.user.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -65,5 +66,17 @@ public class EnrollmentService {
                 .map(lecture -> new LectureGetResponseDto(user.getNickname(), lecture))
                 .collect(Collectors.toList());
 
+    }
+    // ✅ 강사의 강의 목록 조회 (ID 내림차순 정렬)
+
+    public List<LectureGetResponseDto> getInstructorLectures(Authentication auth) {
+        User instructor = userRepository.findByEmail(auth.getName())
+                .orElseThrow(() -> new RuntimeException("Instructor not found"));
+
+        List<Lecture> lectures = enrollmentRepository.findLecturesByInstructorId(instructor.getId());
+
+        return lectures.stream()
+                .map(lecture -> new LectureGetResponseDto(instructor.getNickname(), lecture))
+                .toList();
     }
 }
