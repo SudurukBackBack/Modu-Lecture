@@ -28,7 +28,7 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/sign-up", "/auth/sign-in", "/web/**").permitAll() // 회원가입, 로그인
-                        .requestMatchers("/main", "/css/**", "/js/**", "/images/**", "/images/logo.svg", "/fragments/**", "/community/**", "/lecture/**").permitAll() // 인증 없이 접근 가능
+                        .requestMatchers("/main", "/css/**", "/js/**", "/images/**", "/images/logo.svg", "/fragments/**", "/community/**", "/lecture/**", "/posts/**").permitAll() // 인증 없이 접근 가능
                         .requestMatchers("/users/**", "/mypage/**").authenticated() // 사용자 정보 관련 작업
                         .requestMatchers(HttpMethod.GET, "/posts/**").permitAll() // 커뮤니티 조회 기능만
                         .requestMatchers(HttpMethod.POST, "/posts/**").authenticated()

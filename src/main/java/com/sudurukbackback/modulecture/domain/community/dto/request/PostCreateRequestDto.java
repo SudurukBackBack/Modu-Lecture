@@ -6,8 +6,6 @@ import lombok.Data;
 
 @Data
 public class PostCreateRequestDto {
-//    @NotNull(message = "아이디는 필수입력")
-//    private Long userId;
 
     @NotBlank(message = "카테고리를 선택해주세요.")
     private String category;

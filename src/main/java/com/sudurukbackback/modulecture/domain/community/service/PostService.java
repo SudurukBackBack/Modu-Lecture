@@ -27,6 +27,7 @@ public class PostService {
                 .orElseThrow(PostNotFoundException::new);
     }
 
+    // 게시글 생성
     public Post createPost(Long userId, PostCreateRequestDto postCreateDto) {
         Post post = Post.builder()
                 .userId(userId)

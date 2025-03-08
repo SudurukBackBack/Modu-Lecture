@@ -1,13 +1,11 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="ko">
-
-<!-- head 부분 포함 -->
 <head th:fragment="head" xmlns:th="http://www.thymeleaf.org">
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <meta name="description" content="" />
     <meta name="author" content="" />
-    <title>모두의강의 - 커뮤니티 | 글상세 </title>
+    <title>모두의강의 - 커뮤니티 | 글쓰기 </title>
 
     <!-- CSS-CDN -->
     <div th:replace="~{layout/css-cdn :: css-cdn}"></div>
@@ -33,26 +31,29 @@
 
                     <!-- 글쓰기 폼 -->
                     <div class="card p-4">
-                        <form action="#" method="post">
+                        <form id="postCreateForm" th:action="@{/posts/create}" method="post" th:object="${postCreateDto}">
                             <!-- 제목 입력 -->
                             <div class="mb-3">
-                                <input type="text" class="form-control form-control-lg me-2" id="postTitle" name="title" placeholder="제목을 입력하세요" required>
+                                <input type="text" class="form-control form-control-lg me-2" id="postTitle" name="title" placeholder="제목을 입력하세요" required th:field="*{title}">
+                                <div id="titleError" class="text-danger"></div>
                             </div>
 
                             <!-- 카테고리 선택 -->
                             <div class="mb-3">
-                                <select class="form-select text-opacity-50" id="postCategory" name="category" required>
+                                <select class="form-select text-opacity-50" id="postCategory" name="category" required th:field="*{category}">
                                     <option value="" disabled selected>카테고리를 선택하세요</option>
                                     <option value="0">공지사항</option>
                                     <option value="1">QnA</option>
                                     <option value="2">강의</option>
                                     <option value="3">수다</option>
                                 </select>
+                                <div id="categoryError" class="text-danger"></div>
                             </div>
 
                             <!-- 내용 입력 -->
                             <div class="mb-3">
-                                <div th:replace="~{layout/toast-editor :: toast-editor}"></div>
+                                <textarea class="form-control" id="postContent" name="content" placeholder="내용을 입력하세요" th:field="*{content}"></textarea>
+                                <div id="contentError" class="text-danger"></div>
                             </div>
 
                             <!-- 등록 버튼 -->
@@ -62,6 +63,7 @@
                                 </button>
                             </div>
                         </form>
+
                     </div>
                     <!-- 글쓰기 폼 끝 -->
                 </div>
@@ -77,6 +79,82 @@
 <!-- JS CDN -->
 <div th:replace="~{layout/js-cdn :: js-cdn}"></div>
 
+<script>
+
+    // Toast UI Editor 초기화
+    const editor = new toastui.Editor({
+        el: document.querySelector('#editor'),
+        height: '400px',
+        initialEditType: 'markdown',
+        previewStyle: 'vertical',
+    });
+
+    // 에디터의 내용을 숨겨진 인풋 필드에 저장
+    document.querySelector('#descriptionInput').value = editor.getHTML();
+
+    $(document).ready(function() {
+        // 제목 유효성 검사
+        $('#postTitle').on('input', function() {
+            var title = $(this).val();
+            if (!title) {
+                $('#titleError').text('제목을 입력해주세요');
+            } else {
+                $('#titleError').text('');
+            }
+        });
+
+        // 카테고리 유효성 검사
+        $('#postCategory').on('change', function() {
+            var category = $(this).val();
+            if (!category) {
+                $('#categoryError').text('카테고리를 선택해주세요');
+            } else {
+                $('#categoryError').text('');
+            }
+        });
+
+        // 내용 유효성 검사
+        $('#postContent').on('input', function() {
+            var content = $(this).val();
+            if (!content) {
+                $('#contentError').text('내용을 입력해주세요');
+            } else {
+                $('#contentError').text('');
+            }
+        });
+
+        // 폼 제출 시 유효성 검사
+        $('#postCreateForm').on('submit', function(event) {
+            var isValid = true;
+
+            // 제목 검사
+            var title = $('#postTitle').val();
+            if (!title) {
+                $('#titleError').text('제목을 입력해주세요');
+                isValid = false;
+            }
+
+            // 카테고리 검사
+            var category = $('#postCategory').val();
+            if (!category) {
+                $('#categoryError').text('카테고리를 선택해주세요');
+                isValid = false;
+            }
+
+            // 내용 검사
+            var content = $('#postContent').val();
+            if (!content) {
+                $('#contentError').text('내용을 입력해주세요');
+                isValid = false;
+            }
+
+            // 유효성 검사가 통과하지 않으면 폼 제출을 막음
+            if (!isValid) {
+                event.preventDefault(); // 폼 제출을 막음
+            }
+        });
+    });
+</script>
 
 </body>
 </html>

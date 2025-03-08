@@ -35,16 +35,16 @@ public class PostController {
     }
 
     // 게시글 상세 조회
-    @GetMapping("/{id}")
+    @GetMapping("/detail/{id}")
     public ResponseEntity<PostResponseDto> getPostById(@PathVariable Long id) {
         Post post = postService.getPostById(id);
         return ResponseEntity.ok(PostResponseDto.fromEntity(post));
     }
 
     // 게시글 생성
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<String> createPost(
-            @Valid @RequestBody PostCreateRequestDto postCreateDto,
+            @Valid @ModelAttribute PostCreateRequestDto postCreateDto,
             BindingResult bindingResult,
             Authentication auth) {
         if (bindingResult.hasErrors()) {
@@ -53,10 +53,6 @@ public class PostController {
             return ResponseEntity.badRequest().body(errorMessage);
         }
 
-        // 토큰 없으면 로그인 창으로
-        if (auth == null || !auth.isAuthenticated()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
-        }
         // 사용자 ID 가져오기
         User user = (User) auth.getPrincipal();
         Long userId = user.getId();
@@ -67,7 +63,7 @@ public class PostController {
         return ResponseEntity.ok("게시글 등록 완료");
     }
 
-    @PutMapping("/{postId}")
+    @PutMapping("/update/{postId}")
     public ResponseEntity<String> updatePost(
             @PathVariable Long postId,
             @Valid @RequestBody PostUpdateRequestDto postUpdateDto, BindingResult bindingResult,
@@ -77,10 +73,6 @@ public class PostController {
             return ResponseEntity.badRequest().body(errorMessage);
         }
 
-        // 토큰 없으면 로그인 창으로
-        if (auth == null || !auth.isAuthenticated()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
-        }
         // 사용자 ID 가져오기
         User user = (User) auth.getPrincipal();
         Long userId = user.getId();
@@ -91,7 +83,8 @@ public class PostController {
         return ResponseEntity.ok("게시글 수정 완료");
     }
 
-    @DeleteMapping("/{id}")
+    // 게시글 삭제
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deletePost(@PathVariable Long id) {
         postService.deletePost(id);
         return ResponseEntity.noContent().build();

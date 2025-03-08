@@ -1,5 +1,6 @@
 package com.sudurukbackback.modulecture.view;
 
+import com.sudurukbackback.modulecture.domain.community.dto.request.PostCreateRequestDto;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,6 +23,7 @@ public class CommunityController {
 
     @GetMapping("/post-write")
     public String postWrite(Model model) {
+        model.addAttribute("postCreateDto", new PostCreateRequestDto());
         return "domain/community/post-write";
     }
 
