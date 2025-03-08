@@ -182,7 +182,13 @@
 
         // 강의 영상 유효성 검사
         if (video.length === 0) {
-            alert('강의 영상을 업로드해 주세요.');
+            alert('강의 영상 파일을 선택해 주세요.');
+            return false;
+        }
+
+        // 영상 파일 MIME 타입 검사
+        if (!video[0].type.startsWith('video/')) {
+            alert('영상 파일만 업로드할 수 있습니다.');
             return false;
         }
 
