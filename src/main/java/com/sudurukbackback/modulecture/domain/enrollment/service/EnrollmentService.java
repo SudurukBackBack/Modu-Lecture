@@ -5,6 +5,7 @@ import com.sudurukbackback.modulecture.domain.enrollment.exception.EnrollmentAlr
 import com.sudurukbackback.modulecture.domain.enrollment.repository.EnrollmentRepository;
 import com.sudurukbackback.modulecture.domain.lecture.dto.response.LectureGetResponseDto;
 import com.sudurukbackback.modulecture.domain.lecture.entity.Lecture;
+import com.sudurukbackback.modulecture.domain.lecture.exception.InstructorNotFoundException;
 import com.sudurukbackback.modulecture.domain.lecture.exception.LectureNotFoundException;
 import com.sudurukbackback.modulecture.domain.lecture.repository.LectureRepository;
 import com.sudurukbackback.modulecture.domain.user.entity.User;
@@ -67,11 +68,11 @@ public class EnrollmentService {
                 .collect(Collectors.toList());
 
     }
-    // ✅ 강사의 강의 목록 조회 (ID 내림차순 정렬)
 
+    // 강사의 강의 목록 조회 (ID 내림차순 정렬)
     public List<LectureGetResponseDto> getInstructorLectures(Authentication auth) {
         User instructor = userRepository.findByEmail(auth.getName())
-                .orElseThrow(() -> new RuntimeException("Instructor not found"));
+                .orElseThrow(InstructorNotFoundException::new);
 
         List<Lecture> lectures = enrollmentRepository.findLecturesByInstructorId(instructor.getId());
 
