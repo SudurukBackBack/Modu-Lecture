@@ -5,13 +5,16 @@ import com.sudurukbackback.modulecture.domain.community.dto.request.PostUpdateRe
 import com.sudurukbackback.modulecture.domain.community.dto.response.PostResponseDto;
 import com.sudurukbackback.modulecture.domain.community.entity.Post;
 import com.sudurukbackback.modulecture.domain.community.service.PostService;
+import com.sudurukbackback.modulecture.domain.user.entity.User;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,25 +43,49 @@ public class PostController {
 
     // 게시글 생성
     @PostMapping
-    public ResponseEntity<String> createPost(@Valid @RequestBody PostCreateRequestDto postCreateDto, BindingResult bindingResult) {
+    public ResponseEntity<String> createPost(
+            @Valid @RequestBody PostCreateRequestDto postCreateDto,
+            BindingResult bindingResult,
+            Authentication auth) {
         if (bindingResult.hasErrors()) {
             // 오류가 있을 경우, 오류 메시지를 반환 (유효성 검증)
             String errorMessage = bindingResult.getAllErrors().getFirst().getDefaultMessage();
             return ResponseEntity.badRequest().body(errorMessage);
         }
-        Post createdPost = postService.createPost(postCreateDto);
+
+        // 토큰 없으면 로그인 창으로
+        if (auth == null || !auth.isAuthenticated()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
+        }
+        // 사용자 ID 가져오기
+        User user = (User) auth.getPrincipal();
+        Long userId = user.getId();
+
+        Post createdPost = postService.createPost(userId, postCreateDto);
         log.info("게시글 생성 :\n{}", createdPost);
 
         return ResponseEntity.ok("게시글 등록 완료");
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<String> updatePost(@PathVariable Long id, @Valid @RequestBody PostUpdateRequestDto postUpdateDto, BindingResult bindingResult) {
+    @PutMapping("/{postId}")
+    public ResponseEntity<String> updatePost(
+            @PathVariable Long postId,
+            @Valid @RequestBody PostUpdateRequestDto postUpdateDto, BindingResult bindingResult,
+            Authentication auth) {
         if (bindingResult.hasErrors()) {
             String errorMessage = bindingResult.getAllErrors().getFirst().getDefaultMessage();
             return ResponseEntity.badRequest().body(errorMessage);
         }
-        Post updatedPost = postService.updatePost(id, postUpdateDto.getUserId(), postUpdateDto.getNewContent());
+
+        // 토큰 없으면 로그인 창으로
+        if (auth == null || !auth.isAuthenticated()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
+        }
+        // 사용자 ID 가져오기
+        User user = (User) auth.getPrincipal();
+        Long userId = user.getId();
+
+        Post updatedPost = postService.updatePost(postId, userId, postUpdateDto.getNewContent());
         log.info("게시글 수정 :\n{}", updatedPost);
 
         return ResponseEntity.ok("게시글 수정 완료");

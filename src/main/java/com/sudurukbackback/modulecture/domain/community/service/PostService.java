@@ -27,9 +27,9 @@ public class PostService {
                 .orElseThrow(PostNotFoundException::new);
     }
 
-    public Post createPost(PostCreateRequestDto postCreateDto) {
+    public Post createPost(Long userId, PostCreateRequestDto postCreateDto) {
         Post post = Post.builder()
-                .userId(postCreateDto.getUserId())
+                .userId(userId)
                 .category(postCreateDto.getCategory())
                 .title(postCreateDto.getTitle())
                 .content(postCreateDto.getContent())

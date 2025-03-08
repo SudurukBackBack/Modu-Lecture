@@ -31,6 +31,7 @@ public class SecurityConfig {
                         .requestMatchers("/main", "/css/**", "/js/**", "/images/**", "/images/logo.svg", "/fragments/**", "/community/**", "/lecture/**").permitAll() // 인증 없이 접근 가능
                         .requestMatchers("/users/**", "/mypage/**").authenticated() // 사용자 정보 관련 작업
                         .requestMatchers(HttpMethod.GET, "/posts/**").permitAll() // 커뮤니티 조회 기능만
+                        .requestMatchers(HttpMethod.POST, "/posts/**").authenticated()
                         .requestMatchers("/gold/**").hasRole("GOLD") // GOLD 이상만 접근 가능
                         .requestMatchers("/platinum/**").hasRole("PLATINUM") // PLATINUM만 접근 가능
                         .anyRequest().authenticated()
