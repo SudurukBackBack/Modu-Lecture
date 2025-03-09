@@ -64,14 +64,25 @@
 <!-- navbar 부분 포함 -->
 <div th:insert="~{layout/navbar :: navbar}"></div>
 
-<!-- 검색 입력창 -->
-<div class="container my-4">
-    <form th:action="@{/main}" method="get" class="d-flex justify-content-center">
-        <input type="text" name="keyword" class="form-control w-50"
-               placeholder="강의 검색..." th:value="${keyword}" />
-        <button type="submit" class="btn btn-primary ms-2">검색</button>
-    </form>
-</div>
+<!-- Header -->
+<header class= "bg-dark py-5" style="background-image: url('/images/bg.jpg'); background-size: cover; background-position: center;">
+    <div class="container px-4 px-lg-5 my-5">
+        <div class="text-center">
+            <h3 class="fs-2 fw-medium" style="font-size: 2.5rem;">모두의 강의에서 원하는 강의를 찾아보세요.</h3>
+            <!-- 검색창 -->
+            <div class="row justify-content-center mt-4">
+                <div class="col-md-6">
+                    <form th:action="@{/main}" method="get" class="d-flex justify-content-center">
+                        <input th:value="${keyword}" class="form-control me-2 text-dark border-dark border-opacity-25" name="keyword" type="text" placeholder="검색어를 입력하세요">
+                        <button class="btn btn-primary me-2" type="submit" aria-label="검색">
+                            <i class="bi bi-search text-white"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
 
 <!-- 검색 결과 또는 최신 강의 목록 -->
 <section class="py-5">
