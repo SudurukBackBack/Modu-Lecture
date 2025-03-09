@@ -131,4 +131,16 @@ public class LectureController {
 
         return ResponseEntity.noContent().build();
     }
+
+    //  강의 검색 API (GET 요청)
+    @GetMapping("/search")
+    public List<LectureGetResponseDto> searchLectures(
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) String category,
+            @RequestParam(required = false) Integer minPrice,
+            @RequestParam(required = false) Integer maxPrice) {
+
+        return lectureService.searchLectures(keyword, category, minPrice, maxPrice);
+    }
+
 }

@@ -116,4 +116,15 @@ public class LectureService {
 
         lectureRepository.delete(lecture); // 강의 삭제
     }
+
+    // 강의 검색 서비스 메서드
+    @Transactional(readOnly = true)
+    public List<LectureGetResponseDto> searchLectures(String keyword, String category, Integer minPrice, Integer maxPrice) {
+        List<Lecture> lectures = lectureRepository.searchLectures(keyword, category, minPrice, maxPrice);
+
+        return lectures.stream()
+                .map(lecture -> new LectureGetResponseDto(lecture.getInstructorId().toString(), lecture))
+                .toList();
+    }
+
 }
