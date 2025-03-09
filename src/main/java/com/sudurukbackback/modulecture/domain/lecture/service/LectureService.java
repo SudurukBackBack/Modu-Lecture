@@ -117,11 +117,20 @@ public class LectureService {
         lectureRepository.delete(lecture); // 강의 삭제
     }
 
-    // 강의 검색 서비스 메서드
+    //  강의 검색 서비스 (제목 키워드 기반 검색)
     @Transactional(readOnly = true)
     public List<LectureGetResponseDto> searchLectures(String keyword, String category, Integer minPrice, Integer maxPrice) {
         List<Lecture> lectures = lectureRepository.searchLectures(keyword, category, minPrice, maxPrice);
 
+        return lectures.stream()
+                .map(lecture -> new LectureGetResponseDto(lecture.getInstructorId().toString(), lecture))
+                .toList();
+    }
+
+    // 최신 강의 목록 조회 (최근 등록된 10개)
+    @Transactional(readOnly = true)
+    public List<LectureGetResponseDto> getRecentLectures() {
+        List<Lecture> lectures = lectureRepository.findTop10ByOrderByCreatedAtDesc();
         return lectures.stream()
                 .map(lecture -> new LectureGetResponseDto(lecture.getInstructorId().toString(), lecture))
                 .toList();

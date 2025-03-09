@@ -9,6 +9,10 @@ import java.util.List;
 
 @Repository
 public interface LectureRepository extends JpaRepository<Lecture, Long> {
+
+    // 최신 강의 10개 조회
+    List<Lecture> findTop10ByOrderByCreatedAtDesc();
+
     // 강의 검색 쿼리 (제목, 강사명, 카테고리, 가격 조건)
     @Query("SELECT l FROM Lecture l " +
             "LEFT JOIN CategoryRel cr ON l.id = cr.lectureId " +
