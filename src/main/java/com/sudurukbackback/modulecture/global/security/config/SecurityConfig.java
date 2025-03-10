@@ -27,8 +27,8 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/sign-up", "/auth/sign-in", "/web/**").permitAll() // 회원가입, 로그인
-                        .requestMatchers("/main", "/css/**", "/js/**", "/images/**", "/images/logo.svg", "/fragments/**", "/community/**", "/lecture/**", "/enroll/**").permitAll() // 인증 없이 접근 가능
+                        .requestMatchers("/auth/sign-up", "/auth/sign-in", "/web/login", "/web/register", "/web/logout").permitAll() // 회원가입, 로그인
+                        .requestMatchers("/main", "/css/**", "/js/**", "/images/**", "/images/logo.svg", "/fragments/**", "/community/**", "/lecture/**", "/enroll/**", "/favicon.ico").permitAll() // 인증 없이 접근 가능
                         .requestMatchers("/users/**", "/mypage/**").authenticated() // 사용자 정보 관련 작업
                         .requestMatchers(HttpMethod.GET, "/posts/**").permitAll() // 커뮤니티 조회 기능만
                         .requestMatchers("/gold/**").hasRole("GOLD") // GOLD 이상만 접근 가능
@@ -36,11 +36,12 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/comments/**").permitAll()
                         .anyRequest().authenticated()
                 )
-                .formLogin(login -> login
-                        .loginPage("/web/login?error=unauthorized")
-                        .defaultSuccessUrl("/main")
-                        .permitAll()
-                )
+//                .formLogin(login -> login
+////                        .loginPage("/web/login?error=unauthorized")
+//                        .loginPage("/web/login")
+//                        .defaultSuccessUrl("/main", true)
+//                        .permitAll()
+//                )
                 .logout(logout -> logout
                         .logoutUrl("/web/logout")
                         .logoutSuccessUrl("/main")
