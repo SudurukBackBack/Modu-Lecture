@@ -36,12 +36,11 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/comments/**").permitAll()
                         .anyRequest().authenticated()
                 )
-//                .formLogin(login -> login
-////                        .loginPage("/web/login?error=unauthorized")
-//                        .loginPage("/web/login")
-//                        .defaultSuccessUrl("/main", true)
-//                        .permitAll()
-//                )
+                .formLogin(login -> login
+                        .loginPage("/web/login?error=unauthorized")
+                        .defaultSuccessUrl("/main", true)
+                        .permitAll()
+                )
                 .logout(logout -> logout
                         .logoutUrl("/web/logout")
                         .logoutSuccessUrl("/main")

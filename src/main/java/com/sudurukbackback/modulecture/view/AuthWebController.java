@@ -11,16 +11,16 @@ public class AuthWebController {
 
     @GetMapping("/login")
     public String login(Model model) {
-        return "/domain/auth/login";
+        return "domain/auth/login";
     }
 
     @GetMapping("/register")
     public String register(Model model) {
-        return "/domain/auth/register";
+        return "domain/auth/register";
     }
 
     @GetMapping("/logout")
     public String logout(Model model) {
-        return "/domain/auth/logout";
+        return "domain/auth/logout";
     }
 }
