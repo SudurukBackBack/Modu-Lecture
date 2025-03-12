@@ -1,14 +1,11 @@
 package com.sudurukbackback.modulecture.domain.lecture.controller;
 
 import com.sudurukbackback.modulecture.domain.lecture.dto.request.LectureCreateRequestDto;
+import com.sudurukbackback.modulecture.domain.lecture.dto.request.LectureUpdateRequestDto;
 import com.sudurukbackback.modulecture.domain.lecture.dto.response.ErrorResponseDto;
 import com.sudurukbackback.modulecture.domain.lecture.dto.response.LectureCreateResponseDto;
-import com.sudurukbackback.modulecture.domain.lecture.dto.request.LectureUpdateRequestDto;
 import com.sudurukbackback.modulecture.domain.lecture.dto.response.LectureGetResponseDto;
-import com.sudurukbackback.modulecture.domain.lecture.entity.Lecture;
-import com.sudurukbackback.modulecture.domain.lecture.service.CategoryService;
 import com.sudurukbackback.modulecture.domain.lecture.service.LectureService;
-import com.sudurukbackback.modulecture.domain.storage.service.ContentService;
 import com.sudurukbackback.modulecture.domain.user.entity.User;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -33,7 +31,6 @@ public class LectureController {
     private final LectureService lectureService;
 //    private final ContentService contentService;
 
-
     /**
      * 새로운 강의를 생성합니다. (파일 업로드 포함)
      *
@@ -42,6 +39,7 @@ public class LectureController {
      * @return 생성된 강의 정보를 담은 LectureCreateResponseDto를 포함한 ResponseEntity
      * @throws IOException 파일 처리 중 발생할 수 있는 예외
      */
+    @PreAuthorize("hasRole('GOLD')")
     @PostMapping("/create")
     public ResponseEntity<?> createLecture(
             @ModelAttribute @Valid LectureCreateRequestDto request,
@@ -79,9 +77,6 @@ public class LectureController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-
-
-
     /**
      * 특정 강의의 상세 정보를 조회합니다.
      *
@@ -96,7 +91,6 @@ public class LectureController {
 
         return ResponseEntity.ok(lecture);
     }
-
 
     /**
      * 특정 강의의 정보를 수정합니다.

@@ -27,14 +27,14 @@
             <form class="d-flex">
                 <!-- 로그인하지 않은 경우 -->
                 <div th:if="${!isAuthenticated}">
-                    <a href="/web/login" class="btn btn-primary">로그인</a>
+                    <a href="/login" class="btn btn-primary">로그인</a>
                 </div>
 
                 <!-- 로그인한 경우 -->
                 <div th:if="${isAuthenticated}">
                     <span class="me-2 text-black">[[${username}]]님</span>
 
-                    <a href="/web/logout" class="btn btn-primary" id="logout-btn">로그아웃</a>
+                    <a href="/logout" class="btn btn-primary" id="logout-btn">로그아웃</a>
                 </div>
             </form>
         </div>
