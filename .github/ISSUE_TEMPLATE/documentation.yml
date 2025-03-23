@@ -1,0 +1,27 @@
+name: 📖 Documentation Improvement
+description: 문서 개선 사항을 제안하세요.
+title: "[Docs] 문서 개선 요청"
+labels: ["documentation"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ### 📖 문서 개선 요청
+        문서에서 수정해야 할 부분을 설명해주세요.
+  - type: input
+    id: doc-location
+    attributes:
+      label: 문서 위치
+      description: "문제가 있는 문서의 위치를 적어주세요."
+      placeholder: "예: README.md"
+    validations:
+      required: true
+  - type: textarea
+    id: improvement-details
+    attributes:
+      label: 개선해야 할 내용
+      description: "무엇을 개선해야 하는지 설명해주세요."
+      placeholder: "예: 설명이 부족한 부분을 보강하고 싶습니다."
+    validations:
+      required: true
