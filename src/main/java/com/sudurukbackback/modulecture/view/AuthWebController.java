@@ -14,7 +14,7 @@ public class AuthWebController {
 
     @GetMapping("/register")
     public String register() {
-        return "/domain/auth/register";
+        return "domain/auth/register";
     }
 
     @PreAuthorize("isAuthenticated()")
