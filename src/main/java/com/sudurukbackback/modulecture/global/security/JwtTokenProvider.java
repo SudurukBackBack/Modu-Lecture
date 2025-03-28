@@ -67,7 +67,7 @@ public class JwtTokenProvider {
      * @return 생성된 JWT 토큰 문자열.
      */
     public String generateToken(User user) {
-        // 역할을 `int`에서 `List<String>`으로 변환
+        // 사용자의 권한 문자열 추출
         List<String> roles = user.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .toList();
