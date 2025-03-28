@@ -2,6 +2,7 @@ package com.sudurukbackback.modulecture.global.controller;
 
 import com.sudurukbackback.modulecture.domain.user.entity.User;
 import com.sudurukbackback.modulecture.global.security.JwtTokenProvider;
+import com.sudurukbackback.modulecture.global.security.util.JwtUtil;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +21,7 @@ public class GlobalControllerAdvice {
     public void addAuthInfoToModel(HttpServletRequest request, Model model) {
         String token = getJwtFromCookie(request);
 
-        if (token != null && jwtTokenProvider.validateToken(token)) {
+        if (token != null && JwtUtil.validateToken(token)) {
             // JWT에서 사용자 인증 정보 추출
             Authentication authentication = jwtTokenProvider.getAuthentication(token);
             User user = (User) authentication.getPrincipal();
