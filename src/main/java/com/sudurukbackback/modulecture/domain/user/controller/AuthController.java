@@ -7,18 +7,26 @@ import com.sudurukbackback.modulecture.domain.user.dto.response.UserRegistration
 import com.sudurukbackback.modulecture.domain.user.entity.User;
 import com.sudurukbackback.modulecture.domain.user.service.AuthService;
 import com.sudurukbackback.modulecture.global.security.JwtTokenProvider;
+import com.sudurukbackback.modulecture.global.security.util.JwtUtil;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.time.Duration;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
+@Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/auth")
 @RestController
@@ -28,6 +36,7 @@ public class AuthController {
 
     private final AuthService authService;
     private final JwtTokenProvider jwtTokenProvider;
+    private final StringRedisTemplate redisTemplate;
 
     @PostMapping("/sign-up")
     public UserRegistrationResponseDto signUp(
@@ -59,11 +68,21 @@ public class AuthController {
         return UserLoginResponseDto.of(token);
     }
 
-    @PreAuthorize("isAuthenticated()")
     @PostMapping("/sign-out")
     public ResponseEntity<?> signOut(
+            HttpServletRequest request,
             HttpServletResponse response
     ) {
+        // TODO: 로그아웃 과정에서 해당 메서드 실행이 안되는 것 같음
+        String token = JwtUtil.resolveToken(request);
+        log.info("로그아웃 요청 들어옴 - token: {}", token);
+
+        if (token != null) {
+            log.info("Redis에 저장 시도 - key: BL:{}, value: logout", token);
+            long expiration = JwtUtil.getExpiration(token);
+            redisTemplate.opsForValue().set("BL:" + token, "logout", expiration, TimeUnit.MILLISECONDS);
+        }
+
         ResponseCookie jwtCookie = ResponseCookie.from(COOKIE_NAME, "")
                 .httpOnly(true)
                 .secure(true)
