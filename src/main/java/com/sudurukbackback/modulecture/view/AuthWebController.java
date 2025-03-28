@@ -1,26 +1,25 @@
 package com.sudurukbackback.modulecture.view;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 
-@RequestMapping("/web")
 @Controller
 public class AuthWebController {
 
     @GetMapping("/login")
-    public String login(Model model) {
-        return "/domain/auth/login";
+    public String login() {
+        return "domain/auth/login";
     }
 
     @GetMapping("/register")
-    public String register(Model model) {
-        return "/domain/auth/register";
+    public String register() {
+        return "domain/auth/register";
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/logout")
-    public String logout(Model model) {
-        return "/domain/auth/logout";
+    public String logout() {
+        return "domain/auth/logout";
     }
 }

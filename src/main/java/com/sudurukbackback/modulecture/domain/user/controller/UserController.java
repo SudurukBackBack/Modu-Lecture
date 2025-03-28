@@ -9,9 +9,11 @@ import com.sudurukbackback.modulecture.domain.user.dto.response.UserProfileRespo
 import com.sudurukbackback.modulecture.domain.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+@PreAuthorize("isAuthenticated()")
 @RequiredArgsConstructor
 @RequestMapping("/users")
 @RestController

@@ -102,7 +102,6 @@ public class User implements UserDetails {
 
     // 계정 비활성화(탈퇴) 요청 생성
     public void requestDeactivateAccount() {
-        // 일정 시간이 흐르고 나서 정보를 삭제하는 것이 가능한가?
         this.userStatus = UserStatus.PENDING;
         this.deletedAt = LocalDateTime.now();
     }
@@ -125,5 +124,10 @@ public class User implements UserDetails {
     public void enrollInLecture(Lecture lecture) {
         Enrollment enrollment = new Enrollment(this, lecture);
         this.enrollments.add(enrollment);
+    }
+
+    // 사용자 승급
+    public void upgradeGrade() {
+        this.grade = this.grade.nextGrade();
     }
 }

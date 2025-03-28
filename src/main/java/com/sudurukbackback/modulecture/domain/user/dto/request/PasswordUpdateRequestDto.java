@@ -3,8 +3,10 @@ package com.sudurukbackback.modulecture.domain.user.dto.request;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class PasswordUpdateRequestDto extends BaseCurrentPasswordRequest {
 
     // 비밀번호 형식

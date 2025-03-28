@@ -3,6 +3,7 @@ package com.sudurukbackback.modulecture.global.exception;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -39,14 +40,12 @@ public class ExceptionHandler {
         // ErrorResponse 객체 생성
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
-                .errorMessage("유효성 검사 실패")
+                .errorMessage("입력한 정보가 올바르지 않습니다. 다시 확인해주세요.")
                 .validationErrors(validationErrors)
                 .build();
 
         return ResponseEntity.badRequest().body(errorResponse);
     }
-
-
 
     // 그 외 예외 처리 (Custom Exception이 구현되지 않은 예외 처리)
     @org.springframework.web.bind.annotation.ExceptionHandler(Exception.class)
@@ -56,6 +55,19 @@ public class ExceptionHandler {
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value())
                 .errorMessage("서버 내부 오류가 발생했습니다.")
+                .build();
+
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+    }
+
+    // 권한이 없는 서비스에 접근
+    @org.springframework.web.bind.annotation.ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ErrorResponse> handleAccessDeniedException(AccessDeniedException e) {
+        log.error("Access denied: ", e);
+
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .statusCode(HttpStatus.FORBIDDEN.value())
+                .errorMessage("접근할 수 없는 서비스 입니다. 관리자에 문의하세요.")
                 .build();
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);

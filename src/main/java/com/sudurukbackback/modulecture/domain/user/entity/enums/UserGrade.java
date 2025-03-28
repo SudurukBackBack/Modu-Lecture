@@ -19,4 +19,12 @@ public enum UserGrade {
         this.grade = grade;
         this.roles = roles;
     }
+
+    public UserGrade nextGrade() {
+        return switch (this) {
+            case ROLE_BRONZE -> ROLE_SILVER;
+            case ROLE_SILVER -> ROLE_GOLD;
+            case ROLE_GOLD, ROLE_PLATINUM -> ROLE_PLATINUM;
+        };
+    }
 }

@@ -1,11 +1,14 @@
 package com.sudurukbackback.modulecture.domain.user.service;
 
+import com.sudurukbackback.modulecture.domain.community.repository.CommentRepository;
+import com.sudurukbackback.modulecture.domain.community.repository.PostRepository;
 import com.sudurukbackback.modulecture.domain.user.component.AuthComponent;
 import com.sudurukbackback.modulecture.domain.user.component.UserValidator;
 import com.sudurukbackback.modulecture.domain.user.dto.request.PasswordUpdateRequestDto;
 import com.sudurukbackback.modulecture.domain.user.dto.request.UserDeleteRequestDto;
 import com.sudurukbackback.modulecture.domain.user.dto.response.UserProfileResponseDto;
 import com.sudurukbackback.modulecture.domain.user.entity.User;
+import com.sudurukbackback.modulecture.domain.user.entity.enums.UserGrade;
 import com.sudurukbackback.modulecture.domain.user.entity.enums.UserStatus;
 import com.sudurukbackback.modulecture.domain.user.repository.UserRepository;
 import com.sudurukbackback.modulecture.global.exception.BasicServerException;
@@ -25,6 +28,8 @@ import java.util.List;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PostRepository postRepository;
+    private final CommentRepository commentRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthComponent authComponent;
     private final UserValidator userValidator;
@@ -36,8 +41,6 @@ public class UserService {
 
         // 비밀번호 재설정
         user.changePassword(request.getNewPassword(), passwordEncoder);
-
-        // TODO: 로그아웃 처리 -> 토큰 무효화
     }
 
     @Transactional
@@ -65,6 +68,46 @@ public class UserService {
         user.changeNickname(newNickname);
 
         return UserProfileResponseDto.of(user.getEmail(), user.getNickname());
+    }
+
+    /**
+     * 사용자가 승급 요건을 충족했는지 확인하고 승급하는 메서드
+     *
+     * @param userId 사용자 ID
+     */
+    @Transactional
+    public void checkUserGradeUp(Long userId) {
+        // User 객체 가져오기
+        User user = getUserById(userId);
+        UserGrade currentGrade = user.getGrade();
+
+        // 골드 또는 플래티넘이면 승급 불가
+        if (currentGrade == UserGrade.ROLE_GOLD || currentGrade == UserGrade.ROLE_PLATINUM) {
+            return;
+        }
+
+        // 승급 조건 확인
+        boolean canUpgrade = switch (currentGrade) {
+            case ROLE_BRONZE -> canUpgradeToSilver(user);
+            case ROLE_SILVER -> canUpgradeToGold(user);
+            default -> false;
+        };
+
+        if (canUpgrade) {
+            user.upgradeGrade();
+        }
+    }
+
+    // 브론즈 → 실버 승급 조건
+    private boolean canUpgradeToSilver(User user) {
+        return postRepository.countByUserId(user.getId()) >= 10 &&
+                commentRepository.countByUserId(user.getId()) >= 20;
+    }
+
+    // 실버 → 골드 승급 조건
+    private boolean canUpgradeToGold(User user) {
+        return postRepository.countByUserId(user.getId()) >= 50 &&
+                commentRepository.countByUserId(user.getId()) >= 100;
     }
 
     // Batch (PENDING 상태인 계정 최종 탈퇴 처리)
@@ -107,6 +150,17 @@ public class UserService {
      */
     private User getUserByEmail(String email) {
         return userRepository.findByEmail(email)
+                .orElseThrow(BasicServerException::new);
+    }
+
+    /**
+     * ID를 사용해 User 가져오기
+     *
+     * @param id 사용자 ID
+     * @return User
+     */
+    private User getUserById(Long id) {
+        return userRepository.findById(id)
                 .orElseThrow(BasicServerException::new);
     }
 }

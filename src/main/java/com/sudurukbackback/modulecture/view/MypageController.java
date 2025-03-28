@@ -7,15 +7,16 @@ import com.sudurukbackback.modulecture.domain.lecture.entity.Category;
 import com.sudurukbackback.modulecture.domain.lecture.service.CategoryService;
 import com.sudurukbackback.modulecture.domain.lecture.service.LectureService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
 
+@PreAuthorize("isAuthenticated()")
 @Controller
 @RequestMapping("/mypage")
 @RequiredArgsConstructor
@@ -27,7 +28,7 @@ public class MypageController {
 
     // 마이페이지 = 나의 정보
     @GetMapping
-    public String mypage(Model model) {
+    public String mypage() {
         return "domain/mypage/mypage";
     }
 
@@ -53,7 +54,7 @@ public class MypageController {
 
     // 계정 관리
     @GetMapping("/account")
-    public String mypageAccount(Model model) {
+    public String mypageAccount() {
         return "domain/mypage/mypage-account";
     }
 

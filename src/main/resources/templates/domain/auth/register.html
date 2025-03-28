@@ -123,7 +123,7 @@
             const statusCode = response.status;
             const successMessage = response.data?.message || "회원가입이 완료되었습니다!";
             showAlert(`[${statusCode}] ${successMessage}`, "success", function () {
-                window.location.href = "/web/login";
+                window.location.href = "/login";
             });
 
         } catch (error) {

@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Duration;
@@ -58,6 +59,7 @@ public class AuthController {
         return UserLoginResponseDto.of(token);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/sign-out")
     public ResponseEntity<?> signOut(
             HttpServletResponse response

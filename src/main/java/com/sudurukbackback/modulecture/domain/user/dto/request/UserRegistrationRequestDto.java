@@ -2,8 +2,11 @@ package com.sudurukbackback.modulecture.domain.user.dto.request;
 
 import jakarta.validation.constraints.Size;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class UserRegistrationRequestDto extends BaseAuthRequest {
 
     // 사용자 이름
