@@ -73,7 +73,6 @@ public class AuthController {
             HttpServletRequest request,
             HttpServletResponse response
     ) {
-        // TODO: 로그아웃 과정에서 해당 메서드 실행이 안되는 것 같음
         String token = JwtUtil.resolveToken(request);
         log.info("로그아웃 요청 들어옴 - token: {}", token);
 

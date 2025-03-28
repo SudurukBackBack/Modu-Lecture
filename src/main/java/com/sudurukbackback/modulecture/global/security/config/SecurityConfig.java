@@ -41,7 +41,7 @@ public class SecurityConfig {
                         .permitAll()
                 )
                 .logout(logout -> logout
-                        .logoutUrl("/logout")
+                        .logoutUrl("/logoutUrl")
                         .logoutSuccessUrl("/main")
                         .invalidateHttpSession(true)
                         .deleteCookies("jwtToken")
