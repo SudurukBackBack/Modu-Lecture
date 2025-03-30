@@ -60,7 +60,7 @@ public class JwtUtil {
      */
     public String getUsername(String token) {
 
-        String username = parseClaims(token, key).getSubject();
+        String username = parseClaims(token).getSubject();
         log.debug("Extracted username from JWT: {}", username);
 
         return username;
@@ -74,7 +74,7 @@ public class JwtUtil {
      */
     public List<GrantedAuthority> getAuthorities(String token) {
         // Claims에서 roles 추출
-        Claims claims = parseClaims(token, key);
+        Claims claims = parseClaims(token);
         Object rolesObject = claims.get(KEY_ROLE);
 
         List<String> roles;
@@ -97,7 +97,7 @@ public class JwtUtil {
     }
 
     public long getExpiration(String token) {
-        Claims claims = parseClaims(token, key);
+        Claims claims = parseClaims(token);
         return claims.getExpiration().getTime() - System.currentTimeMillis();
     }
 
@@ -107,7 +107,7 @@ public class JwtUtil {
      * @param token JWT 토큰.
      * @return Claims 객체.
      */
-    public Claims parseClaims(String token, Key key) {
+    public Claims parseClaims(String token) {
 
         try {
             return Jwts.parserBuilder()
@@ -136,7 +136,7 @@ public class JwtUtil {
 
         try {
             // Claims를 파싱하여 만료 시간 확인
-            Claims claims = parseClaims(token, key);
+            Claims claims = parseClaims(token);
             return !claims.getExpiration().before(new Date());
 
         } catch (JwtException | IllegalArgumentException e) {
