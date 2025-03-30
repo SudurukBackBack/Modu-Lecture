@@ -1,12 +1,13 @@
 package com.sudurukbackback.modulecture.global.security;
 
+import com.sudurukbackback.modulecture.global.security.util.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -19,11 +20,8 @@ import java.io.IOException;
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private static final String AUTHORIZATION_HEADER = "Authorization";
-    private static final String BEARER_PREFIX = "Bearer ";
-    private static final String COOKIE_NAME = "jwtToken";
-
     private final JwtTokenProvider jwtTokenProvider;
+    private final StringRedisTemplate redisTemplate;
 
     @Override
     protected void doFilterInternal(
@@ -31,40 +29,26 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             HttpServletResponse response,
             FilterChain filterChain) throws ServletException, IOException {
 
-        // Extract token
-        String token = resolveToken(request);
+        String token = JwtUtil.resolveToken(request);
 
-        // Validate token
-        if (jwtTokenProvider.validateToken(token)) {
+        // 블랙리스트 토큰인지 확인
+        if (token != null && redisTemplate.hasKey("BL:" + token)) {
+            log.info("로그아웃된 토큰으로 접근 시도: {}", token);
+            SecurityContextHolder.clearContext();
 
-            // Retrieve Authentication object
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            response.setContentType("application/json");
+            response.getWriter().write("{\"error\": \"Invalid token.\"}");
+            return;
+        }
+
+        // 유효한 토큰인지 확인 후 SecurityContext에 등록
+        if (token != null && JwtUtil.validateToken(token)) {
             Authentication auth = jwtTokenProvider.getAuthentication(token);
             SecurityContextHolder.getContext().setAuthentication(auth);
+            log.debug("인증 성공: {}", auth.getName());
         }
 
-        // Continue with the filter chain
         filterChain.doFilter(request, response);
-    }
-
-    /**
-     * JWT 토큰을 Authorization 헤더 또는 Cookie에서 가져오는 메서드
-     */
-    private String resolveToken(HttpServletRequest request) {
-        // 1. Authorization 헤더에서 토큰 가져오기
-        String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
-        if (bearerToken != null && bearerToken.startsWith(BEARER_PREFIX)) {
-            return bearerToken.substring(BEARER_PREFIX.length());
-        }
-
-        // 2. Cookie에서 토큰 가져오기
-        if (request.getCookies() != null) {
-            for (Cookie cookie : request.getCookies()) {
-                if (COOKIE_NAME.equals(cookie.getName())) {
-                    return cookie.getValue();
-                }
-            }
-        }
-
-        return null;
     }
 }

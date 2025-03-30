@@ -1,0 +1,8 @@
+###
+GET http://localhost:8080/test/redis/set?
+    key=TestKey&
+    value=TestValue
+
+###
+GET http://localhost:8080/test/redis/get?
+    key=TestKey

@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 @Slf4j
 @RestControllerAdvice
@@ -18,12 +17,13 @@ public class ExceptionHandler {
     // BasicException 처리
     @org.springframework.web.bind.annotation.ExceptionHandler(BasicException.class)
     protected ResponseEntity<ErrorResponse> handleBasicException(BasicException e) {
+
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .statusCode(e.statusCode())
                 .errorMessage(e.errorMessage())
                 .build();
 
-        return new ResponseEntity<>(errorResponse, Objects.requireNonNull(HttpStatus.resolve(e.statusCode())));
+        return ResponseEntity.status(errorResponse.getStatusCode()).body(errorResponse);
     }
 
     // @Valid 검증 예외 처리
@@ -44,7 +44,7 @@ public class ExceptionHandler {
                 .validationErrors(validationErrors)
                 .build();
 
-        return ResponseEntity.badRequest().body(errorResponse);
+        return ResponseEntity.status(errorResponse.getStatusCode()).body(errorResponse);
     }
 
     // 그 외 예외 처리 (Custom Exception이 구현되지 않은 예외 처리)
@@ -57,7 +57,7 @@ public class ExceptionHandler {
                 .errorMessage("서버 내부 오류가 발생했습니다.")
                 .build();
 
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        return ResponseEntity.status(errorResponse.getStatusCode()).body(errorResponse);
     }
 
     // 권한이 없는 서비스에 접근
@@ -70,6 +70,6 @@ public class ExceptionHandler {
                 .errorMessage("접근할 수 없는 서비스 입니다. 관리자에 문의하세요.")
                 .build();
 
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        return ResponseEntity.status(errorResponse.getStatusCode()).body(errorResponse);
     }
 }

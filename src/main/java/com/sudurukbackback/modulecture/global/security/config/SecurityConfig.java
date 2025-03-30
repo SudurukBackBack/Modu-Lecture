@@ -32,6 +32,7 @@ public class SecurityConfig {
                         .requestMatchers("/main", "/community/**", "/lecture/**", "/enroll/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/posts/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/comments/**").permitAll()
+                        .requestMatchers("/test/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(login -> login
@@ -40,7 +41,7 @@ public class SecurityConfig {
                         .permitAll()
                 )
                 .logout(logout -> logout
-                        .logoutUrl("/logout")
+                        .logoutUrl("/logoutUrl")
                         .logoutSuccessUrl("/main")
                         .invalidateHttpSession(true)
                         .deleteCookies("jwtToken")
