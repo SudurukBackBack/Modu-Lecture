@@ -3,7 +3,7 @@ GET https://examples.http-client.intellij.net/get
     ?generated-in=IntelliJ IDEA
 
 ### 비밀번호 재설정
-PATCH http://localhost:8080/users/password
+PATCH http://localhost:8080/api/user/password
 Content-Type: application/json
 Authorization: Bearer
 
@@ -13,7 +13,7 @@ Authorization: Bearer
 }
 
 ### 회원 탈퇴
-PATCH http://localhost:8080/users/deactivate
+PATCH http://localhost:8080/api/user/deactivate
 Content-Type: application/json
 Authorization: Bearer
 
@@ -22,11 +22,11 @@ Authorization: Bearer
 }
 
 ### 사용자 정보 조회
-GET http://localhost:8080/users/me
+GET http://localhost:8080/api/user/me
 Authorization: Bearer
 
 ### 사용자 정보 수정 (현재는 닉네임만 가능)
-PATCH http://localhost:8080/users/me
+PATCH http://localhost:8080/api/user/me
 Content-Type: application/json
 Authorization: Bearer
 

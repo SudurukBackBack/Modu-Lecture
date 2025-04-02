@@ -129,7 +129,7 @@
             }
 
             try {
-                const response = await fetch("/users/password",
+                const response = await fetch("/api/user/password",
                     {
                         method: "PATCH",
                         headers: {"Content-Type": "application/json"},
@@ -144,7 +144,7 @@
 
                 if (response.ok) {
                     alert("비밀번호가 성공적으로 변경되었습니다. 다시 로그인 해주세요.");
-                    window.location.href = "/web/logout";
+                    window.location.href = "/web/auth/logout";
                 } else {
                     alert(`[${result.statusCode}] ${result.errorMessage}`);
                 }
@@ -168,7 +168,7 @@
             }
 
             try {
-                const response = await fetch("/users/deactivate",
+                const response = await fetch("/api/user/deactivate",
                     {
                         method: "PATCH",
                         headers: {"Content-Type": "application/json"},
@@ -181,7 +181,7 @@
                 const result = await response.json();
                 if (response.ok) {
                     alert("계정이 탈퇴되었습니다.");
-                    window.location.href = "/web/logout";
+                    window.location.href = "/web/auth/logout";
                 } else {
                     alert(`[${result.statusCode}] ${result.errorMessage}`);
                 }

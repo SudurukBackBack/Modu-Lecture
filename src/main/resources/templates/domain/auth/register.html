@@ -113,7 +113,7 @@
         try {
             console.log("회원가입 요청 데이터:", requestData); // 요청 데이터 확인
 
-            const response = await axios.post("/auth/sign-up", requestData,
+            const response = await axios.post("/api/auth/sign-up", requestData,
                 {
                     headers: {"Content-Type": "application/json"}
                 });

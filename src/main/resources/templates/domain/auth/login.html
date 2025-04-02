@@ -54,7 +54,7 @@
                                     </div>
 
                                     <a class="small text-muted" href="#!">비밀번호를 잊으셨나요?</a>
-                                    <p class="mb-5 pb-lg-2" style="color: #393f81;">계정이 없으신가요? <a href="/register"
+                                    <p class="mb-5 pb-lg-2" style="color: #393f81;">계정이 없으신가요? <a href="/web/auth/register"
                                                                                                   style="color: #393f81;">회원가입</a>
                                     </p>
                                     <a href="#!" class="small text-muted">이용약관</a>
@@ -100,7 +100,7 @@
             console.log("로그인 요청 데이터:", requestData);
 
             // 로그인 API 요청 (쿠키 기반 인증)
-            const response = await fetch("/auth/sign-in",
+            const response = await fetch("/api/auth/sign-in",
                 {
                     method: "POST",
                     headers: {"Content-Type": "application/json"},
