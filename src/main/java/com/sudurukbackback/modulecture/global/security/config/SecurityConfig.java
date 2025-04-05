@@ -44,7 +44,8 @@ public class SecurityConfig {
                         .logoutUrl("/logoutUrl")
                         .logoutSuccessUrl("/main")
                         .invalidateHttpSession(true)
-                        .deleteCookies("jwtToken")
+                        .deleteCookies("access")
+                        .deleteCookies("refresh")
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .httpBasic(AbstractHttpConfigurer::disable);

@@ -33,7 +33,7 @@ import java.util.concurrent.TimeUnit;
 @RestController
 public class AuthController {
 
-    private static final String ACCESS_TOKEN = "jwtToken";
+    private static final String ACCESS_TOKEN = "access";
     private static final String REFRESH_TOKEN = "refresh";
 
     private final AuthService authService;
@@ -59,10 +59,10 @@ public class AuthController {
         String token = tokens.get("access_token");
         String refreshToken = tokens.get("refresh_token");
 
-        var jwtCookie = createAccessCookie(token, 24);
-        var refreshCookie = createRefreshCookie(refreshToken);
+        var accessCookie = createCookie(ACCESS_TOKEN, token, 24);
+        var refreshCookie = createCookie(REFRESH_TOKEN, refreshToken,48);
 
-        response.addHeader(HttpHeaders.SET_COOKIE, jwtCookie.toString());
+        response.addHeader(HttpHeaders.SET_COOKIE, accessCookie.toString());
         response.addHeader(HttpHeaders.SET_COOKIE, refreshCookie.toString());
         redisTemplate.opsForValue().set("RT:" + user.getEmail(), refreshToken, 2, TimeUnit.DAYS);
 
@@ -85,13 +85,16 @@ public class AuthController {
         redisTemplate.opsForValue().set("BL:" + token, "logout", expiration, TimeUnit.MILLISECONDS);
         redisTemplate.delete("RT:" + JwtUtil.getUsername(token));
 
-        var jwtCookie = createAccessCookie("", 0);
+        var accessCookie = createCookie(ACCESS_TOKEN, "", 0);
+        var refreshCookie = createCookie(REFRESH_TOKEN, "", 0);
 
-        response.addHeader(HttpHeaders.SET_COOKIE, jwtCookie.toString());
+        response.addHeader(HttpHeaders.SET_COOKIE, accessCookie.toString());
+        response.addHeader(HttpHeaders.SET_COOKIE, refreshCookie.toString());
 
         return ResponseEntity.ok().body(Map.of("message", "로그아웃 성공"));
     }
 
+    // TODO: Spring Security 우선권으로 인해 토큰 갱신 기능 작동 안함
     @PostMapping("/refresh")
     public UserLoginResponseDto refreshToken(
             HttpServletRequest request,
@@ -117,10 +120,10 @@ public class AuthController {
         String newToken = newTokens.get("access_token");
         String newRefreshToken = newTokens.get("refresh_token");
 
-        var jwtCookie = createAccessCookie(newToken, 24);
-        var refreshCookie = createRefreshCookie(newRefreshToken);
+        var accessCookie = createCookie(ACCESS_TOKEN, newToken, 24);
+        var refreshCookie = createCookie(REFRESH_TOKEN, newRefreshToken, 48);
 
-        response.addHeader(HttpHeaders.SET_COOKIE, jwtCookie.toString());
+        response.addHeader(HttpHeaders.SET_COOKIE, accessCookie.toString());
         response.addHeader(HttpHeaders.SET_COOKIE, refreshCookie.toString());
         redisTemplate.opsForValue().set("RT:" + email, newRefreshToken, 2, TimeUnit.DAYS);
 
@@ -130,37 +133,21 @@ public class AuthController {
     }
 
     /**
-     * access 토큰을 쿠키에 저장
+     * 토큰을 쿠키에 저장
      *
-     * @param token 쿠키에 저장할 토큰 값
-     * @param hours 쿠키 유효 시간 (hour 단위)
+     * @param cookieName 쿠키 종류
+     * @param token 토큰
+     * @param hours 만료 시간 (시간 단위)
      * @return ResponseCookie
      */
-    private ResponseCookie createAccessCookie(String token, int hours) {
+    private ResponseCookie createCookie(String cookieName, String token, int hours) {
 
-        return ResponseCookie.from(ACCESS_TOKEN, token)
+        return ResponseCookie.from(cookieName, token)
                 .httpOnly(true)
                 .secure(true)
                 .sameSite("Strict")
                 .path("/")
                 .maxAge(Duration.ofHours(hours)) // 만료
-                .build();
-    }
-
-    /**
-     * refresh 토큰을 쿠키에 저장
-     *
-     * @param token 쿠키에 저장할 토큰 값
-     * @return ResponseCookie
-     */
-    private ResponseCookie createRefreshCookie(String token) {
-
-        return ResponseCookie.from(REFRESH_TOKEN, token)
-                .httpOnly(true)
-                .secure(true)
-                .sameSite("Strict")
-                .path("/")
-                .maxAge(Duration.ofDays(2))
                 .build();
     }
 }

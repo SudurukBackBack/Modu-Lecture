@@ -24,7 +24,7 @@ public class JwtUtil {
 
     private static final String AUTHORIZATION_HEADER = "Authorization";
     private static final String BEARER_PREFIX = "Bearer ";
-    private static final String COOKIE_NAME = "jwtToken";
+    private static final String COOKIE_NAME = "access";
     private static final String KEY_ROLE = "role";
 
     @Setter
