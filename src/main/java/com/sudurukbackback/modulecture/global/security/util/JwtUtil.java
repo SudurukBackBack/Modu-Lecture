@@ -117,7 +117,6 @@ public class JwtUtil {
                     .getBody();
 
         } catch (ExpiredJwtException e) {
-            log.warn("JWT Token expired: {}", e.getClaims().getSubject());
             return e.getClaims();
 
         } catch (JwtException e) {

@@ -1,5 +1,6 @@
 package com.sudurukbackback.modulecture.global.security;
 
+import com.sudurukbackback.modulecture.domain.user.component.AuthComponent;
 import com.sudurukbackback.modulecture.domain.user.entity.User;
 import com.sudurukbackback.modulecture.domain.user.service.AuthService;
 import com.sudurukbackback.modulecture.global.security.util.JwtUtil;
@@ -20,16 +21,19 @@ import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
 @Component
 public class JwtTokenProvider {
 
-    private final AuthService authService;
-
     private static final String KEY_ROLE = "role";
-    private static final long EXPIRATION_TIME = 60 * 60 * 7 * 1000L;
+    private static final long EXPIRATION_TIME = 60 * 60 * 1000L;
+    private static final long REFRESH_EXPIRATION_TIME = 60 * 60 * 24 * 1000L;
+
+    private final AuthService authService;
+    private final AuthComponent authComponent;
 
     private Key key;
 
@@ -63,16 +67,17 @@ public class JwtTokenProvider {
     /**
      * JWT 토큰 생성.
      *
-     * @param user 사용자 이름.
-     * @return 생성된 JWT 토큰 문자열.
+     * @param email 사용자 이메일.
+     * @return Jwt token, Refresh token
      */
-    public String generateToken(User user) {
+    public Map<String, String> generateToken(String email) {
+
+        User user = authComponent.findUserByEmail(email);
+
         // 사용자의 권한 문자열 추출
         List<String> roles = user.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .toList();
-
-        String email = user.getEmail();
 
         // 사용자 정보 추가
         var claims = Jwts.claims().setSubject(email);
@@ -91,7 +96,15 @@ public class JwtTokenProvider {
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
 
-        return token;
+        // refresh 토큰 생성
+        String refreshToken = Jwts.builder()
+                .setSubject(user.getEmail())
+                .setIssuedAt(now)
+                .setExpiration(new Date(System.currentTimeMillis() + REFRESH_EXPIRATION_TIME))
+                .signWith(key, SignatureAlgorithm.HS256)
+                .compact();
+
+        return Map.of("access_token", token, "refresh_token", refreshToken);
     }
 
     public Authentication getAuthentication(String token) {
