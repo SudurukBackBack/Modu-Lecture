@@ -29,7 +29,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             HttpServletResponse response,
             FilterChain filterChain) throws ServletException, IOException {
 
-        String token = JwtUtil.resolveToken(request);
+        String token = JwtUtil.resolveToken(request, "access");
 
         // 블랙리스트 토큰인지 확인
         if (token != null && redisTemplate.hasKey("BL:" + token)) {

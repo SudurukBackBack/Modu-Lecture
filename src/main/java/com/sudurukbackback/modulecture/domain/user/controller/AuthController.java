@@ -74,7 +74,7 @@ public class AuthController {
             HttpServletRequest request,
             HttpServletResponse response
     ) {
-        String token = JwtUtil.resolveToken(request);
+        String token = JwtUtil.resolveToken(request, "access");
         log.info("로그아웃 요청 들어옴 - token: {}", token);
 
         if (token == null) {
@@ -94,13 +94,12 @@ public class AuthController {
         return ResponseEntity.ok().body(Map.of("message", "로그아웃 성공"));
     }
 
-    // TODO: Spring Security 우선권으로 인해 토큰 갱신 기능 작동 안함
     @PostMapping("/refresh")
     public UserLoginResponseDto refreshToken(
             HttpServletRequest request,
             HttpServletResponse response
     ) {
-        String refreshToken = JwtUtil.resolveToken(request);
+        String refreshToken = JwtUtil.resolveToken(request, "refresh");
         log.info("토큰 갱신 요청 처리 시작");
 
         if (!JwtUtil.validateToken(refreshToken)) {

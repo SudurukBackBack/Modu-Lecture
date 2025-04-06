@@ -1,6 +1,7 @@
 package com.sudurukbackback.modulecture.global.security.config;
 
 import com.sudurukbackback.modulecture.global.security.JwtAuthenticationFilter;
+import jakarta.servlet.http.Cookie;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,7 +28,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/sign-up", "/api/auth/sign-in", "api/auth/refresh", "/web/auth/login", "/web/auth/register").permitAll()
+                        .requestMatchers("/api/auth/sign-up", "/api/auth/sign-in", "api/auth/refresh", "/web/auth/**").permitAll()
                         .requestMatchers("/css/**", "/js/**", "/images/**", "/images/logo.svg", "/fragments/**").permitAll()
                         .requestMatchers("/main", "/community/**", "/lecture/**", "/api/enroll/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/posts/**").permitAll()
@@ -35,10 +36,29 @@ public class SecurityConfig {
                         .requestMatchers("/test/**").permitAll()
                         .anyRequest().authenticated()
                 )
-                .formLogin(login -> login
-                        .loginPage("/web/auth/login?error=unauthorized")
-                        .defaultSuccessUrl("/main")
-                        .permitAll()
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            boolean hasAccessToken = false;
+                            boolean hasRefreshToken = false;
+
+                            if (request.getCookies() != null) {
+                                for (Cookie cookie : request.getCookies()) {
+                                    if ("access".equals(cookie.getName())) {
+                                        hasAccessToken = true;
+                                    }
+                                    if ("refresh".equals(cookie.getName())) {
+                                        hasRefreshToken = true;
+                                    }
+                                }
+                            }
+
+                            if (hasAccessToken && hasRefreshToken) {
+                                String originalUri = request.getRequestURI();
+                                response.sendRedirect("/web/auth/refresh?redirect=" + originalUri);
+                            } else {
+                                response.sendRedirect("/web/auth/login?error=unauthorized");
+                            }
+                        })
                 )
                 .logout(logout -> logout
                         .logoutUrl("/logoutUrl")

@@ -24,4 +24,9 @@ public class AuthWebController {
     public String logout() {
         return "domain/auth/logout";
     }
+
+    @GetMapping("/refresh")
+    public String refresh() {
+        return "domain/auth/refresh";
+    }
 }

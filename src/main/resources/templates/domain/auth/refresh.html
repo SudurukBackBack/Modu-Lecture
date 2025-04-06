@@ -1,0 +1,22 @@
+<script>
+    document.addEventListener('DOMContentLoaded', async function () {
+        try {
+            const response = await fetch("/api/auth/refresh",
+                {
+                    method: "POST",
+                    credentials: "include"
+                });
+
+            const params = new URLSearchParams(window.location.search);
+            const redirectUrl = params.get("redirect") || "/";
+
+            if (response.ok) {
+                window.location.href = redirectUrl;
+            } else {
+                window.location.href = "/web/auth/login?error=unauthorized";
+            }
+        } catch (error) {
+            window.location.href = "/web/auth/login?error=unauthorized";
+        }
+    });
+</script>
