@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
-@RequestMapping("/lectures")
+@RequestMapping("/api/v1/lecture") // URI 단수형으로 수정
 @RequiredArgsConstructor
 public class LectureController {
     private final LectureService lectureService;
