@@ -129,8 +129,19 @@
         } catch (error) {
             console.error("회원가입 요청 오류:", error);
 
-            const statusCode = error.response?.status || "400";
-            const errorMessage = error.response?.data?.errorMessage?.validationErrors || "입력 조건에 맞추어 작성해주세요.";
+            const statusCode = error.response?.status || 400;
+            const data = error.response?.data;
+
+            let errorMessage = data?.errorMessage || "입력 조건에 맞추어 작성해주세요.";
+
+            if (data?.validationErrors) {
+                const validationDetails = Object.entries(data.validationErrors)
+                    .map(([field, message]) => `${field}: ${message}`)
+                    .join("\n");
+
+                errorMessage += `\n\n${validationDetails}`;
+            }
+
             showAlert(`[${statusCode}] ${errorMessage}`, "danger");
         }
     });
