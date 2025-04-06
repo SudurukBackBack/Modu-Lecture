@@ -6,10 +6,12 @@ import com.sudurukbackback.modulecture.domain.lecture.dto.request.LectureUpdateR
 import com.sudurukbackback.modulecture.domain.lecture.dto.response.LectureGetResponseDto;
 import com.sudurukbackback.modulecture.domain.lecture.entity.CategoryRel;
 import com.sudurukbackback.modulecture.domain.lecture.entity.Lecture;
+import com.sudurukbackback.modulecture.domain.lecture.entity.LectureLike;
 import com.sudurukbackback.modulecture.domain.lecture.entity.LectureStatus;
 import com.sudurukbackback.modulecture.domain.lecture.exception.InstructorNotFoundException;
 import com.sudurukbackback.modulecture.domain.lecture.exception.LectureNotFoundException;
 import com.sudurukbackback.modulecture.domain.lecture.repository.CategoryRelRepository;
+import com.sudurukbackback.modulecture.domain.lecture.repository.LectureLikeRepository;
 import com.sudurukbackback.modulecture.domain.lecture.repository.LectureRepository;
 import com.sudurukbackback.modulecture.domain.user.entity.User;
 import com.sudurukbackback.modulecture.domain.user.repository.UserRepository;
@@ -20,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.List;
 
 @Service
@@ -28,6 +31,7 @@ public class LectureService {
 
     private final LectureRepository lectureRepository;
     private final CategoryRelRepository categoryRelRepository;
+    private final LectureLikeRepository lectureLikeRepository;
     private final UserRepository userRepository;
 
     // 모든 강의 목록 조회
@@ -115,5 +119,42 @@ public class LectureService {
                 .orElseThrow(LectureNotFoundException::new);
 
         lectureRepository.delete(lecture); // 강의 삭제
+    }
+    // 좋아요 토글
+    @Transactional
+    public boolean toggleLike(Long lectureId, String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("사용자 없음"));
+        Lecture lecture = lectureRepository.findById(lectureId)
+                .orElseThrow(() -> new RuntimeException("강의 없음"));
+
+        Optional<LectureLike> likeOpt = lectureLikeRepository.findByUserAndLecture(user, lecture);
+        if (likeOpt.isPresent()) {
+            lectureLikeRepository.delete(likeOpt.get());
+            return false;
+        } else {
+            lectureLikeRepository.save(new LectureLike(user, lecture));
+            return true;
+        }
+    }
+
+    // 좋아요 여부 확인
+    @Transactional(readOnly = true)
+    public boolean isLiked(Long lectureId, String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("사용자 없음"));
+        Lecture lecture = lectureRepository.findById(lectureId)
+                .orElseThrow(() -> new RuntimeException("강의 없음"));
+
+        return lectureLikeRepository.findByUserAndLecture(user, lecture).isPresent();
+    }
+
+    // 좋아요 수 조회
+    @Transactional(readOnly = true)
+    public long getLikeCount(Long lectureId) {
+        Lecture lecture = lectureRepository.findById(lectureId)
+                .orElseThrow(() -> new RuntimeException("강의 없음"));
+
+        return lectureLikeRepository.countByLecture(lecture);
     }
 }
