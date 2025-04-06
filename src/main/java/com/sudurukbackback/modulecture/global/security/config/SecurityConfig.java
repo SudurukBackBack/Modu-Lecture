@@ -28,9 +28,9 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/sign-up", "/api/auth/sign-in", "/api/auth/refresh", "/web/auth/**").permitAll()
+                        .requestMatchers("/api/v1/auth/**", "/web/v1/auth/**").permitAll()
                         .requestMatchers("/css/**", "/js/**", "/images/**", "/images/logo.svg", "/fragments/**").permitAll()
-                        .requestMatchers("/main", "/community/**", "/lecture/**", "/api/enroll/**").permitAll()
+                        .requestMatchers("/main", "/community/**", "/lecture/**", "/api/v1/enroll/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/posts/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/comments/**").permitAll()
                         .requestMatchers("/test/**").permitAll()
@@ -54,9 +54,9 @@ public class SecurityConfig {
 
                             if (hasAccessToken && hasRefreshToken) {
                                 String originalUri = request.getRequestURI();
-                                response.sendRedirect("/web/auth/refresh?redirect=" + originalUri);
+                                response.sendRedirect("/web/v1/auth/refresh?redirect=" + originalUri);
                             } else {
-                                response.sendRedirect("/web/auth/login?error=unauthorized");
+                                response.sendRedirect("/web/v1/auth/login?error=unauthorized");
                             }
                         })
                 )
