@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
     <meta name="description" content=""/>
     <meta name="author" content=""/>
-    <title>모두의강의 - 마이페이지 | 나의정보</title>
+    <title>모두의강의 - 강의 상세</title>
 
     <!-- CSS-CDN -->
     <div th:replace="~{layout/css-cdn :: css-cdn}"></div>
@@ -15,7 +15,7 @@
 
 <body class="d-flex flex-column min-vh-100">
 
-<!-- navbar 부분 포함 -->
+<!-- navbar 포함 -->
 <div th:insert="~{layout/navbar :: navbar}"></div>
 
 <!-- Section -->
@@ -34,12 +34,20 @@
                         <i class="bi bi-person-circle me-2 fs-4"></i>
                         <span class="fs-5" th:text="${lecture.instructor}"></span>
                     </div>
+
+                    <!-- 좋아요 버튼 -->
+                    <div class="mt-3">
+                        <button id="like-btn" class="btn btn-outline-danger" onclick="toggleLike()">
+                            <i id="like-icon" class="bi bi-heart"></i>
+                            <span id="like-text">좋아요</span>
+                        </button>
+                    </div>
+
                     <hr>
                 </div>
 
                 <!-- 강의 재생 화면과 상세 정보 -->
                 <div class="d-flex col-12">
-
                     <!-- 강의 재생 화면 -->
                     <div class="flex-grow-1 me-3 border rounded shadow-sm">
                         <div class="video-container">
@@ -65,11 +73,44 @@
         </div>
     </section>
 </main>
+
 <!-- Footer -->
 <div th:insert="~{layout/footer :: footer}"></div>
 
 <!-- JS CDN -->
 <div th:replace="~{layout/js-cdn :: js-cdn}"></div>
+
+<!-- 좋아요 토글 JS -->
+<script>
+    let liked = false;
+
+    function toggleLike() {
+        const lectureId = /*[[${lecture.lectureId}]]*/ 0;  // Thymeleaf 처리 필요
+
+        fetch('/lectures/like/' + lectureId, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(response => {
+            if (response.ok) {
+                liked = !liked;
+                const icon = document.getElementById('like-icon');
+                const text = document.getElementById('like-text');
+
+                if (liked) {
+                    icon.classList.remove('bi-heart');
+                    icon.classList.add('bi-heart-fill');
+                    text.textContent = '좋아요 취소';
+                } else {
+                    icon.classList.remove('bi-heart-fill');
+                    icon.classList.add('bi-heart');
+                    text.textContent = '좋아요';
+                }
+            }
+        });
+    }
+</script>
 
 </body>
 </html>
