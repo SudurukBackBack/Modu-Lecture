@@ -60,7 +60,7 @@ public class AuthController {
         String refreshToken = tokens.get("refresh_token");
 
         var accessCookie = createCookie(ACCESS_TOKEN, token, 24);
-        var refreshCookie = createCookie(REFRESH_TOKEN, refreshToken,48);
+        var refreshCookie = createCookie(REFRESH_TOKEN, refreshToken, 48);
 
         response.addHeader(HttpHeaders.SET_COOKIE, accessCookie.toString());
         response.addHeader(HttpHeaders.SET_COOKIE, refreshCookie.toString());
