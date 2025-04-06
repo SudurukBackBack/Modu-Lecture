@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/contents")
+@RequestMapping("/api/v1/content")
 @RequiredArgsConstructor
 public class ContentController {
 
