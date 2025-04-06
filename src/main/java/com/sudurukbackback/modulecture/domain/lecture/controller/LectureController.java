@@ -125,4 +125,27 @@ public class LectureController {
 
         return ResponseEntity.noContent().build();
     }
+
+    // 좋아요 토글
+    @PostMapping("/like/{lectureId}")
+    public ResponseEntity<Void> toggleLike(@PathVariable Long lectureId, Authentication auth) {
+        String email = auth.getName();
+        lectureService.toggleLike(lectureId, email);
+        return ResponseEntity.ok().build();
+    }
+
+    // 좋아요 여부 확인 프론트 초기 표시 용도
+    @GetMapping("/like/{lectureId}")
+    public ResponseEntity<Boolean> isLiked(@PathVariable Long lectureId, Authentication auth) {
+        String email = auth.getName();
+        boolean liked = lectureService.isLiked(lectureId, email);
+        return ResponseEntity.ok(liked);
+    }
+
+    // 좋아요 수 조회
+    @GetMapping("/like-count/{lectureId}")
+    public ResponseEntity<Long> likeCount(@PathVariable Long lectureId) {
+        long count = lectureService.getLikeCount(lectureId);
+        return ResponseEntity.ok(count);
+    }
 }
