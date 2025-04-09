@@ -1,6 +1,7 @@
 package com.sudurukbackback.modulecture.global.security.config;
 
 import com.sudurukbackback.modulecture.global.security.JwtAuthenticationFilter;
+import jakarta.servlet.http.Cookie;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,24 +28,44 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/sign-up", "/auth/sign-in", "/login", "/register").permitAll()
+                        .requestMatchers("/api/v1/auth/**", "/web/v1/auth/**").permitAll()
                         .requestMatchers("/css/**", "/js/**", "/images/**", "/images/logo.svg", "/fragments/**").permitAll()
-                        .requestMatchers("/main", "/community/**", "/lecture/**", "/enroll/**").permitAll()
+                        .requestMatchers("/main", "/community/**", "/lecture/**", "/api/v1/enroll/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/posts/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/comments/**").permitAll()
                         .requestMatchers("/test/**").permitAll()
                         .anyRequest().authenticated()
                 )
-                .formLogin(login -> login
-                        .loginPage("/login?error=unauthorized")
-                        .defaultSuccessUrl("/main")
-                        .permitAll()
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            boolean hasAccessToken = false;
+                            boolean hasRefreshToken = false;
+
+                            if (request.getCookies() != null) {
+                                for (Cookie cookie : request.getCookies()) {
+                                    if ("access".equals(cookie.getName())) {
+                                        hasAccessToken = true;
+                                    }
+                                    if ("refresh".equals(cookie.getName())) {
+                                        hasRefreshToken = true;
+                                    }
+                                }
+                            }
+
+                            if (hasAccessToken && hasRefreshToken) {
+                                String originalUri = request.getRequestURI();
+                                response.sendRedirect("/web/v1/auth/refresh?redirect=" + originalUri);
+                            } else {
+                                response.sendRedirect("/web/v1/auth/login?error=unauthorized");
+                            }
+                        })
                 )
                 .logout(logout -> logout
                         .logoutUrl("/logoutUrl")
                         .logoutSuccessUrl("/main")
                         .invalidateHttpSession(true)
-                        .deleteCookies("jwtToken")
+                        .deleteCookies("access")
+                        .deleteCookies("refresh")
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .httpBasic(AbstractHttpConfigurer::disable);

@@ -6,7 +6,7 @@ public record UserLoginResponseDto(
 ) {
     public static UserLoginResponseDto of(String token) {
         return new UserLoginResponseDto(
-                "로그인이 완료되었습니다.",
+                "요청 처리 완료",
                 token
         );
     }

@@ -24,7 +24,6 @@ public class JwtUtil {
 
     private static final String AUTHORIZATION_HEADER = "Authorization";
     private static final String BEARER_PREFIX = "Bearer ";
-    private static final String COOKIE_NAME = "jwtToken";
     private static final String KEY_ROLE = "role";
 
     @Setter
@@ -33,7 +32,7 @@ public class JwtUtil {
     /**
      * JWT 토큰을 Authorization 헤더 또는 Cookie에서 가져오는 메서드
      */
-    public String resolveToken(HttpServletRequest request) {
+    public String resolveToken(HttpServletRequest request, String cookieName) {
         // 1. Authorization 헤더에서 토큰 가져오기
         String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
         if (bearerToken != null && bearerToken.startsWith(BEARER_PREFIX)) {
@@ -43,7 +42,7 @@ public class JwtUtil {
         // 2. Cookie에서 토큰 가져오기
         if (request.getCookies() != null) {
             for (Cookie cookie : request.getCookies()) {
-                if (COOKIE_NAME.equals(cookie.getName())) {
+                if (cookieName.equals(cookie.getName())) {
                     return cookie.getValue();
                 }
             }
@@ -117,7 +116,6 @@ public class JwtUtil {
                     .getBody();
 
         } catch (ExpiredJwtException e) {
-            log.warn("JWT Token expired: {}", e.getClaims().getSubject());
             return e.getClaims();
 
         } catch (JwtException e) {

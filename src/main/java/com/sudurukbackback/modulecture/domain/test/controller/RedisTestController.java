@@ -3,10 +3,7 @@ package com.sudurukbackback.modulecture.domain.test.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("/test/redis")
 @RequiredArgsConstructor
@@ -15,7 +12,7 @@ public class RedisTestController {
 
     private final StringRedisTemplate redisTemplate;
 
-    @GetMapping("/set")
+    @PostMapping("/set")
     public ResponseEntity<?> setValue(@RequestParam String key, @RequestParam String value) {
         redisTemplate.opsForValue().set(key, value);
         return ResponseEntity.ok().build();

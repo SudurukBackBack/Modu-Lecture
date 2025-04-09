@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 @PreAuthorize("isAuthenticated()")
 @RequiredArgsConstructor
-@RequestMapping("/users")
+@RequestMapping("/api/v1/user")
 @RestController
 public class UserController {
 

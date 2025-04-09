@@ -9,7 +9,7 @@
 <script>
     document.addEventListener('DOMContentLoaded', async function () {
         try {
-            const response = await fetch("/auth/sign-out",
+            const response = await fetch("/api/v1/auth/sign-out",
                 {
                     method: "POST",
                     credentials: "include"
@@ -29,6 +29,8 @@
         }
     });
 </script>
+
+<div th:replace="~{layout/js-cdn :: js-cdn}"></div>
 
 </body>
 </html>

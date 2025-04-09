@@ -18,7 +18,7 @@ public class GlobalControllerAdvice {
 
     @ModelAttribute
     public void addAuthInfoToModel(HttpServletRequest request, Model model) {
-        String token = JwtUtil.resolveToken(request);
+        String token = JwtUtil.resolveToken(request, "access");
 
         if (token != null && JwtUtil.validateToken(token)) {
             // JWT에서 사용자 인증 정보 추출
