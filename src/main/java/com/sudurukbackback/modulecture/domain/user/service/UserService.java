@@ -159,7 +159,7 @@ public class UserService {
      * @param id 사용자 ID
      * @return User
      */
-    private User getUserById(Long id) {
+    public User getUserById(Long id) {
         return userRepository.findById(id)
                 .orElseThrow(BasicServerException::new);
     }
