@@ -7,11 +7,7 @@ import lombok.Data;
 import lombok.ToString;
 
 @Data
-@ToString(exclude = "userId")
 public class PostCreateRequestDto {
-    @NotNull(message = "아이디는 필수입력")
-    private Long userId;
-
     @NotBlank(message = "카테고리를 선택해주세요.")
     private String category;
 
@@ -21,4 +17,7 @@ public class PostCreateRequestDto {
 
     @NotBlank(message = "내용을 입력해주세요.")
     private String content;
+
+    public PostCreateRequestDto(String title, Integer category, String content) {
+    }
 }

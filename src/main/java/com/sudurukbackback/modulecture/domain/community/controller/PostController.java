@@ -7,6 +7,7 @@ import com.sudurukbackback.modulecture.domain.community.entity.Comment;
 import com.sudurukbackback.modulecture.domain.community.entity.Post;
 import com.sudurukbackback.modulecture.domain.community.service.CommentService;
 import com.sudurukbackback.modulecture.domain.community.service.PostService;
+import com.sudurukbackback.modulecture.domain.user.entity.User;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,7 +23,7 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/posts")
+@RequestMapping("/api/v1/post")
 @RequiredArgsConstructor // final 필드에 대한 생성자 자동 생성
 public class PostController {
     private final PostService postService;
@@ -37,7 +39,7 @@ public class PostController {
     }
 
     // 게시글 상세 조회
-    @GetMapping("/{id}")
+    @GetMapping("/detail/{id}")
     public ResponseEntity<PostResponseDto> getPostById(@PathVariable Long id) {
         Post post = postService.getPostById(id);
         return ResponseEntity.ok(PostResponseDto.fromEntity(post));
@@ -51,32 +53,46 @@ public class PostController {
     }
 
     // 게시글 생성
-    @PostMapping
-    public ResponseEntity<String> createPost(@Valid @RequestBody PostCreateRequestDto postCreateDto, BindingResult bindingResult) {
+    @PostMapping("/create")
+    public ResponseEntity<String> createPost(
+            @Valid @RequestBody PostCreateRequestDto postCreateDto,
+            BindingResult bindingResult,
+            Authentication auth) {
         if (bindingResult.hasErrors()) {
             // 오류가 있을 경우, 오류 메시지를 반환 (유효성 검증)
             String errorMessage = bindingResult.getAllErrors().getFirst().getDefaultMessage();
             return ResponseEntity.badRequest().body(errorMessage);
         }
-        Post createdPost = postService.createPost(postCreateDto);
+        // 사용자 ID 가져오기
+        User user = (User) auth.getPrincipal();
+        Long userId = user.getId();
+
+        Post createdPost = postService.createPost(userId, postCreateDto);
         log.info("게시글 생성 :\n{}", createdPost);
 
         return ResponseEntity.ok("게시글 등록 완료");
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<String> updatePost(@PathVariable Long id, @Valid @RequestBody PostUpdateRequestDto postUpdateDto, BindingResult bindingResult) {
+    @PutMapping("/update/{postId}")
+    public ResponseEntity<String> updatePost(
+            @PathVariable Long postId,
+            @Valid @RequestBody PostUpdateRequestDto postUpdateDto, BindingResult bindingResult,
+            Authentication auth) {
         if (bindingResult.hasErrors()) {
             String errorMessage = bindingResult.getAllErrors().getFirst().getDefaultMessage();
             return ResponseEntity.badRequest().body(errorMessage);
         }
-        Post updatedPost = postService.updatePost(id, postUpdateDto.getUserId(), postUpdateDto.getNewContent());
+        // 사용자 ID 가져오기
+        User user = (User) auth.getPrincipal();
+        Long userId = user.getId();
+
+        Post updatedPost = postService.updatePost(postId, userId, postUpdateDto.getNewContent());
         log.info("게시글 수정 :\n{}", updatedPost);
 
         return ResponseEntity.ok("게시글 수정 완료");
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deletePost(@PathVariable Long id) {
         postService.deletePost(id);
         return ResponseEntity.noContent().build();
