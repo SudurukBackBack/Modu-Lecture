@@ -6,8 +6,7 @@ import lombok.Getter;
 public abstract class BasicException extends RuntimeException {
 
     abstract public int statusCode();
+
     abstract public String errorMessage();
-
-
 }
 

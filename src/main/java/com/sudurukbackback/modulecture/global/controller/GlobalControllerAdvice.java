@@ -18,6 +18,7 @@ public class GlobalControllerAdvice {
 
     @ModelAttribute
     public void addAuthInfoToModel(HttpServletRequest request, Model model) {
+
         String token = JwtUtil.resolveToken(request, "access");
 
         if (token != null && JwtUtil.validateToken(token)) {

@@ -82,13 +82,20 @@ public class User implements UserDetails {
                 .toList();
     }
 
-    // 계정 재활성화 (탈퇴 유예 기간 내 로그인, 탈퇴 요청 철회)
+    /**
+     * 계정 재활성화 (탈퇴 유예 기간 내 로그인, 탈퇴 요청 철회)
+     */
     public void reactiveAccount() {
         this.userStatus = UserStatus.ACTIVE;
         this.deletedAt = null;
     }
 
-    // 비밀번호 재설정
+    /**
+     * 비밀번호 변경
+     *
+     * @param newPassword 새 비밀번호
+     * @param passwordEncoder PasswordEncoder
+     */
     public void changePassword(String newPassword, PasswordEncoder passwordEncoder) {
 
         // 기존 비밀번호와 새 비밀번호가 동일한지 확인

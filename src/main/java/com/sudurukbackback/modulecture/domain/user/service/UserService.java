@@ -130,7 +130,7 @@ public class UserService {
     /**
      * ACTIVE 계정 로그인
      *
-     * @param email    이메일
+     * @param email 이메일
      * @param password 비밀번호
      * @return User
      */

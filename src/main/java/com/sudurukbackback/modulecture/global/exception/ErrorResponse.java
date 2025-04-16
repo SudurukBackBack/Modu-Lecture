@@ -10,7 +10,8 @@ import java.util.Map;
 public class ErrorResponse {
 
     private int statusCode;
-    private String errorMessage;
-    private final Map<String, String> validationErrors;
 
+    private String errorMessage;
+
+    private final Map<String, String> validationErrors;
 }
