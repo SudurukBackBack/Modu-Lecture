@@ -4,6 +4,7 @@ import com.sudurukbackback.modulecture.domain.user.entity.User;
 import com.sudurukbackback.modulecture.domain.user.exception.EmailAlreadyExistsException;
 import com.sudurukbackback.modulecture.domain.user.exception.WrongAuthenticationException;
 import com.sudurukbackback.modulecture.domain.user.repository.UserRepository;
+import com.sudurukbackback.modulecture.domain.user.service.LoginAttemptService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -14,6 +15,7 @@ public class AuthComponent {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final LoginAttemptService loginAttemptService;
 
     /**
      * 이메일 중복 체크
@@ -52,12 +54,16 @@ public class AuthComponent {
     /**
      * 비밀번호 일치 확인
      *
-     * @param password1 비밀번호 1
-     * @param password2 비밀번호 2
+     * @param encodedPassword 실제 비밀번호 (인코딩 된 상태)
+     * @param inputPassword 입력한 비밀번호
      */
-    public void validatePassword(String password1, String password2) {
-        if (!passwordEncoder.matches(password1, password2)) {
-            throw new WrongAuthenticationException();
+    private void validatePassword(String encodedPassword, String inputPassword, int remainAttempts) {
+        if (!passwordEncoder.matches(inputPassword, encodedPassword)) {
+            if (remainAttempts == -1) {
+                throw new WrongAuthenticationException();
+            } else {
+                throw new WrongAuthenticationException(remainAttempts);
+            }
         }
     }
 
@@ -70,7 +76,9 @@ public class AuthComponent {
      */
     public User verifyEmailAndPasswordMatch(String email, String password) {
         User user = findUserByEmail(email);
-        validatePassword(password, user.getPassword());
+        int remainAttempts = loginAttemptService.getRemainingLoginAttempts(email);
+
+        validatePassword(user.getPassword(), password, remainAttempts);
 
         return user;
     }
