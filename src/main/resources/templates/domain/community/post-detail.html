@@ -55,7 +55,7 @@
                         <!-- 댓글 개수 및 댓글 버튼 -->
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <h5>
-                                <i class="bi bi-chat"></i> 2개
+                                <i class="bi bi-chat"></i><span th:text="${#lists.size(comments)} + '개'"></span>
                             </h5>
                             <button id="commentButton" class="btn btn-primary">댓글 작성</button>
                         </div>
@@ -64,25 +64,14 @@
 
                         <!-- 기존 댓글 목록 -->
                         <div id="commentList" class="mb-4">
-                            <!-- 댓글 1 -->
-                            <div class="mb-3">
+                            <div th:each="comment : ${comments}" class="mb-3">
                                 <div class="d-flex justify-content-between">
-                                    <strong>사용자1</strong>
-                                    <span class="text-muted">2024-03-01</span>
+                                    <strong th:text="${comment.nickname}">작성자</strong>
+                                    <span class="text-muted" th:text="${#temporals.format(comment.createdAt, 'yyyy-MM-dd HH:mm')}">날짜</span>
                                 </div>
-                                <p>첫 번째 댓글 내용입니다.</p>
+                                <p th:text="${comment.content}">댓글 내용</p>
                                 <hr>
                             </div>
-                            <!-- 댓글 2 -->
-                            <div class="mb-3">
-                                <div class="d-flex justify-content-between">
-                                    <strong>사용자2</strong>
-                                    <span class="text-muted">2024-03-01</span>
-                                </div>
-                                <p>두 번째 댓글 내용입니다.</p>
-                                <hr>
-                            </div>
-                        </div>
 
                         <!-- 댓글 작성 폼 -->
                         <div id="commentForm" style="display: none;">

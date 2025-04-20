@@ -41,6 +41,7 @@
 <!--                                    <span th:if="${post.isNotice}" class="badge bg-primary bg-opacity-75 text-align-top ms-3">공지사항</span>-->
 <!--                                </td>-->
                                 <td>
+                                    <p class="font-weight-bold" th:text="${post.id}"></p>
                                     <p class="text-dark fw-bold mb-1" th:text="${post.title}">게시글 제목</p>
                                     <p class="mb-0" th:text="${#strings.abbreviate(post.content, 50)}">게시글 내용 미리보기</p>
                                 </td>

@@ -1,8 +1,9 @@
 package com.sudurukbackback.modulecture.view;
 
 import com.sudurukbackback.modulecture.domain.community.dto.request.PostCreateRequestDto;
-import com.sudurukbackback.modulecture.domain.community.dto.response.PostResponseDto;
+import com.sudurukbackback.modulecture.domain.community.dto.response.CommentResponseDto;
 import com.sudurukbackback.modulecture.domain.community.entity.Post;
+import com.sudurukbackback.modulecture.domain.community.service.CommentService;
 import com.sudurukbackback.modulecture.domain.community.service.PostService;
 import com.sudurukbackback.modulecture.domain.user.entity.User;
 import com.sudurukbackback.modulecture.domain.user.service.UserService;
@@ -25,6 +26,7 @@ import java.util.stream.Collectors;
 public class CommunityController {
     private final PostService postService;
     private final UserService userService;
+    private final CommentService commentService;
 
 
     // 게시글 상세
@@ -33,8 +35,11 @@ public class CommunityController {
 
         Post post = postService.getPostById(id);
         User user = userService.getUserById(post.getUserId());
+        List<CommentResponseDto> comments = commentService.getAllCommentsWithNickname(post.getId());
+
+        model.addAttribute("comments", comments);
         model.addAttribute("post", post);
-        model.addAttribute("nickname",user.getNickname()); // 닉네임받아오는거 해야됨
+        model.addAttribute("nickname",user.getNickname());
         return "domain/community/post-detail";
     }
 

@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 
 @RestController
 @RequiredArgsConstructor
@@ -17,12 +19,20 @@ import org.springframework.web.bind.annotation.*;
 public class CommentController {
     private final CommentService commentService;
 
-    // 내가 쓴 댓글 조회
-    @GetMapping("/{id}")
-    public ResponseEntity<CommentResponseDto> getCommentById(@PathVariable Long id) {
-        Comment comment = commentService.getCommentById(id);
-        return ResponseEntity.ok(CommentResponseDto.fromEntity(comment));
+    // 게시글 별 댓글 조회
+    @GetMapping("/{postId}")
+    public List<CommentResponseDto> getAllComments(@PathVariable Long postId) {
+//        List<Comment> comments = commentService.getAllComments(postId);
+//        return ResponseEntity.ok(comments);
+        return commentService.getAllCommentsWithNickname(postId);
     }
+
+    // 내가 쓴 댓글 조회
+//    @GetMapping("/{id}")
+//    public ResponseEntity<CommentResponseDto> getCommentById(@PathVariable Long id) {
+//        Comment comment = commentService.getCommentById(id);
+//        return ResponseEntity.ok(CommentResponseDto.fromEntity(comment));
+//    }
 
     // 댓글 생성
     @PostMapping
