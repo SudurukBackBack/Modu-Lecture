@@ -33,7 +33,7 @@
 
                     <!-- 글쓰기 폼 -->
                     <div class="card p-4">
-                        <form action="#" method="post">
+                        <form id="postForm" action="/community/post-write" method="post">
                             <!-- 제목 입력 -->
                             <div class="mb-3">
                                 <input type="text" class="form-control form-control-lg me-2" id="postTitle" name="title" placeholder="제목을 입력하세요" required>
@@ -43,17 +43,19 @@
                             <div class="mb-3">
                                 <select class="form-select text-opacity-50" id="postCategory" name="category" required>
                                     <option value="" disabled selected>카테고리를 선택하세요</option>
-                                    <option value="0">공지사항</option>
-                                    <option value="1">QnA</option>
-                                    <option value="2">강의</option>
-                                    <option value="3">수다</option>
+                                    <option value="공지">공지사항</option>
+                                    <option value="질문">QnA</option>
+                                    <option value="강의">강의</option>
+                                    <option value="수다">수다</option>
                                 </select>
                             </div>
 
                             <!-- 내용 입력 -->
                             <div class="mb-3">
+                                <!-- toast-ui editor fragment 삽입 -->
                                 <div th:replace="~{layout/toast-editor :: toast-editor}"></div>
                             </div>
+
 
                             <!-- 등록 버튼 -->
                             <div class="text-end">
@@ -65,7 +67,6 @@
                     </div>
                     <!-- 글쓰기 폼 끝 -->
                 </div>
-
             </div>
         </div>
     </section>
@@ -78,5 +79,23 @@
 <div th:replace="~{layout/js-cdn :: js-cdn}"></div>
 
 
+<script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
+<link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
+
+<script>
+    // 에디터 초기화
+    const editor = new toastui.Editor({
+        el: document.querySelector('#toast-editor'),
+        height: '500px',
+        initialEditType: 'wysiwyg',
+        previewStyle: 'tab'
+    });
+
+    // submit 전에 editor 내용 textarea로 복사
+    document.getElementById("postForm").addEventListener("submit", function (e) {
+        const contentTextarea = document.getElementById("postContent");
+        contentTextarea.value = editor.getMarkdown(); // 또는 getHTML()도 가능
+    });
+</script>
 </body>
 </html>

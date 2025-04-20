@@ -26,15 +26,8 @@ public class CommunityController {
     private final PostService postService;
     private final UserService userService;
 
-    // 예시
-//    @GetMapping
-//    public String Community(Model model) {
-//
-//        return "domain/community/post-test";
-//    }
 
-    // 내가해보는거
-
+    // 게시글 상세
     @GetMapping("/post-detail/{id}")
     public String postDetail(@PathVariable Long id, Model model) {
 
@@ -45,6 +38,7 @@ public class CommunityController {
         return "domain/community/post-detail";
     }
 
+    // 전체 게시글
     @GetMapping
     public String postList(Model model,
                             @PageableDefault(page = 0, size = 4) Pageable pageable) {
@@ -64,15 +58,17 @@ public class CommunityController {
         return "domain/community/post-test";
     }
 
+    // 게시글 등록 화면
     @GetMapping("/post-write")
     public String postWrite(Model model) {
         return "domain/community/post-write";
     }
 
+    // 게시글 등록 api 연결
     @PostMapping("/post-write")
     public String handlePostWrite(
             @RequestParam("title") String title,
-            @RequestParam("category") Integer category,
+            @RequestParam("category") String category,
             @RequestParam("content") String content,
             Authentication authentication,
             Model model) {
@@ -82,7 +78,7 @@ public class CommunityController {
         Long userId = user.getId();
 
         // DTO로 감싸서 서비스로 전달
-        PostCreateRequestDto dto = new PostCreateRequestDto(title, category, content);
+        PostCreateRequestDto dto = new PostCreateRequestDto(category, title, content);
         Post createdPost = postService.createPost(userId, dto);
 
         model.addAttribute("post", createdPost);

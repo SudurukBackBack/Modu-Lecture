@@ -3,9 +3,11 @@ package com.sudurukbackback.modulecture.domain.community.dto.request;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.ToString;
 
+@AllArgsConstructor
 @Data
 public class PostCreateRequestDto {
     @NotBlank(message = "카테고리를 선택해주세요.")
@@ -18,6 +20,5 @@ public class PostCreateRequestDto {
     @NotBlank(message = "내용을 입력해주세요.")
     private String content;
 
-    public PostCreateRequestDto(String title, Integer category, String content) {
-    }
+    public PostCreateRequestDto() {}
 }
