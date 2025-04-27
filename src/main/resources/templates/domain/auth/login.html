@@ -8,6 +8,7 @@
     <!-- CSS-CDN -->
     <div th:replace="~{layout/css-cdn :: css-cdn}"></div>
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 </head>
 <body>
 
@@ -30,7 +31,7 @@
                                 <form>
 
                                     <div class="d-flex align-items-center mb-3 pb-1">
-                                        <i class="fas fa-cubes fa-2x me-3" style="color: #ff6219;">환영합니다!</i>
+                                        <i class="fas fa-user fa-2x me-3" style="color: #ff6219;"> 환영합니다!</i>
                                         <span class="h1 fw-bold mb-0">모두의 강의</span>
                                     </div>
 
@@ -41,10 +42,15 @@
                                         <input type="email" id="input-email" class="form-control form-control-lg"/>
                                     </div>
 
-                                    <div data-mdb-input-init class="form-outline mb-4">
+                                    <div data-mdb-input-init class="form-outline mb-4 position-relative">
                                         <label class="form-label" for="input-password">비밀번호</label>
                                         <input type="password" id="input-password"
                                                class="form-control form-control-lg"/>
+
+                                        <!-- 눈 아이콘 (default: 마스킹 on 상태) -->
+                                        <i id="toggle-password-visibility"
+                                           class="fas fa-eye position-absolute"
+                                           style="top: 70%; right: 15px; transform: translateY(-50%); cursor: pointer; font-size: 1.1rem;"></i>
                                     </div>
 
                                     <div class="pt-1 mb-4">
@@ -54,8 +60,9 @@
                                     </div>
 
                                     <a class="small text-muted" href="#!">비밀번호를 잊으셨나요?</a>
-                                    <p class="mb-5 pb-lg-2" style="color: #393f81;">계정이 없으신가요? <a href="/web/v1/auth/register"
-                                                                                                  style="color: #393f81;">회원가입</a>
+                                    <p class="mb-5 pb-lg-2" style="color: #393f81;">계정이 없으신가요? <a
+                                            href="/web/v1/auth/register"
+                                            style="color: #393f81;">회원가입</a>
                                     </p>
                                     <a href="#!" class="small text-muted">이용약관</a>
                                     <a href="#!" class="small text-muted">개인정보 처리 방침</a>
@@ -84,6 +91,18 @@
         alert("로그인이 필요한 서비스입니다.");
     }
 
+    document.addEventListener("DOMContentLoaded", function () {
+        const password = document.getElementById("input-password");
+        const toggleIcon = document.getElementById("toggle-password-visibility");
+
+        toggleIcon.addEventListener("click", function () {
+            const isPassword = password.type === "password";
+            password.type = isPassword ? "" : "password";
+            toggleIcon.classList.toggle("fa-eye", !isPassword);
+            toggleIcon.classList.toggle("fa-eye-slash", isPassword);
+        });
+    });
+
     document.getElementById("login-btn").addEventListener("click", async function () {
         // 값 가져오기
         const email = document.getElementById("input-email").value.trim();
@@ -100,23 +119,20 @@
             console.log("로그인 요청 데이터:", requestData);
 
             // 로그인 API 요청 (쿠키 기반 인증)
-            const response = await fetch("/api/v1/auth/sign-in",
+            const response = await axios.post("/api/v1/auth/sign-in", requestData,
                 {
-                    method: "POST",
                     headers: {"Content-Type": "application/json"},
-                    body: JSON.stringify(requestData),
-                    credentials: "include"
+                    withCredentials: true
                 });
 
             // 응답 데이터 처리
-            const result = await response.json();
+            const result = response.data;
 
-            if (response.ok) {
+            if (response.status >= 200 && response.status < 300) { // response.ok와 유사
                 console.log("로그인 성공:", result.message);
                 window.location.href = "/main";
             } else {
                 console.error("로그인 실패:", result);
-                // API 응답에서 `errorMessage` 값을 가져와서 showAlert로 표시
                 const errorMessage = result.errorMessage || "로그인에 실패했습니다.";
                 showAlert(`[${response.status}] ${errorMessage}`, "danger");
             }
@@ -124,8 +140,29 @@
         } catch (error) {
             console.error("로그인 요청 오류:", error);
 
-            // 서버 응답이 없는 경우 (네트워크 오류 등)
-            showAlert("서버와의 연결이 원활하지 않습니다.", "danger");
+            if (error.response) {
+                // 서버 응답이 있는 경우 (HTTP 에러)
+                console.error("로그인 요청 오류:", error.response.data);
+
+                const { status: statusCode, data } = error.response;
+                let errorMessage = data?.errorMessage || "로그인에 실패했습니다.";
+
+                if (data?.validationErrors) {
+                    const validationDetails = Object.entries(data.validationErrors)
+                        .map(([field, message]) => `${field}: ${message}`)
+                        .join("\n");
+
+                    errorMessage = `입력 조건에 맞추어 작성해주세요.\n\n${validationDetails}`;
+                }
+
+                showAlert(`[${statusCode}] ${errorMessage}`, "danger");
+            } else if (error.request) {
+                // 요청은 보냈으나 응답이 없는 경우 (네트워크 에러)
+                showAlert("서버로부터 응답이 없습니다.", "danger");
+            } else {
+                // 요청을 보내기 전에 발생한 오류
+                showAlert("로그인 요청 중 오류가 발생했습니다.", "danger");
+            }
         }
     });
 

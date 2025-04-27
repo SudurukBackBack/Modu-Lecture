@@ -7,6 +7,7 @@ import com.sudurukbackback.modulecture.domain.user.dto.request.UserRegistrationR
 import com.sudurukbackback.modulecture.domain.user.entity.User;
 import com.sudurukbackback.modulecture.domain.user.entity.enums.UserGrade;
 import com.sudurukbackback.modulecture.domain.user.entity.enums.UserStatus;
+import com.sudurukbackback.modulecture.domain.user.exception.WrongAuthenticationException;
 import com.sudurukbackback.modulecture.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -26,6 +27,7 @@ public class AuthService implements UserDetailsService {
     private final UserRepository userRepository;
     private final AuthComponent authComponent;
     private final UserValidator userValidator;
+    private final LoginAttemptService loginAttemptService;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -62,9 +64,18 @@ public class AuthService implements UserDetailsService {
     @Transactional
     public User signIn(UserLoginRequestDto request) {
 
-        var user = authComponent.findUserByEmail(request.getEmail());
-        authComponent.validatePassword(request.getPassword(), user.getPassword());
+        String email = request.getEmail().toLowerCase();
+
+        if (!loginAttemptService.checkAndIncrementLoginAttempts(email)) {
+            long remainingTime = loginAttemptService.getRemainingLockoutTime(email);
+            throw new WrongAuthenticationException(remainingTime);
+        }
+
+        var user = authComponent.verifyEmailAndPasswordMatch(email, request.getPassword());
         userValidator.validateUserStatus(user);
+
+        // 로그인 성공 시 시도 횟수 초기화
+        loginAttemptService.resetLoginAttempts(email);
 
         return user;
     }

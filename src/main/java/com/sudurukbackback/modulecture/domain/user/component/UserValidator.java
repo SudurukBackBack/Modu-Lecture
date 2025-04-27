@@ -15,7 +15,11 @@ public class UserValidator {
 
     private final UserRepository userRepository;
 
-    // 닉네임 중복 체크
+    /**
+     * 닉네임 중복 확인
+     *
+     * @param nickname 닉네임
+     */
     public void validateNicknameUniqueness(String nickname) {
         boolean nicknameExists = userRepository.existsByNickname(nickname);
 
@@ -24,14 +28,22 @@ public class UserValidator {
         }
     }
 
-    // 계좌 활성화 여부 확인
+    /**
+     * 사용자 계정 상태 확인 (Active)
+     *
+     * @param user 사용자
+     */
     public void validateUserIsActive(User user) {
         if (user.getUserStatus() != UserStatus.ACTIVE) {
             throw new AccountNotActiveException();
         }
     }
 
-    // 로그인 계정 상태 확인
+    /**
+     * 사용자 계정 상태에 따른 로그인 로직
+     *
+     * @param user 사용자
+     */
     public void validateUserStatus(User user) {
         // Pending: Active 변환 (탈퇴 요청 철회)
         if (user.getUserStatus() == UserStatus.PENDING) {
