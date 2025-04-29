@@ -1,8 +1,8 @@
 package com.sudurukbackback.modulecture.global.security;
 
-import com.sudurukbackback.modulecture.domain.user.component.AuthComponent;
+import com.sudurukbackback.modulecture.domain.auth.component.AuthComponent;
 import com.sudurukbackback.modulecture.domain.user.entity.User;
-import com.sudurukbackback.modulecture.domain.user.service.AuthService;
+import com.sudurukbackback.modulecture.domain.auth.service.AuthService;
 import com.sudurukbackback.modulecture.global.security.util.JwtUtil;
 import io.github.cdimascio.dotenv.Dotenv;
 import io.jsonwebtoken.Jwts;

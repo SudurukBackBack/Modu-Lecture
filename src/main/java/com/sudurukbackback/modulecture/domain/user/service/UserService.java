@@ -2,7 +2,7 @@ package com.sudurukbackback.modulecture.domain.user.service;
 
 import com.sudurukbackback.modulecture.domain.community.repository.CommentRepository;
 import com.sudurukbackback.modulecture.domain.community.repository.PostRepository;
-import com.sudurukbackback.modulecture.domain.user.component.AuthComponent;
+import com.sudurukbackback.modulecture.domain.auth.component.AuthComponent;
 import com.sudurukbackback.modulecture.domain.user.component.UserValidator;
 import com.sudurukbackback.modulecture.domain.user.dto.request.PasswordUpdateRequestDto;
 import com.sudurukbackback.modulecture.domain.user.dto.request.UserDeleteRequestDto;

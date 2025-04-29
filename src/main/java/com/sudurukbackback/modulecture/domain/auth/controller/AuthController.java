@@ -1,11 +1,11 @@
-package com.sudurukbackback.modulecture.domain.user.controller;
+package com.sudurukbackback.modulecture.domain.auth.controller;
 
-import com.sudurukbackback.modulecture.domain.user.dto.request.UserLoginRequestDto;
-import com.sudurukbackback.modulecture.domain.user.dto.request.UserRegistrationRequestDto;
-import com.sudurukbackback.modulecture.domain.user.dto.response.UserLoginResponseDto;
-import com.sudurukbackback.modulecture.domain.user.dto.response.UserRegistrationResponseDto;
+import com.sudurukbackback.modulecture.domain.auth.dto.request.UserLoginRequestDto;
+import com.sudurukbackback.modulecture.domain.auth.dto.request.UserRegistrationRequestDto;
+import com.sudurukbackback.modulecture.domain.auth.dto.response.UserLoginResponseDto;
+import com.sudurukbackback.modulecture.domain.auth.dto.response.UserRegistrationResponseDto;
 import com.sudurukbackback.modulecture.domain.user.entity.User;
-import com.sudurukbackback.modulecture.domain.user.service.AuthService;
+import com.sudurukbackback.modulecture.domain.auth.service.AuthService;
 import com.sudurukbackback.modulecture.global.exception.BasicServerException;
 import com.sudurukbackback.modulecture.global.security.JwtTokenProvider;
 import com.sudurukbackback.modulecture.global.security.util.JwtUtil;

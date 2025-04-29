@@ -4,7 +4,7 @@ import com.sudurukbackback.modulecture.domain.user.entity.User;
 import com.sudurukbackback.modulecture.domain.user.entity.enums.UserStatus;
 import com.sudurukbackback.modulecture.domain.user.exception.AccountNotActiveException;
 import com.sudurukbackback.modulecture.domain.user.exception.SameNicknameException;
-import com.sudurukbackback.modulecture.domain.user.exception.WrongAuthenticationException;
+import com.sudurukbackback.modulecture.domain.auth.exception.WrongAuthenticationException;
 import com.sudurukbackback.modulecture.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

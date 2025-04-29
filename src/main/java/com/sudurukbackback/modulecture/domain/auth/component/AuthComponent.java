@@ -1,10 +1,10 @@
-package com.sudurukbackback.modulecture.domain.user.component;
+package com.sudurukbackback.modulecture.domain.auth.component;
 
 import com.sudurukbackback.modulecture.domain.user.entity.User;
 import com.sudurukbackback.modulecture.domain.user.exception.EmailAlreadyExistsException;
-import com.sudurukbackback.modulecture.domain.user.exception.WrongAuthenticationException;
+import com.sudurukbackback.modulecture.domain.auth.exception.WrongAuthenticationException;
 import com.sudurukbackback.modulecture.domain.user.repository.UserRepository;
-import com.sudurukbackback.modulecture.domain.user.service.LoginAttemptService;
+import com.sudurukbackback.modulecture.domain.auth.service.LoginAttemptService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;

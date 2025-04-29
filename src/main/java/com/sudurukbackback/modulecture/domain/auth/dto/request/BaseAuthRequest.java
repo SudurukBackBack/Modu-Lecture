@@ -1,4 +1,4 @@
-package com.sudurukbackback.modulecture.domain.user.dto.request;
+package com.sudurukbackback.modulecture.domain.auth.dto.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

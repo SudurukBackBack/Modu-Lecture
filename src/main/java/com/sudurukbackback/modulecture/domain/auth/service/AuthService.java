@@ -1,13 +1,13 @@
-package com.sudurukbackback.modulecture.domain.user.service;
+package com.sudurukbackback.modulecture.domain.auth.service;
 
-import com.sudurukbackback.modulecture.domain.user.component.AuthComponent;
+import com.sudurukbackback.modulecture.domain.auth.component.AuthComponent;
 import com.sudurukbackback.modulecture.domain.user.component.UserValidator;
-import com.sudurukbackback.modulecture.domain.user.dto.request.UserLoginRequestDto;
-import com.sudurukbackback.modulecture.domain.user.dto.request.UserRegistrationRequestDto;
+import com.sudurukbackback.modulecture.domain.auth.dto.request.UserLoginRequestDto;
+import com.sudurukbackback.modulecture.domain.auth.dto.request.UserRegistrationRequestDto;
 import com.sudurukbackback.modulecture.domain.user.entity.User;
 import com.sudurukbackback.modulecture.domain.user.entity.enums.UserGrade;
 import com.sudurukbackback.modulecture.domain.user.entity.enums.UserStatus;
-import com.sudurukbackback.modulecture.domain.user.exception.WrongAuthenticationException;
+import com.sudurukbackback.modulecture.domain.auth.exception.WrongAuthenticationException;
 import com.sudurukbackback.modulecture.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
