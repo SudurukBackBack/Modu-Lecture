@@ -2,30 +2,21 @@ package com.sudurukbackback.modulecture.domain.auth.controller;
 
 import com.sudurukbackback.modulecture.domain.auth.dto.request.UserLoginRequestDto;
 import com.sudurukbackback.modulecture.domain.auth.dto.request.UserRegistrationRequestDto;
-import com.sudurukbackback.modulecture.domain.auth.dto.response.UserLoginResponseDto;
+import com.sudurukbackback.modulecture.domain.auth.dto.response.CookieResultDto;
 import com.sudurukbackback.modulecture.domain.auth.dto.response.UserRegistrationResponseDto;
-import com.sudurukbackback.modulecture.domain.user.entity.User;
 import com.sudurukbackback.modulecture.domain.auth.service.AuthService;
-import com.sudurukbackback.modulecture.global.exception.BasicServerException;
-import com.sudurukbackback.modulecture.global.security.JwtTokenProvider;
-import com.sudurukbackback.modulecture.global.security.util.JwtUtil;
+import com.sudurukbackback.modulecture.domain.auth.service.CookieService;
+import com.sudurukbackback.modulecture.domain.user.entity.User;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.time.Duration;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -33,12 +24,8 @@ import java.util.concurrent.TimeUnit;
 @RestController
 public class AuthController {
 
-    private static final String ACCESS_TOKEN = "access";
-    private static final String REFRESH_TOKEN = "refresh";
-
     private final AuthService authService;
-    private final JwtTokenProvider jwtTokenProvider;
-    private final StringRedisTemplate redisTemplate;
+    private final CookieService cookieService;
 
     @PostMapping("/sign-up")
     public UserRegistrationResponseDto signUp(
@@ -50,23 +37,15 @@ public class AuthController {
     }
 
     @PostMapping("/sign-in")
-    public UserLoginResponseDto signIn(
+    public ResponseEntity<?> signIn(
             @Valid @RequestBody UserLoginRequestDto request,
             HttpServletResponse response
     ) {
-        var user = authService.signIn(request);
-        var tokens = jwtTokenProvider.generateToken(user.getEmail());
-        String token = tokens.get("access_token");
-        String refreshToken = tokens.get("refresh_token");
+        CookieResultDto cookies = authService.signIn(request);
 
-        var accessCookie = createCookie(ACCESS_TOKEN, token, 24);
-        var refreshCookie = createCookie(REFRESH_TOKEN, refreshToken, 48);
+        cookieService.setCookiesInHttpHeader(response, cookies.getAccessCookie(), cookies.getRefreshCookie());
 
-        response.addHeader(HttpHeaders.SET_COOKIE, accessCookie.toString());
-        response.addHeader(HttpHeaders.SET_COOKIE, refreshCookie.toString());
-        redisTemplate.opsForValue().set("RT:" + user.getEmail(), refreshToken, 2, TimeUnit.DAYS);
-
-        return UserLoginResponseDto.of(token);
+        return ResponseEntity.ok("login success");
     }
 
     @PostMapping("/sign-out")
@@ -74,79 +53,24 @@ public class AuthController {
             HttpServletRequest request,
             HttpServletResponse response
     ) {
-        String token = JwtUtil.resolveToken(request, "access");
-        log.info("로그아웃 요청 들어옴 - token: {}", token);
+        CookieResultDto cookies = authService.logout(request);
 
-        if (token == null) {
-            throw new BasicServerException();
-        }
+        cookieService.setCookiesInHttpHeader(response, cookies.getAccessCookie(), cookies.getRefreshCookie());
 
-        long expiration = JwtUtil.getExpiration(token);
-        redisTemplate.opsForValue().set("BL:" + token, "logout", expiration, TimeUnit.MILLISECONDS);
-        redisTemplate.delete("RT:" + JwtUtil.getUsername(token));
-
-        var accessCookie = createCookie(ACCESS_TOKEN, "", 0);
-        var refreshCookie = createCookie(REFRESH_TOKEN, "", 0);
-
-        response.addHeader(HttpHeaders.SET_COOKIE, accessCookie.toString());
-        response.addHeader(HttpHeaders.SET_COOKIE, refreshCookie.toString());
-
-        return ResponseEntity.ok().body(Map.of("message", "로그아웃 성공"));
+        return ResponseEntity.ok().body("logout success");
     }
 
     @PostMapping("/refresh")
-    public UserLoginResponseDto refreshToken(
+    public ResponseEntity<?> refreshToken(
             HttpServletRequest request,
             HttpServletResponse response
     ) {
-        String refreshToken = JwtUtil.resolveToken(request, "refresh");
-        log.info("토큰 갱신 요청 처리 시작");
+        CookieResultDto cookies = authService.refreshToken(request);
 
-        if (!JwtUtil.validateToken(refreshToken)) {
-            log.error("토큰 검증 실패");
-            throw new BasicServerException();
-        }
-
-        String email = JwtUtil.getUsername(refreshToken);
-        String token = redisTemplate.opsForValue().get("RT:" + email);
-
-        if (!refreshToken.equals(token)) {
-            log.error("토큰 값 불일치로 인한 토큰 갱신 작업 중단");
-            throw new BasicServerException();
-        }
-
-        var newTokens = jwtTokenProvider.generateToken(email);
-        String newToken = newTokens.get("access_token");
-        String newRefreshToken = newTokens.get("refresh_token");
-
-        var accessCookie = createCookie(ACCESS_TOKEN, newToken, 24);
-        var refreshCookie = createCookie(REFRESH_TOKEN, newRefreshToken, 48);
-
-        response.addHeader(HttpHeaders.SET_COOKIE, accessCookie.toString());
-        response.addHeader(HttpHeaders.SET_COOKIE, refreshCookie.toString());
-        redisTemplate.opsForValue().set("RT:" + email, newRefreshToken, 2, TimeUnit.DAYS);
+        cookieService.setCookiesInHttpHeader(response, cookies.getAccessCookie(), cookies.getRefreshCookie());
 
         log.info("토큰 갱신 완료");
 
-        return UserLoginResponseDto.of(token);
-    }
-
-    /**
-     * 토큰을 쿠키에 저장
-     *
-     * @param cookieName 쿠키 종류
-     * @param token 토큰
-     * @param hours 만료 시간 (시간 단위)
-     * @return ResponseCookie
-     */
-    private ResponseCookie createCookie(String cookieName, String token, int hours) {
-
-        return ResponseCookie.from(cookieName, token)
-                .httpOnly(true)
-                .secure(true)
-                .sameSite("Strict")
-                .path("/")
-                .maxAge(Duration.ofHours(hours)) // 만료
-                .build();
+        return ResponseEntity.ok().body("refresh success");
     }
 }

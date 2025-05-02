@@ -2,7 +2,6 @@ package com.sudurukbackback.modulecture.global.security;
 
 import com.sudurukbackback.modulecture.domain.auth.component.AuthComponent;
 import com.sudurukbackback.modulecture.domain.user.entity.User;
-import com.sudurukbackback.modulecture.domain.auth.service.AuthService;
 import com.sudurukbackback.modulecture.global.security.util.JwtUtil;
 import io.github.cdimascio.dotenv.Dotenv;
 import io.jsonwebtoken.Jwts;
@@ -11,10 +10,7 @@ import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
@@ -32,7 +28,6 @@ public class JwtTokenProvider {
     private static final long EXPIRATION_TIME = 60 * 60 * 1000L;
     private static final long REFRESH_EXPIRATION_TIME = 60 * 60 * 24 * 1000L;
 
-    private final AuthService authService;
     private final AuthComponent authComponent;
 
     private Key key;
@@ -105,14 +100,5 @@ public class JwtTokenProvider {
                 .compact();
 
         return Map.of("access_token", token, "refresh_token", refreshToken);
-    }
-
-    public Authentication getAuthentication(String token) {
-
-        String username = JwtUtil.getUsername(token);
-        List<GrantedAuthority> authorities = JwtUtil.getAuthorities(token);
-        UserDetails userDetails = authService.loadUserByUsername(username);
-
-        return new UsernamePasswordAuthenticationToken(userDetails, null, authorities);
     }
 }

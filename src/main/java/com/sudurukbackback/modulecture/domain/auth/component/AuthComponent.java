@@ -54,10 +54,10 @@ public class AuthComponent {
     /**
      * 비밀번호 일치 확인
      *
-     * @param encodedPassword 실제 비밀번호 (인코딩 된 상태)
      * @param inputPassword 입력한 비밀번호
+     * @param encodedPassword 실제 비밀번호 (인코딩 된 상태)
      */
-    private void validatePassword(String encodedPassword, String inputPassword, int remainAttempts) {
+    private void validatePassword(String inputPassword, String encodedPassword, int remainAttempts) {
         if (!passwordEncoder.matches(inputPassword, encodedPassword)) {
             if (remainAttempts == -1) {
                 throw new WrongAuthenticationException();
@@ -78,7 +78,7 @@ public class AuthComponent {
         User user = findUserByEmail(email);
         int remainAttempts = loginAttemptService.getRemainingLoginAttempts(email);
 
-        validatePassword(user.getPassword(), password, remainAttempts);
+        validatePassword(password, user.getPassword(), remainAttempts);
 
         return user;
     }

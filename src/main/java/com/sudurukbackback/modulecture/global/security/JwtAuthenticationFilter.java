@@ -1,5 +1,6 @@
 package com.sudurukbackback.modulecture.global.security;
 
+import com.sudurukbackback.modulecture.domain.auth.service.AuthService;
 import com.sudurukbackback.modulecture.global.security.util.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -20,8 +21,8 @@ import java.io.IOException;
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private final JwtTokenProvider jwtTokenProvider;
     private final StringRedisTemplate redisTemplate;
+    private final AuthService authService;
 
     @Override
     protected void doFilterInternal(
@@ -44,7 +45,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         // 유효한 토큰인지 확인 후 SecurityContext에 등록
         if (token != null && JwtUtil.validateToken(token)) {
-            Authentication auth = jwtTokenProvider.getAuthentication(token);
+            Authentication auth = authService.getAuthentication(token);
             SecurityContextHolder.getContext().setAuthentication(auth);
             log.debug("인증 성공: {}", auth.getName());
         }
