@@ -5,7 +5,7 @@ import com.sudurukbackback.modulecture.domain.auth.dto.request.UserLoginRequestD
 import com.sudurukbackback.modulecture.domain.auth.dto.request.UserRegistrationRequestDto;
 import com.sudurukbackback.modulecture.domain.auth.dto.response.CookieResultDto;
 import com.sudurukbackback.modulecture.domain.auth.exception.WrongAuthenticationException;
-import com.sudurukbackback.modulecture.domain.user.component.UserValidator;
+import com.sudurukbackback.modulecture.domain.user.component.UserComponent;
 import com.sudurukbackback.modulecture.domain.user.entity.User;
 import com.sudurukbackback.modulecture.domain.user.entity.enums.UserGrade;
 import com.sudurukbackback.modulecture.domain.user.entity.enums.UserStatus;
@@ -39,7 +39,7 @@ public class AuthService implements UserDetailsService {
 
     private final UserRepository userRepository;
     private final AuthComponent authComponent;
-    private final UserValidator userValidator;
+    private final UserComponent userComponent;
     private final LoginAttemptService loginAttemptService;
     private final JwtTokenProvider jwtTokenProvider;
     private final StringRedisTemplate redisTemplate;
@@ -70,7 +70,7 @@ public class AuthService implements UserDetailsService {
         String nickname = generateRandomNickname(request.getNickname());
 
         // 이메일, 닉네임 중복 체크
-        checkEmailAndNicknameUniqueness(email, nickname);
+        userComponent.checkEmailAndNicknameUniqueness(email, nickname);
 
         return userRepository.save(User.builder()
                 .email(email)
@@ -96,7 +96,7 @@ public class AuthService implements UserDetailsService {
         User user = authComponent.verifyEmailAndPasswordMatch(email, request.getPassword());
 
         // 사용자 계정 상태 검증
-        userValidator.validateUserStatus(user);
+        userComponent.validateUserStatus(user);
 
         // 로그인 성공 시 시도 횟수 초기화
         loginAttemptService.resetLoginAttempts(email);
@@ -158,19 +158,6 @@ public class AuthService implements UserDetailsService {
 
     private String emailNormalizer(String email) {
         return email.toLowerCase();
-    }
-
-    /**
-     * 이메일과 닉네임이 이미 존재하는지 확인
-     *
-     * @param email    이메일
-     * @param nickname 닉네임
-     */
-    private void checkEmailAndNicknameUniqueness(String email, String nickname) {
-        // email 가입 가능 여부 확인
-        authComponent.validateEmailUniqueness(email);
-        // 닉네임 중복 확인
-        userValidator.validateNicknameUniqueness(nickname);
     }
 
     /**

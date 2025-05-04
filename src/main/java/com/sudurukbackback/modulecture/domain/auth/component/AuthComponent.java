@@ -1,10 +1,9 @@
 package com.sudurukbackback.modulecture.domain.auth.component;
 
-import com.sudurukbackback.modulecture.domain.user.entity.User;
-import com.sudurukbackback.modulecture.domain.user.exception.EmailAlreadyExistsException;
 import com.sudurukbackback.modulecture.domain.auth.exception.WrongAuthenticationException;
-import com.sudurukbackback.modulecture.domain.user.repository.UserRepository;
 import com.sudurukbackback.modulecture.domain.auth.service.LoginAttemptService;
+import com.sudurukbackback.modulecture.domain.user.component.UserComponent;
+import com.sudurukbackback.modulecture.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -13,33 +12,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class AuthComponent {
 
-    private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final LoginAttemptService loginAttemptService;
-
-    /**
-     * 이메일 중복 체크
-     *
-     * @param email 이메일
-     */
-    public void validateEmailUniqueness(String email) {
-        boolean emailExists = userRepository.existsByEmail(email);
-
-        if (emailExists) {
-            throw new EmailAlreadyExistsException();
-        }
-    }
-
-    /**
-     * 이메일로 UserEntity 가져오기
-     *
-     * @param email 이메일
-     * @return UserEntity
-     */
-    public User findUserByEmail(String email) {
-        return userRepository.findByEmail(email)
-                .orElseThrow(WrongAuthenticationException::new);
-    }
+    private final UserComponent userComponent;
 
     /**
      * 비밀번호 인코딩
@@ -75,7 +50,7 @@ public class AuthComponent {
      * @return UserEntity
      */
     public User verifyEmailAndPasswordMatch(String email, String password) {
-        User user = findUserByEmail(email);
+        User user = userComponent.findUserByEmail(email);
         int remainAttempts = loginAttemptService.getRemainingLoginAttempts(email);
 
         validatePassword(password, user.getPassword(), remainAttempts);

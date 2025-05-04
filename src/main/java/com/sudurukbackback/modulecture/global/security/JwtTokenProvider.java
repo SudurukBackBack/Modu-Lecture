@@ -1,6 +1,6 @@
 package com.sudurukbackback.modulecture.global.security;
 
-import com.sudurukbackback.modulecture.domain.auth.component.AuthComponent;
+import com.sudurukbackback.modulecture.domain.user.component.UserComponent;
 import com.sudurukbackback.modulecture.domain.user.entity.User;
 import com.sudurukbackback.modulecture.global.security.util.JwtUtil;
 import io.github.cdimascio.dotenv.Dotenv;
@@ -28,7 +28,7 @@ public class JwtTokenProvider {
     private static final long EXPIRATION_TIME = 60 * 60 * 1000L;
     private static final long REFRESH_EXPIRATION_TIME = 60 * 60 * 24 * 1000L;
 
-    private final AuthComponent authComponent;
+    private final UserComponent userComponent;
 
     private Key key;
 
@@ -67,7 +67,7 @@ public class JwtTokenProvider {
      */
     public Map<String, String> generateToken(String email) {
 
-        User user = authComponent.findUserByEmail(email);
+        User user = userComponent.findUserByEmail(email);
 
         // 사용자의 권한 문자열 추출
         List<String> roles = user.getAuthorities().stream()

@@ -3,7 +3,7 @@ package com.sudurukbackback.modulecture.domain.user.service;
 import com.sudurukbackback.modulecture.domain.community.repository.CommentRepository;
 import com.sudurukbackback.modulecture.domain.community.repository.PostRepository;
 import com.sudurukbackback.modulecture.domain.auth.component.AuthComponent;
-import com.sudurukbackback.modulecture.domain.user.component.UserValidator;
+import com.sudurukbackback.modulecture.domain.user.component.UserComponent;
 import com.sudurukbackback.modulecture.domain.user.dto.request.PasswordUpdateRequestDto;
 import com.sudurukbackback.modulecture.domain.user.dto.request.UserDeleteRequestDto;
 import com.sudurukbackback.modulecture.domain.user.dto.response.UserProfileResponseDto;
@@ -32,7 +32,7 @@ public class UserService {
     private final CommentRepository commentRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthComponent authComponent;
-    private final UserValidator userValidator;
+    private final UserComponent userComponent;
 
     @Transactional
     public void updatePassword(Authentication auth, PasswordUpdateRequestDto request) {
@@ -61,7 +61,7 @@ public class UserService {
     @Transactional
     public UserProfileResponseDto updateUserProfile(String email, String newNickname) {
         // 닉네임 중복 확인
-        userValidator.validateNicknameUniqueness(newNickname);
+        userComponent.validateNicknameUniqueness(newNickname);
 
         // 사용자 정보 가져오기
         User user = getUserByEmail(email);
@@ -137,7 +137,7 @@ public class UserService {
     private User authenticateActiveUser(String email, String password) {
         // 이메일 비밀번호 인증
         var user = authComponent.verifyEmailAndPasswordMatch(email, password);
-        userValidator.validateUserIsActive(user);
+        userComponent.validateUserIsActive(user);
 
         return user;
     }
