@@ -83,6 +83,26 @@ public class User implements UserDetails {
     }
 
     /**
+     * 제공된 상세 정보를 사용하여 새로운 User 엔티티를 생성합니다.
+     *
+     * @param email 사용자의 이메일 주소
+     * @param password 사용자의 비밀번호
+     * @param nickname 사용자의 닉네임
+     * @param grade 사용자의 등급을 나타내는 UserGrade
+     * @return User 엔티티의 새로운 인스턴스
+     */
+    public static User createUserEntity(String email, String password, String nickname, UserGrade grade) {
+        return User.builder()
+                .email(email)
+                .password(password)
+                .nickname(nickname)
+                .grade(grade)
+                .userStatus(UserStatus.ACTIVE)
+                .createdAt(LocalDateTime.now())
+                .build();
+    }
+
+    /**
      * 계정 재활성화 (탈퇴 유예 기간 내 로그인, 탈퇴 요청 철회)
      */
     public void reactiveAccount() {

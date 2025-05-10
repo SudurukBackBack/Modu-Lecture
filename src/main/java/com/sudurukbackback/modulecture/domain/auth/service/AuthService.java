@@ -8,7 +8,6 @@ import com.sudurukbackback.modulecture.domain.auth.exception.WrongAuthentication
 import com.sudurukbackback.modulecture.domain.user.component.UserComponent;
 import com.sudurukbackback.modulecture.domain.user.entity.User;
 import com.sudurukbackback.modulecture.domain.user.entity.enums.UserGrade;
-import com.sudurukbackback.modulecture.domain.user.entity.enums.UserStatus;
 import com.sudurukbackback.modulecture.domain.user.repository.UserRepository;
 import com.sudurukbackback.modulecture.global.exception.BasicServerException;
 import com.sudurukbackback.modulecture.global.security.JwtTokenProvider;
@@ -63,8 +62,8 @@ public class AuthService implements UserDetailsService {
     @Transactional
     public User signUp(UserRegistrationRequestDto request) {
 
-        String email = emailNormalizer(request.getEmail());
-        String password = request.getPassword();
+        String email = authComponent.emailNormalizer(request.getEmail());
+        String password = authComponent.encodePassword(request.getPassword());
 
         // 닉네임 미설정 시 임의의 닉네임 부여
         String nickname = generateRandomNickname(request.getNickname());
@@ -72,19 +71,19 @@ public class AuthService implements UserDetailsService {
         // 이메일, 닉네임 중복 체크
         userComponent.checkEmailAndNicknameUniqueness(email, nickname);
 
-        return userRepository.save(User.builder()
-                .email(email)
-                .password(authComponent.encodePassword(password))
-                .nickname(nickname)
-                .grade(UserGrade.ROLE_BRONZE)
-                .userStatus(UserStatus.ACTIVE)
-                .createdAt(LocalDateTime.now())
-                .build());
+        User newUserEntity =  User.createUserEntity(
+                email,
+                password,
+                nickname,
+                UserGrade.ROLE_BRONZE
+        );
+
+        return userRepository.save(newUserEntity);
     }
 
     public CookieResultDto signIn(UserLoginRequestDto request) {
 
-        String email = emailNormalizer(request.getEmail());
+        String email = authComponent.emailNormalizer(request.getEmail());
 
         // 로그인 시도 횟수 확인 및 잠금 처리
         if (!loginAttemptService.checkAndIncrementLoginAttempts(email)) {
@@ -154,10 +153,6 @@ public class AuthService implements UserDetailsService {
         storeRefreshTokenInRedis(email, cookies.getRefreshCookie().getValue());
 
         return cookies;
-    }
-
-    private String emailNormalizer(String email) {
-        return email.toLowerCase();
     }
 
     /**

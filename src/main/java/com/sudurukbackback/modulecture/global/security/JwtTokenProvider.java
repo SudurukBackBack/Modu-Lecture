@@ -67,7 +67,7 @@ public class JwtTokenProvider {
      */
     public Map<String, String> generateToken(String email) {
 
-        User user = userComponent.findUserByEmail(email);
+        User user = userComponent.getUserByEmail(email);
 
         // 사용자의 권한 문자열 추출
         List<String> roles = user.getAuthorities().stream()

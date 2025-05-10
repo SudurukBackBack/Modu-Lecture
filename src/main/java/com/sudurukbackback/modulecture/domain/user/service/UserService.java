@@ -1,8 +1,8 @@
 package com.sudurukbackback.modulecture.domain.user.service;
 
+import com.sudurukbackback.modulecture.domain.auth.component.AuthComponent;
 import com.sudurukbackback.modulecture.domain.community.repository.CommentRepository;
 import com.sudurukbackback.modulecture.domain.community.repository.PostRepository;
-import com.sudurukbackback.modulecture.domain.auth.component.AuthComponent;
 import com.sudurukbackback.modulecture.domain.user.component.UserComponent;
 import com.sudurukbackback.modulecture.domain.user.dto.request.PasswordUpdateRequestDto;
 import com.sudurukbackback.modulecture.domain.user.dto.request.UserDeleteRequestDto;
@@ -11,7 +11,6 @@ import com.sudurukbackback.modulecture.domain.user.entity.User;
 import com.sudurukbackback.modulecture.domain.user.entity.enums.UserGrade;
 import com.sudurukbackback.modulecture.domain.user.entity.enums.UserStatus;
 import com.sudurukbackback.modulecture.domain.user.repository.UserRepository;
-import com.sudurukbackback.modulecture.global.exception.BasicServerException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -53,7 +52,7 @@ public class UserService {
 
     public UserProfileResponseDto getUserProfile(String email) {
         // 사용자 정보 가져오기
-        User user = getUserByEmail(email);
+        User user = userComponent.getUserByEmail(email);
 
         return UserProfileResponseDto.of(user.getEmail(), user.getNickname());
     }
@@ -64,7 +63,7 @@ public class UserService {
         userComponent.validateNicknameUniqueness(newNickname);
 
         // 사용자 정보 가져오기
-        User user = getUserByEmail(email);
+        User user = userComponent.getUserByEmail(email);
         user.changeNickname(newNickname);
 
         return UserProfileResponseDto.of(user.getEmail(), user.getNickname());
@@ -78,7 +77,7 @@ public class UserService {
     @Transactional
     public void checkUserGradeUp(Long userId) {
         // User 객체 가져오기
-        User user = getUserById(userId);
+        User user = userComponent.getUserById(userId);
         UserGrade currentGrade = user.getGrade();
 
         // 골드 또는 플래티넘이면 승급 불가
@@ -140,27 +139,5 @@ public class UserService {
         userComponent.validateUserIsActive(user);
 
         return user;
-    }
-
-    /**
-     * 이메일을 사용해 User 가져오기
-     *
-     * @param email 이메일
-     * @return User
-     */
-    private User getUserByEmail(String email) {
-        return userRepository.findByEmail(email)
-                .orElseThrow(BasicServerException::new);
-    }
-
-    /**
-     * ID를 사용해 User 가져오기
-     *
-     * @param id 사용자 ID
-     * @return User
-     */
-    private User getUserById(Long id) {
-        return userRepository.findById(id)
-                .orElseThrow(BasicServerException::new);
     }
 }

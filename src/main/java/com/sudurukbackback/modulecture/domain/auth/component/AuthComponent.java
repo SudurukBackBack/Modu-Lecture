@@ -17,6 +17,16 @@ public class AuthComponent {
     private final UserComponent userComponent;
 
     /**
+     * 제공된 이메일 주소를 소문자로 변환하여 형식을 정규화합니다.
+     *
+     * @param email 정규화할 이메일 주소
+     * @return 소문자로 변환된 정규화된 이메일 주소
+     */
+    public String emailNormalizer(String email) {
+        return email.toLowerCase();
+    }
+
+    /**
      * 비밀번호 인코딩
      *
      * @param password 비밀번호
@@ -50,7 +60,7 @@ public class AuthComponent {
      * @return UserEntity
      */
     public User verifyEmailAndPasswordMatch(String email, String password) {
-        User user = userComponent.findUserByEmail(email);
+        User user = userComponent.getUserByEmail(email);
         int remainAttempts = loginAttemptService.getRemainingLoginAttempts(email);
 
         validatePassword(password, user.getPassword(), remainAttempts);

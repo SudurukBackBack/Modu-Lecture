@@ -1,13 +1,13 @@
 package com.sudurukbackback.modulecture.domain.user.component;
 
+import com.sudurukbackback.modulecture.domain.auth.exception.WrongAuthenticationException;
 import com.sudurukbackback.modulecture.domain.user.entity.User;
 import com.sudurukbackback.modulecture.domain.user.entity.enums.UserStatus;
 import com.sudurukbackback.modulecture.domain.user.exception.AccountNotActiveException;
 import com.sudurukbackback.modulecture.domain.user.exception.EmailAlreadyExistsException;
 import com.sudurukbackback.modulecture.domain.user.exception.SameNicknameException;
-import com.sudurukbackback.modulecture.domain.auth.exception.WrongAuthenticationException;
-import com.sudurukbackback.modulecture.domain.user.exception.UserNotExistException;
 import com.sudurukbackback.modulecture.domain.user.repository.UserRepository;
+import com.sudurukbackback.modulecture.global.exception.BasicServerException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -18,14 +18,25 @@ public class UserComponent {
     private final UserRepository userRepository;
 
     /**
-     * 이메일로 UserEntity 가져오기
+     * 이메일을 사용해 User 가져오기
      *
      * @param email 이메일
-     * @return UserEntity
+     * @return User
      */
-    public User findUserByEmail(String email) {
+    public User getUserByEmail(String email) {
         return userRepository.findByEmail(email)
-                .orElseThrow(UserNotExistException::new);
+                .orElseThrow(BasicServerException::new);
+    }
+
+    /**
+     * ID를 사용해 User 가져오기
+     *
+     * @param id 사용자 ID
+     * @return User
+     */
+    public User getUserById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(BasicServerException::new);
     }
 
     /**
