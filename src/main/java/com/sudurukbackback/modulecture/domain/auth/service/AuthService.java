@@ -25,10 +25,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
@@ -65,18 +62,13 @@ public class AuthService implements UserDetailsService {
         String email = authComponent.emailNormalizer(request.getEmail());
         String password = authComponent.encodePassword(request.getPassword());
 
-        // 닉네임 미설정 시 임의의 닉네임 부여
-        String nickname = generateRandomNickname(request.getNickname());
+        // 닉네임 미설정 시 이메일을 통해 닉네임 설정
+        String nickname = userComponent.generateNicknameFromEmail(request.getNickname(), email);
 
         // 이메일, 닉네임 중복 체크
         userComponent.checkEmailAndNicknameUniqueness(email, nickname);
 
-        User newUserEntity =  User.createUserEntity(
-                email,
-                password,
-                nickname,
-                UserGrade.ROLE_BRONZE
-        );
+        User newUserEntity = User.createUserEntity(email, password, nickname, UserGrade.ROLE_BRONZE);
 
         return userRepository.save(newUserEntity);
     }
@@ -156,18 +148,6 @@ public class AuthService implements UserDetailsService {
     }
 
     /**
-     * 입력된 nickname이 없을 경우 랜덤 생성
-     *
-     * @param nickname 입력한 nickname
-     * @return 랜덤 생성된 nickname (입력한 nickname이 null일 경우)
-     */
-    private String generateRandomNickname(String nickname) {
-        return Optional.ofNullable(nickname)
-                .filter(n -> !n.isEmpty())
-                .orElse("User" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")));
-    }
-
-    /**
      * 주어진 이메일에 대한 토큰(접근 토큰 및 리프레시 토큰)을 생성하고, 해당 토큰에 대한 쿠키를 생성합니다.
      * 생성된 토큰은 쿠키에 담겨 {@link CookieResultDto} 형태로 반환됩니다.
      *
@@ -192,7 +172,7 @@ public class AuthService implements UserDetailsService {
     /**
      * 사용자의 토큰을 Redis에 "블랙리스트" 토큰으로 저장하여 로그아웃 처리하고,
      * 관련된 리프레시 토큰이 있다면 Redis에서 삭제합니다.
-     *
+     * <p>
      * 이 메서드는 토큰을 "BL:" 접두사가 붙은 키로 Redis에 설정하고, "logout"으로 표시합니다.
      * 토큰은 원래의 만료 시간과 함께 저장됩니다. 또한, 관련된 리프레시 토큰이 있다면,
      * 토큰에서 추출한 사용자 이름과 "RT:" 접두사를 사용하여 Redis에서 삭제합니다.

@@ -11,6 +11,8 @@ import com.sudurukbackback.modulecture.global.exception.BasicServerException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 @RequiredArgsConstructor
 @Component
 public class UserComponent {
@@ -50,6 +52,19 @@ public class UserComponent {
         if (emailExists) {
             throw new EmailAlreadyExistsException();
         }
+    }
+
+    /**
+     * 입력된 nickname이 없을 경우 이메일에서 추출하여 적용 (일반 사용자용)
+     *
+     * @param nickname 입력한 nickname
+     * @param email 사용자의 이메일 주소
+     * @return nickname (입력된 경우), 또는 이메일에서 추출한 닉네임 (입력되지 않은 경우)
+     */
+    public String generateNicknameFromEmail(String nickname, String email) {
+        return Optional.ofNullable(nickname)
+                .filter(n -> !n.isEmpty())
+                .orElseGet(() -> email.substring(0, email.indexOf("@")));
     }
 
     /**

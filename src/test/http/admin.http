@@ -1,0 +1,13 @@
+###
+POST http://localhost:8080/api/v1/admin/code
+
+###
+POST http://localhost:8080/api/v1/admin/register-admin
+Content-Type: application/json
+
+{
+  "nickname": "",
+  "adminCode": "8USZ4D",
+  "email": "admin@gmail.com",
+  "password": "Admin1234!"
+}

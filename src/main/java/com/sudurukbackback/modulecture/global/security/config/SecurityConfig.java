@@ -29,6 +29,7 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/v1/auth/**", "/web/v1/auth/**").permitAll()
+                        .requestMatchers("/api/v1/admin/register-admin", "/api/v1/admin/code").permitAll()
                         .requestMatchers("/css/**", "/js/**", "/images/**", "/images/logo.svg", "/fragments/**").permitAll()
                         .requestMatchers("/main", "/community/**", "/lecture/**", "/api/v1/enroll/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/posts/**").permitAll()

@@ -52,7 +52,7 @@ public class User implements UserDetails {
     @NotNull
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private UserGrade grade; // 0: Bronze, 1: Silver, 2: Gold, 3: Platinum
+    private UserGrade grade;
 
     @NotNull
     @Column(nullable = false)
