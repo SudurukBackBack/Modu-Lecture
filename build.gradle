@@ -33,6 +33,9 @@ dependencies {
 		implementation 'org.springframework.boot:spring-boot-starter-batch'
 		implementation 'org.springframework.boot:spring-boot-starter-data-redis' // Redis
 
+		// Elasticsearch
+		implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch' // 서치 도메인
+
 		// AWS SDK for Java v2 dependencies
 		implementation platform('software.amazon.awssdk:bom:2.30.13') // AWS SDK BOM (의존성 버전 관리를 위한 Bill of Materials)
 		implementation 'software.amazon.awssdk:s3' // AWS S3 SDK (파일 업로드, 다운로드, 삭제 등 S3 연동)
