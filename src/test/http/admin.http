@@ -7,7 +7,11 @@ Content-Type: application/json
 
 {
   "nickname": "",
-  "adminCode": "8USZ4D",
-  "email": "admin@gmail.com",
-  "password": "Admin1234!"
+  "adminCode": "",
+  "email": "",
+  "password": ""
 }
+
+###
+GET http://localhost:8080/api/v1/admin/user-list
+Authorization: Bearer
