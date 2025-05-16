@@ -11,7 +11,7 @@ public enum UserGrade {
     ROLE_SILVER(1, List.of("ROLE_BRONZE", "ROLE_SILVER")),
     ROLE_GOLD(2, List.of("ROLE_BRONZE", "ROLE_SILVER", "ROLE_GOLD")),
     ROLE_PLATINUM(3, List.of("ROLE_BRONZE", "ROLE_SILVER", "ROLE_GOLD", "ROLE_PLATINUM")),
-    ROLE_ADMIN(99, List.of("ROLE_ADMIN"));
+    ROLE_ADMIN(99, List.of("ROLE_BRONZE", "ROLE_SILVER", "ROLE_GOLD", "ROLE_PLATINUM", "ROLE_ADMIN"));
 
     private final int grade;
     private final List<String> roles;

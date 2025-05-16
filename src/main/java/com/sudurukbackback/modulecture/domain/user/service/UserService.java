@@ -8,8 +8,10 @@ import com.sudurukbackback.modulecture.domain.user.dto.request.PasswordUpdateReq
 import com.sudurukbackback.modulecture.domain.user.dto.request.UserDeleteRequestDto;
 import com.sudurukbackback.modulecture.domain.user.dto.response.UserProfileResponseDto;
 import com.sudurukbackback.modulecture.domain.user.entity.User;
+import com.sudurukbackback.modulecture.domain.user.entity.enums.ProfileField;
 import com.sudurukbackback.modulecture.domain.user.entity.enums.UserGrade;
 import com.sudurukbackback.modulecture.domain.user.entity.enums.UserStatus;
+import com.sudurukbackback.modulecture.domain.user.exception.SamePasswordException;
 import com.sudurukbackback.modulecture.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,8 +40,17 @@ public class UserService {
         // 본인 인증
         User user = authenticateActiveUser(auth.getName(), request.getCurrentPassword());
 
-        // 비밀번호 재설정
-        user.changePassword(request.getNewPassword(), passwordEncoder);
+        String originalPassword = user.getPassword();
+        String newPassword = request.getNewPassword();
+
+        // 기존의 비밀번호와 새 비밀번호가 일치한지 확인
+        if (passwordEncoder.matches(newPassword, originalPassword)) {
+            throw new SamePasswordException();
+        }
+
+        authComponent.encodePassword(newPassword);
+
+        user.updateProfile(ProfileField.PASSWORD, newPassword);
     }
 
     @Transactional
@@ -47,7 +58,7 @@ public class UserService {
         // 본인 인증
         User user = authenticateActiveUser(auth.getName(), request.getCurrentPassword());
 
-        user.requestDeactivateAccount();
+        user.deactivateAccount(UserStatus.PENDING);
     }
 
     public UserProfileResponseDto getUserProfile(String email) {
@@ -64,7 +75,7 @@ public class UserService {
 
         // 사용자 정보 가져오기
         User user = userComponent.getUserByEmail(email);
-        user.changeNickname(newNickname);
+        user.updateProfile(ProfileField.NICKNAME, newNickname);
 
         return UserProfileResponseDto.of(user.getEmail(), user.getNickname());
     }
@@ -122,7 +133,7 @@ public class UserService {
         );
         log.info("탈퇴 처리 계정: {}개", users.size());
 
-        users.forEach(User::deactivateAccount); // 엔티티 상태 변경
+        users.forEach(user -> user.deactivateAccount(UserStatus.DELETED)); // 엔티티 상태 변경
         log.info("탈퇴 처리 작업 완료");
     }
 

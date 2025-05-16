@@ -42,7 +42,7 @@ public class AuthComponent {
      * @param inputPassword 입력한 비밀번호
      * @param encodedPassword 실제 비밀번호 (인코딩 된 상태)
      */
-    private void validatePassword(String inputPassword, String encodedPassword, int remainAttempts) {
+    public void validatePassword(String inputPassword, String encodedPassword, int remainAttempts) {
         if (!passwordEncoder.matches(inputPassword, encodedPassword)) {
             if (remainAttempts == -1) {
                 throw new WrongAuthenticationException();

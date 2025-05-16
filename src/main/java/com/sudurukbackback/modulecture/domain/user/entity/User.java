@@ -2,9 +2,10 @@ package com.sudurukbackback.modulecture.domain.user.entity;
 
 import com.sudurukbackback.modulecture.domain.enrollment.entity.Enrollment;
 import com.sudurukbackback.modulecture.domain.lecture.entity.Lecture;
+import com.sudurukbackback.modulecture.domain.user.entity.enums.ProfileField;
 import com.sudurukbackback.modulecture.domain.user.entity.enums.UserGrade;
 import com.sudurukbackback.modulecture.domain.user.entity.enums.UserStatus;
-import com.sudurukbackback.modulecture.domain.user.exception.SamePasswordException;
+import com.sudurukbackback.modulecture.global.exception.BasicServerException;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
@@ -16,7 +17,6 @@ import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -108,43 +108,36 @@ public class User implements UserDetails {
     public void reactiveAccount() {
         this.userStatus = UserStatus.ACTIVE;
         this.deletedAt = null;
+        trackUpdate();
     }
 
     /**
-     * 비밀번호 변경
+     * 사용자 계정을 비활성화합니다. 사용자 상태를 업데이트하고 계정 삭제 타임스탬프를 설정합니다.
      *
-     * @param newPassword 새 비밀번호
-     * @param passwordEncoder PasswordEncoder
+     * @param status 사용자 계정에 설정할 새로운 상태이며, 일반적으로 비활성화 상태를 나타냅니다.
      */
-    public void changePassword(String newPassword, PasswordEncoder passwordEncoder) {
-
-        // 기존 비밀번호와 새 비밀번호가 동일한지 확인
-        if (passwordEncoder.matches(newPassword, this.password)) {
-            throw new SamePasswordException();
-        }
-
-        // 새 비밀번호를 암호화하여 저장
-        this.password = passwordEncoder.encode(newPassword);
-    }
-
-    // 계정 비활성화(탈퇴) 요청 생성
-    public void requestDeactivateAccount() {
-        this.userStatus = UserStatus.PENDING;
-        this.deletedAt = LocalDateTime.now();
-    }
-
-    // 계정 탈퇴 처리
-    public void deactivateAccount() {
+    public void deactivateAccount(UserStatus status) {
         // 계정 상태 변경 및 탈퇴 날짜 갱신
-        this.userStatus = UserStatus.DELETED;
+        this.userStatus = status;
         this.deletedAt = LocalDateTime.now();
     }
-      
-    // 닉네임 변경
-    public void changeNickname(String newNickname) {
-        // 계정 업데이트 날짜 갱신
-        this.nickname = newNickname;
-        this.updatedAt = LocalDateTime.now();
+
+    /**
+     * 주어진 값으로 사용자의 특정 프로필 필드를 업데이트합니다.
+     *
+     * @param field 업데이트할 프로필 필드이며, {@link ProfileField}로 지정됩니다.
+     * @param value 지정된 필드에 할당할 새로운 값 (필드에 따라 타입 캐스팅됨)
+     * @throws BasicServerException 제공된 필드가 지원하지 않는 {@link ProfileField}인 경우
+     */
+    public void updateProfile(ProfileField field, Object value) {
+        switch (field) {
+            case PASSWORD -> this.password = (String) value;
+            case NICKNAME -> this.nickname = (String) value;
+            case GRADE -> this.grade = (UserGrade) value;
+            case STATUS -> this.userStatus = (UserStatus) value;
+            default -> throw new BasicServerException();
+        }
+        trackUpdate();
     }
 
     // 수강 신청 추가 메서드
@@ -156,5 +149,10 @@ public class User implements UserDetails {
     // 사용자 승급
     public void upgradeGrade() {
         this.grade = this.grade.nextGrade();
+    }
+
+    // 정보 수정 시점 기록
+    private void trackUpdate() {
+        this.updatedAt = LocalDateTime.now();
     }
 }
