@@ -1,4 +1,4 @@
-package com.sudurukbackback.modulecture.domain.user.dto.response;
+package com.sudurukbackback.modulecture.domain.auth.dto.response;
 
 import com.sudurukbackback.modulecture.domain.user.entity.User;
 

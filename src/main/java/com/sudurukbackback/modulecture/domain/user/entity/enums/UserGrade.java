@@ -10,7 +10,8 @@ public enum UserGrade {
     ROLE_BRONZE(0, List.of("ROLE_BRONZE")),
     ROLE_SILVER(1, List.of("ROLE_BRONZE", "ROLE_SILVER")),
     ROLE_GOLD(2, List.of("ROLE_BRONZE", "ROLE_SILVER", "ROLE_GOLD")),
-    ROLE_PLATINUM(3, List.of("ROLE_BRONZE", "ROLE_SILVER", "ROLE_GOLD", "ROLE_PLATINUM"));
+    ROLE_PLATINUM(3, List.of("ROLE_BRONZE", "ROLE_SILVER", "ROLE_GOLD", "ROLE_PLATINUM")),
+    ROLE_ADMIN(99, List.of("ROLE_BRONZE", "ROLE_SILVER", "ROLE_GOLD", "ROLE_PLATINUM", "ROLE_ADMIN"));
 
     private final int grade;
     private final List<String> roles;
@@ -25,6 +26,7 @@ public enum UserGrade {
             case ROLE_BRONZE -> ROLE_SILVER;
             case ROLE_SILVER -> ROLE_GOLD;
             case ROLE_GOLD, ROLE_PLATINUM -> ROLE_PLATINUM;
+            case ROLE_ADMIN -> ROLE_ADMIN;
         };
     }
 }

@@ -1,0 +1,28 @@
+###
+POST http://localhost:8080/api/v1/admin/code
+
+###
+POST http://localhost:8080/api/v1/admin/register-admin
+Content-Type: application/json
+
+{
+  "nickname": "",
+  "adminCode": "",
+  "email": "",
+  "password": ""
+}
+
+###
+GET http://localhost:8080/api/v1/admin/user-list
+Authorization: Bearer
+
+###
+PATCH http://localhost:8080/api/v1/admin/users/{userId}
+Content-Type: application/json
+Authorization: Bearer
+
+{
+  "newNickname": "닉네임 변경 테스트",
+  "newGrade": "ROLE_BRONZE",
+  "newStatus": "ACTIVE"
+}

@@ -1,17 +1,18 @@
 package com.sudurukbackback.modulecture.domain.user.service;
 
+import com.sudurukbackback.modulecture.domain.auth.component.AuthComponent;
 import com.sudurukbackback.modulecture.domain.community.repository.CommentRepository;
 import com.sudurukbackback.modulecture.domain.community.repository.PostRepository;
-import com.sudurukbackback.modulecture.domain.user.component.AuthComponent;
-import com.sudurukbackback.modulecture.domain.user.component.UserValidator;
+import com.sudurukbackback.modulecture.domain.user.component.UserComponent;
 import com.sudurukbackback.modulecture.domain.user.dto.request.PasswordUpdateRequestDto;
 import com.sudurukbackback.modulecture.domain.user.dto.request.UserDeleteRequestDto;
 import com.sudurukbackback.modulecture.domain.user.dto.response.UserProfileResponseDto;
 import com.sudurukbackback.modulecture.domain.user.entity.User;
+import com.sudurukbackback.modulecture.domain.user.entity.enums.ProfileField;
 import com.sudurukbackback.modulecture.domain.user.entity.enums.UserGrade;
 import com.sudurukbackback.modulecture.domain.user.entity.enums.UserStatus;
+import com.sudurukbackback.modulecture.domain.user.exception.SamePasswordException;
 import com.sudurukbackback.modulecture.domain.user.repository.UserRepository;
-import com.sudurukbackback.modulecture.global.exception.BasicServerException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -32,15 +33,24 @@ public class UserService {
     private final CommentRepository commentRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthComponent authComponent;
-    private final UserValidator userValidator;
+    private final UserComponent userComponent;
 
     @Transactional
     public void updatePassword(Authentication auth, PasswordUpdateRequestDto request) {
         // 본인 인증
         User user = authenticateActiveUser(auth.getName(), request.getCurrentPassword());
 
-        // 비밀번호 재설정
-        user.changePassword(request.getNewPassword(), passwordEncoder);
+        String originalPassword = user.getPassword();
+        String newPassword = request.getNewPassword();
+
+        // 기존의 비밀번호와 새 비밀번호가 일치한지 확인
+        if (passwordEncoder.matches(newPassword, originalPassword)) {
+            throw new SamePasswordException();
+        }
+
+        authComponent.encodePassword(newPassword);
+
+        user.updateProfile(ProfileField.PASSWORD, newPassword);
     }
 
     @Transactional
@@ -48,12 +58,12 @@ public class UserService {
         // 본인 인증
         User user = authenticateActiveUser(auth.getName(), request.getCurrentPassword());
 
-        user.requestDeactivateAccount();
+        user.deactivateAccount(UserStatus.PENDING);
     }
 
     public UserProfileResponseDto getUserProfile(String email) {
         // 사용자 정보 가져오기
-        User user = getUserByEmail(email);
+        User user = userComponent.getUserByEmail(email);
 
         return UserProfileResponseDto.of(user.getEmail(), user.getNickname());
     }
@@ -61,11 +71,11 @@ public class UserService {
     @Transactional
     public UserProfileResponseDto updateUserProfile(String email, String newNickname) {
         // 닉네임 중복 확인
-        userValidator.validateNicknameUniqueness(newNickname);
+        userComponent.validateNicknameUniqueness(newNickname);
 
         // 사용자 정보 가져오기
-        User user = getUserByEmail(email);
-        user.changeNickname(newNickname);
+        User user = userComponent.getUserByEmail(email);
+        user.updateProfile(ProfileField.NICKNAME, newNickname);
 
         return UserProfileResponseDto.of(user.getEmail(), user.getNickname());
     }
@@ -78,7 +88,7 @@ public class UserService {
     @Transactional
     public void checkUserGradeUp(Long userId) {
         // User 객체 가져오기
-        User user = getUserById(userId);
+        User user = userComponent.getUserById(userId);
         UserGrade currentGrade = user.getGrade();
 
         // 골드 또는 플래티넘이면 승급 불가
@@ -123,7 +133,7 @@ public class UserService {
         );
         log.info("탈퇴 처리 계정: {}개", users.size());
 
-        users.forEach(User::deactivateAccount); // 엔티티 상태 변경
+        users.forEach(user -> user.deactivateAccount(UserStatus.DELETED)); // 엔티티 상태 변경
         log.info("탈퇴 처리 작업 완료");
     }
 
@@ -137,30 +147,8 @@ public class UserService {
     private User authenticateActiveUser(String email, String password) {
         // 이메일 비밀번호 인증
         var user = authComponent.verifyEmailAndPasswordMatch(email, password);
-        userValidator.validateUserIsActive(user);
+        userComponent.validateUserIsActive(user);
 
         return user;
-    }
-
-    /**
-     * 이메일을 사용해 User 가져오기
-     *
-     * @param email 이메일
-     * @return User
-     */
-    private User getUserByEmail(String email) {
-        return userRepository.findByEmail(email)
-                .orElseThrow(BasicServerException::new);
-    }
-
-    /**
-     * ID를 사용해 User 가져오기
-     *
-     * @param id 사용자 ID
-     * @return User
-     */
-    private User getUserById(Long id) {
-        return userRepository.findById(id)
-                .orElseThrow(BasicServerException::new);
     }
 }

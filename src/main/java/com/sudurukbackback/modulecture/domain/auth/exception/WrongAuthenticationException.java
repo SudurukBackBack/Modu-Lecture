@@ -1,4 +1,4 @@
-package com.sudurukbackback.modulecture.domain.user.exception;
+package com.sudurukbackback.modulecture.domain.auth.exception;
 
 import com.sudurukbackback.modulecture.global.exception.BasicException;
 import org.springframework.http.HttpStatus;

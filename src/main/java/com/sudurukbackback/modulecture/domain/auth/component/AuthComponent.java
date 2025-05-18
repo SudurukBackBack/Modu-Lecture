@@ -1,10 +1,9 @@
-package com.sudurukbackback.modulecture.domain.user.component;
+package com.sudurukbackback.modulecture.domain.auth.component;
 
+import com.sudurukbackback.modulecture.domain.auth.exception.WrongAuthenticationException;
+import com.sudurukbackback.modulecture.domain.auth.service.LoginAttemptService;
+import com.sudurukbackback.modulecture.domain.user.component.UserComponent;
 import com.sudurukbackback.modulecture.domain.user.entity.User;
-import com.sudurukbackback.modulecture.domain.user.exception.EmailAlreadyExistsException;
-import com.sudurukbackback.modulecture.domain.user.exception.WrongAuthenticationException;
-import com.sudurukbackback.modulecture.domain.user.repository.UserRepository;
-import com.sudurukbackback.modulecture.domain.user.service.LoginAttemptService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -13,32 +12,18 @@ import org.springframework.stereotype.Component;
 @Component
 public class AuthComponent {
 
-    private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final LoginAttemptService loginAttemptService;
+    private final UserComponent userComponent;
 
     /**
-     * 이메일 중복 체크
+     * 제공된 이메일 주소를 소문자로 변환하여 형식을 정규화합니다.
      *
-     * @param email 이메일
+     * @param email 정규화할 이메일 주소
+     * @return 소문자로 변환된 정규화된 이메일 주소
      */
-    public void validateEmailUniqueness(String email) {
-        boolean emailExists = userRepository.existsByEmail(email);
-
-        if (emailExists) {
-            throw new EmailAlreadyExistsException();
-        }
-    }
-
-    /**
-     * 이메일로 UserEntity 가져오기
-     *
-     * @param email 이메일
-     * @return UserEntity
-     */
-    public User findUserByEmail(String email) {
-        return userRepository.findByEmail(email)
-                .orElseThrow(WrongAuthenticationException::new);
+    public String emailNormalizer(String email) {
+        return email.toLowerCase();
     }
 
     /**
@@ -54,10 +39,10 @@ public class AuthComponent {
     /**
      * 비밀번호 일치 확인
      *
-     * @param encodedPassword 실제 비밀번호 (인코딩 된 상태)
      * @param inputPassword 입력한 비밀번호
+     * @param encodedPassword 실제 비밀번호 (인코딩 된 상태)
      */
-    private void validatePassword(String encodedPassword, String inputPassword, int remainAttempts) {
+    public void validatePassword(String inputPassword, String encodedPassword, int remainAttempts) {
         if (!passwordEncoder.matches(inputPassword, encodedPassword)) {
             if (remainAttempts == -1) {
                 throw new WrongAuthenticationException();
@@ -75,10 +60,10 @@ public class AuthComponent {
      * @return UserEntity
      */
     public User verifyEmailAndPasswordMatch(String email, String password) {
-        User user = findUserByEmail(email);
+        User user = userComponent.getUserByEmail(email);
         int remainAttempts = loginAttemptService.getRemainingLoginAttempts(email);
 
-        validatePassword(user.getPassword(), password, remainAttempts);
+        validatePassword(password, user.getPassword(), remainAttempts);
 
         return user;
     }

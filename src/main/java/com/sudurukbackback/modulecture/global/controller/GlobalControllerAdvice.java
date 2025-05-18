@@ -1,5 +1,6 @@
 package com.sudurukbackback.modulecture.global.controller;
 
+import com.sudurukbackback.modulecture.domain.auth.service.AuthService;
 import com.sudurukbackback.modulecture.domain.user.entity.User;
 import com.sudurukbackback.modulecture.global.security.JwtTokenProvider;
 import com.sudurukbackback.modulecture.global.security.util.JwtUtil;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 public class GlobalControllerAdvice {
 
     private final JwtTokenProvider jwtTokenProvider;
+    private final AuthService authService;
 
     @ModelAttribute
     public void addAuthInfoToModel(HttpServletRequest request, Model model) {
@@ -23,7 +25,7 @@ public class GlobalControllerAdvice {
 
         if (token != null && JwtUtil.validateToken(token)) {
             // JWT에서 사용자 인증 정보 추출
-            Authentication authentication = jwtTokenProvider.getAuthentication(token);
+            Authentication authentication = authService.getAuthentication(token);
             User user = (User) authentication.getPrincipal();
 
             // Thymeleaf에서 사용할 로그인 정보 전달

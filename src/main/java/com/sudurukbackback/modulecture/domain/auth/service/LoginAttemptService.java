@@ -1,4 +1,4 @@
-package com.sudurukbackback.modulecture.domain.user.service;
+package com.sudurukbackback.modulecture.domain.auth.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
