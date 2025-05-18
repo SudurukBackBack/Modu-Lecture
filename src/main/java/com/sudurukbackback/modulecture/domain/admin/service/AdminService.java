@@ -1,11 +1,14 @@
 package com.sudurukbackback.modulecture.domain.admin.service;
 
-import com.sudurukbackback.modulecture.domain.admin.dto.request.AdminRegisterDto;
+import com.sudurukbackback.modulecture.domain.admin.dto.request.AdminRegisterRequestDto;
+import com.sudurukbackback.modulecture.domain.admin.dto.request.UserInfoChangeRequestDto;
 import com.sudurukbackback.modulecture.domain.admin.dto.response.UserListDto;
 import com.sudurukbackback.modulecture.domain.admin.exception.AdminRegisterException;
+import com.sudurukbackback.modulecture.domain.admin.exception.NoUpdateRequestException;
 import com.sudurukbackback.modulecture.domain.auth.component.AuthComponent;
 import com.sudurukbackback.modulecture.domain.user.component.UserComponent;
 import com.sudurukbackback.modulecture.domain.user.entity.User;
+import com.sudurukbackback.modulecture.domain.user.entity.enums.ProfileField;
 import com.sudurukbackback.modulecture.domain.user.entity.enums.UserGrade;
 import com.sudurukbackback.modulecture.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +19,8 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Objects;
+import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -49,7 +54,7 @@ public class AdminService {
     }
 
     @Transactional
-    public void registerAdmin(AdminRegisterDto request) {
+    public void registerAdmin(AdminRegisterRequestDto request) {
 
         String code = request.getAdminCode();
 
@@ -79,7 +84,7 @@ public class AdminService {
      * 키워드가 제공되면 닉네임 또는 이메일로 대소문자를 구분하지 않고 사용자를 검색합니다.
      * 그렇지 않으면 모든 사용자를 검색합니다.
      *
-     * @param keyword 닉네임 또는 이메일로 사용자를 필터링하는 데 사용되는 검색 키워드입니다. null 또는 비어 있을 수 있습니다.
+     * @param keyword  닉네임 또는 이메일로 사용자를 필터링하는 데 사용되는 검색 키워드입니다. null 또는 비어 있을 수 있습니다.
      * @param pageable 페이징 및 정렬 정보
      * @return 페이징된 사용자 목록 (UserListDto로 매핑됨)
      */
@@ -117,4 +122,35 @@ public class AdminService {
         }
     }
 
+    /**
+     * 주어진 요청에 따라 사용자 정보를 업데이트합니다. 이 메서드를 통해 사용자의 닉네임, 등급 또는 상태를 업데이트할 수 있습니다.
+     * 업데이트할 필드가 요청에 제공되지 않으면 예외가 발생합니다.
+     *
+     * @param userId  정보를 업데이트할 사용자의 ID입니다.
+     * @param request 사용자의 프로필 필드 (예: 닉네임, 등급, 상태)에 대한 새로운 값을 담고 있는 UserInfoChangeRequestDto의 인스턴스입니다.
+     * @throws NoUpdateRequestException 요청에 업데이트할 필드가 없는 경우 발생합니다.
+     */
+    @Transactional
+    public void changeUserInfo(Long userId, UserInfoChangeRequestDto request) {
+
+        User user = userComponent.getUserById(userId);
+
+        // 변경 사항이 없을 경우
+        boolean noChanges = Objects.equals(request.getNewNickname(), user.getNickname()) &&
+                            Objects.equals(request.getNewGrade(), user.getGrade()) &&
+                            Objects.equals(request.getNewStatus(), user.getUserStatus());
+
+        if (noChanges) {
+            throw new NoUpdateRequestException();
+        }
+
+        Optional.ofNullable(request.getNewNickname())
+                .ifPresent(newNickname -> user.updateProfile(ProfileField.NICKNAME, newNickname));
+
+        Optional.ofNullable(request.getNewGrade())
+                .ifPresent(newGrade -> user.updateProfile(ProfileField.GRADE, newGrade));
+
+        Optional.ofNullable(request.getNewStatus())
+                .ifPresent(newStatus -> user.updateProfile(ProfileField.STATUS, newStatus));
+    }
 }

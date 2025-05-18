@@ -1,6 +1,7 @@
 package com.sudurukbackback.modulecture.domain.admin.controller;
 
-import com.sudurukbackback.modulecture.domain.admin.dto.request.AdminRegisterDto;
+import com.sudurukbackback.modulecture.domain.admin.dto.request.AdminRegisterRequestDto;
+import com.sudurukbackback.modulecture.domain.admin.dto.request.UserInfoChangeRequestDto;
 import com.sudurukbackback.modulecture.domain.admin.dto.response.UserListDto;
 import com.sudurukbackback.modulecture.domain.admin.service.AdminService;
 import jakarta.validation.Valid;
@@ -21,12 +22,13 @@ public class AdminController {
     @PostMapping("/code")
     public ResponseEntity<?> generateCode() {
         String code = adminService.generateCode();
+
         return ResponseEntity.ok().body(code);
     }
 
     @PostMapping("/register-admin")
     public ResponseEntity<?> registerAdmin(
-            @Valid @RequestBody AdminRegisterDto request
+            @Valid @RequestBody AdminRegisterRequestDto request
     ) {
         adminService.registerAdmin(request);
 
@@ -42,6 +44,17 @@ public class AdminController {
         Page<UserListDto> userList = adminService.getUserList(keyword, pageable);
 
         return ResponseEntity.ok().body(userList);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PatchMapping("/users/{userId}")
+    public ResponseEntity<?> changeUserInfo(
+            @PathVariable Long userId,
+            @Valid @RequestBody UserInfoChangeRequestDto request
+    ) {
+        adminService.changeUserInfo(userId, request);
+
+        return ResponseEntity.ok("User Info Changed");
     }
 }
 

@@ -8,7 +8,7 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class AdminRegisterDto extends BaseAuthRequest {
+public class AdminRegisterRequestDto extends BaseAuthRequest {
 
     // 사용자 이름
     @Size(max = 20, message = "Nickname must not exceed 20 characters")

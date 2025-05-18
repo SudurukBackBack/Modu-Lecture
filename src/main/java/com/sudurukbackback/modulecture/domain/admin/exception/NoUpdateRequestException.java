@@ -3,15 +3,15 @@ package com.sudurukbackback.modulecture.domain.admin.exception;
 import com.sudurukbackback.modulecture.global.exception.BasicException;
 import org.springframework.http.HttpStatus;
 
-public final class AdminRegisterException extends BasicException {
+public class NoUpdateRequestException extends BasicException {
 
     @Override
     public int statusCode() {
-        return HttpStatus.FORBIDDEN.value();
+        return HttpStatus.BAD_REQUEST.value();
     }
 
     @Override
     public String errorMessage() {
-        return "요청이 거부되었습니다.";
+        return "수정할 정보가 없습니다.";
     }
 }
