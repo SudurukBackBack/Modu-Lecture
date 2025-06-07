@@ -42,9 +42,18 @@ public class AuthService implements UserDetailsService {
     private final CookieService cookieService;
 
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        return userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException(email));
+    public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
+
+        if (userId.contains("_") && !userId.contains("@")) {
+            // 소셜 ID로 사용자 찾기 시도
+            return userRepository.findBySocialId(userId)
+                    .orElseThrow(() -> new UsernameNotFoundException(userId));
+        } else {
+            // 일반 이메일로 사용자 찾기 시도
+            return userRepository.findByEmail(userId)
+                    .orElseThrow(() -> new UsernameNotFoundException(userId));
+        }
+
     }
 
     public Authentication getAuthentication(String token) {
@@ -93,7 +102,7 @@ public class AuthService implements UserDetailsService {
         loginAttemptService.resetLoginAttempts(email);
 
         // 토큰 생성 후 쿠키 생성
-        CookieResultDto cookies = generateTokensAndCreateCookiesByEmail(email);
+        CookieResultDto cookies = generateTokensAndCreateCookies(email, false);
 
         // refreshToken을 Redis에 저장
         storeRefreshTokenInRedis(email, cookies.getRefreshCookie().getValue());
@@ -130,19 +139,24 @@ public class AuthService implements UserDetailsService {
             throw new BasicServerException();
         }
 
-        String email = JwtUtil.getUsername(refreshToken);
-        String token = redisTemplate.opsForValue().get("RT:" + email);
+        String userId = JwtUtil.getUsername(refreshToken);
+        String token = redisTemplate.opsForValue().get("RT:" + userId);
 
         if (!refreshToken.equals(token)) {
             log.error("토큰 값 불일치로 인한 토큰 갱신 작업 중단");
             throw new BasicServerException();
         }
 
+        // userId가 소셜 로그인인지 일반 이메일인지 더 정확하게 구분
+        // 소셜 ID는 일반적으로 언더스코어를 포함하고 @ 기호를 포함하지 않음
+        boolean isSocialLogin = userId.contains("_") && !userId.contains("@");
+
+
         // 토큰 생성 후 쿠키 생성
-        CookieResultDto cookies = generateTokensAndCreateCookiesByEmail(email);
+        CookieResultDto cookies = generateTokensAndCreateCookies(userId, isSocialLogin);
 
         // refreshToken을 Redis에 저장
-        storeRefreshTokenInRedis(email, cookies.getRefreshCookie().getValue());
+        storeRefreshTokenInRedis(userId, cookies.getRefreshCookie().getValue());
 
         return cookies;
     }
@@ -151,12 +165,12 @@ public class AuthService implements UserDetailsService {
      * 주어진 이메일에 대한 토큰(접근 토큰 및 리프레시 토큰)을 생성하고, 해당 토큰에 대한 쿠키를 생성합니다.
      * 생성된 토큰은 쿠키에 담겨 {@link CookieResultDto} 형태로 반환됩니다.
      *
-     * @param email 토큰 생성을 위해 사용자를 식별하는 이메일 주소
+     * @param userId 토큰 생성을 위해 사용자를 식별하는 코드(email or socialId)
      * @return 접근 및 리프레시 쿠키를 담고 있는 {@link CookieResultDto}
      */
-    private CookieResultDto generateTokensAndCreateCookiesByEmail(String email) {
+    public CookieResultDto generateTokensAndCreateCookies(String userId, boolean isSocialLogin) {
         // 이메일을 통해 사용자 식별 후 토큰 생성
-        var tokens = jwtTokenProvider.generateToken(email);
+        var tokens = jwtTokenProvider.generateToken(userId, isSocialLogin);
         String accessToken = tokens.get("access_token");
         String refreshToken = tokens.get("refresh_token");
 
@@ -196,12 +210,12 @@ public class AuthService implements UserDetailsService {
      * 리프레시 토큰을 Redis에 2일의 만료 시간으로 저장합니다. 토큰은
      * "RT:{이메일}" 형식의 키로 저장되며, 여기서 {이메일}은 제공된 이메일 주소입니다.
      *
-     * @param email Redis 키의 일부로 사용될 사용자의 이메일 주소
+     * @param userId Redis 키의 일부로 사용될 사용자의 이메일 주소
      * @param token Redis에 저장될 리프레시 토큰
      */
-    public void storeRefreshTokenInRedis(String email, String token) {
+    public void storeRefreshTokenInRedis(String userId, String token) {
         redisTemplate.opsForValue().set(
-                "RT:" + email,
+                "RT:" + userId,
                 token,
                 2,
                 TimeUnit.DAYS);

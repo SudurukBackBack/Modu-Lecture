@@ -34,7 +34,26 @@ spring:
     redis:
       host: localhost
       port: 6379
-  
+
+  # Naver OAuth2
+  security:
+    oauth2:
+      client:
+        registration:
+          naver:
+            client-id: ${naver.client-id}
+            client-secret: ${naver.client-secret}
+            redirect-uri: ${naver.redirect-uri}
+            authorization-grant-type: ${naver.auth-grant-type}
+            scope: ${naver.scope}
+
+        provider:
+          naver:
+            authorization-uri: ${naver.auth-uri}
+            token-uri: ${naver.token-uri}
+            user-info-uri: ${naver.user-info-uri}
+            user-name-attribute: ${naver.user-name-attribute}
+
 cloud:
   aws:
     region: ${cloud.aws.region}

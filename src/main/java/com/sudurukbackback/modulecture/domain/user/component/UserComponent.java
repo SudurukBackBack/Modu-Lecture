@@ -42,6 +42,17 @@ public class UserComponent {
     }
 
     /**
+     * ID를 사용해 User 가져오기
+     *
+     * @param socialId 소셜 ID
+     * @return User
+     */
+    public User getUserBySocialID(String socialId) {
+        return userRepository.findBySocialId(socialId)
+                .orElseThrow(BasicServerException::new);
+    }
+
+    /**
      * 이메일 중복 확인
      *
      * @param email 이메일

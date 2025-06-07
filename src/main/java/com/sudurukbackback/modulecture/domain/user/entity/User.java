@@ -38,6 +38,10 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String socialId;
+
+    private String socialType;
+
     @Email
     @NotNull
     @Column(nullable = false, unique = true)
@@ -97,6 +101,28 @@ public class User implements UserDetails {
                 .password(password)
                 .nickname(nickname)
                 .grade(grade)
+                .userStatus(UserStatus.ACTIVE)
+                .createdAt(LocalDateTime.now())
+                .build();
+    }
+
+    /**
+     * 제공된 세부 정보를 사용하여 네이버 소셜 로그인에 특화된 새로운 User 인스턴스를 생성합니다.
+     *
+     * @param userId 네이버 플랫폼에서 제공하는 사용자의 고유 식별자
+     * @param email 사용자의 이메일 주소
+     * @param nickname 사용자의 닉네임, null인 경우 이메일이 닉네임으로 사용됨
+     * @param type 소셜 로그인 플랫폼 유형(예: "NAVER")
+     * @return 제공된 데이터로 초기화된 새로운 User 인스턴스
+     */
+    public static User createNaver(String userId, String email, String nickname, String type) {
+        return User.builder()
+                .socialId(userId)
+                .socialType(type)
+                .email(email)
+                .password("<PASSWORD>") // 소셜 로그인의 경우 비밀번호 의미 없음
+                .nickname(nickname == null ? email : nickname)
+                .grade(UserGrade.ROLE_BRONZE)
                 .userStatus(UserStatus.ACTIVE)
                 .createdAt(LocalDateTime.now())
                 .build();

@@ -2,7 +2,6 @@ package com.sudurukbackback.modulecture.global.controller;
 
 import com.sudurukbackback.modulecture.domain.auth.service.AuthService;
 import com.sudurukbackback.modulecture.domain.user.entity.User;
-import com.sudurukbackback.modulecture.global.security.JwtTokenProvider;
 import com.sudurukbackback.modulecture.global.security.util.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 @ControllerAdvice
 public class GlobalControllerAdvice {
 
-    private final JwtTokenProvider jwtTokenProvider;
     private final AuthService authService;
 
     @ModelAttribute
