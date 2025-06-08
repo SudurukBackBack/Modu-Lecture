@@ -59,10 +59,10 @@ public class JwtUtil {
      */
     public String getUsername(String token) {
 
-        String username = parseClaims(token).getSubject();
-        log.debug("Extracted username from JWT: {}", username);
+        String uuid = parseClaims(token).getSubject();
+        log.debug("Extracted username from JWT: {}", uuid);
 
-        return username;
+        return uuid;
     }
 
     /**

@@ -24,5 +24,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Page<User> findByNicknameContainingIgnoreCaseOrEmailContainingIgnoreCase(String keyword1, String keyword2, Pageable pageable);
 
-    Optional<User> findBySocialId(String socialId);
+    Optional<User> findByUuid(String uuid);
 }

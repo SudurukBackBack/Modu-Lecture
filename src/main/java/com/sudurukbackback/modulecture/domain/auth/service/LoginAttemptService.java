@@ -19,12 +19,12 @@ public class LoginAttemptService {
     /**
      * 로그인 Lock 여부를 확인하여 로그인이 가능한 계정인지 확인하는 메서드
      *
-     * @param email 이메일
+     * @param uuid UUID
      * @return boolean
      */
-    public boolean isLoginAllowed(String email) {
+    public boolean isLoginAllowed(String uuid) {
 
-        String attemptsStr = redisTemplate.opsForValue().get(LOGIN_ATTEMPT_KEY_PREFIX + email);
+        String attemptsStr = redisTemplate.opsForValue().get(LOGIN_ATTEMPT_KEY_PREFIX + uuid);
 
         // 로그인 실패 내역이 없는 경우 true
         if (attemptsStr == null) {
@@ -42,23 +42,23 @@ public class LoginAttemptService {
     /**
      * 사용자의 남은 로그인 잠금 시간을 초 단위로 반환
      *
-     * @param email 이메일
+     * @param uuid UUID
      * @return 남은 시간(초 단위)
      */
-    public long getRemainingLockoutTime(String email) {
-        Long expire = redisTemplate.getExpire(LOGIN_ATTEMPT_KEY_PREFIX + email, TimeUnit.SECONDS);
+    public long getRemainingLockoutTime(String uuid) {
+        Long expire = redisTemplate.getExpire(LOGIN_ATTEMPT_KEY_PREFIX + uuid, TimeUnit.SECONDS);
         return expire == null || expire < 0 ? 0 : expire;
     }
 
     /**
      * 잠금까지 남은 로그인 횟수를 int형으로 반환
      *
-     * @param email 이메일
+     * @param uuid UUID
      * @return 남은 횟수
      */
-    public int getRemainingLoginAttempts(String email) {
+    public int getRemainingLoginAttempts(String uuid) {
 
-        String attemptsStr = redisTemplate.opsForValue().get(LOGIN_ATTEMPT_KEY_PREFIX + email);
+        String attemptsStr = redisTemplate.opsForValue().get(LOGIN_ATTEMPT_KEY_PREFIX + uuid);
         if (attemptsStr == null) {
             return -1;
         }
@@ -74,34 +74,34 @@ public class LoginAttemptService {
     /**
      * 로그인 시도 횟수 증가
      *
-     * @param email 이메일
+     * @param uuid UUID
      */
-    public void incrementLoginAttempts(String email) {
-        redisTemplate.opsForValue().increment(LOGIN_ATTEMPT_KEY_PREFIX + email);
-        redisTemplate.expire(LOGIN_ATTEMPT_KEY_PREFIX + email, LOCK_DURATION_IN_SECONDS, TimeUnit.SECONDS);
+    public void incrementLoginAttempts(String uuid) {
+        redisTemplate.opsForValue().increment(LOGIN_ATTEMPT_KEY_PREFIX + uuid);
+        redisTemplate.expire(LOGIN_ATTEMPT_KEY_PREFIX + uuid, LOCK_DURATION_IN_SECONDS, TimeUnit.SECONDS);
     }
 
     /**
      * 로그인 시도 횟수 초기화
      *
-     * @param email 이메일
+     * @param uuid UUID
      */
-    public void resetLoginAttempts(String email) {
-        redisTemplate.delete(LOGIN_ATTEMPT_KEY_PREFIX + email);
+    public void resetLoginAttempts(String uuid) {
+        redisTemplate.delete(LOGIN_ATTEMPT_KEY_PREFIX + uuid);
     }
 
     /**
      * 로그인 가능 여부 확인 및 횟수 증가
      *
-     * @param email 이메일
+     * @param uuid UUID
      * @return boolean
      */
-    public boolean checkAndIncrementLoginAttempts(String email) {
-        if (!isLoginAllowed(email)) {
+    public boolean checkAndIncrementLoginAttempts(String uuid) {
+        if (!isLoginAllowed(uuid)) {
             return false;
         }
 
-        incrementLoginAttempts(email);
+        incrementLoginAttempts(uuid);
         return true;
     }
 

@@ -62,18 +62,12 @@ public class JwtTokenProvider {
     /**
      * JWT 토큰 생성.
      *
-     * @param userId 사용자 식별용 코드.
+     * @param uuid 사용자 식별용 코드.
      * @return Jwt token, Refresh token
      */
-    public Map<String, String> generateToken(String userId, boolean isSocialLogin) {
+    public Map<String, String> generateToken(String uuid) {
 
-        User user = null;
-
-        if (isSocialLogin) {
-            user = userComponent.getUserBySocialID(userId);
-        } else {
-            user = userComponent.getUserByEmail(userId);
-        }
+        User user = userComponent.getUserByUuid(uuid);
 
         // 사용자의 권한 문자열 추출
         List<String> roles = user.getAuthorities().stream()
@@ -81,7 +75,7 @@ public class JwtTokenProvider {
                 .toList();
 
         // 사용자 정보 추가
-        var claims = Jwts.claims().setSubject(userId);
+        var claims = Jwts.claims().setSubject(uuid);
         claims.put(KEY_ROLE, roles);
 
         // 토큰 만료 시간 설정

@@ -44,11 +44,11 @@ public class UserComponent {
     /**
      * ID를 사용해 User 가져오기
      *
-     * @param socialId 소셜 ID
+     * @param uuid UUID
      * @return User
      */
-    public User getUserBySocialID(String socialId) {
-        return userRepository.findBySocialId(socialId)
+    public User getUserByUuid(String uuid) {
+        return userRepository.findByUuid(uuid)
                 .orElseThrow(BasicServerException::new);
     }
 
@@ -57,7 +57,7 @@ public class UserComponent {
      *
      * @param email 이메일
      */
-    public void validateEmailUniqueness(String email) {
+    private void validateEmailUniqueness(String email) {
         boolean emailExists = userRepository.existsByEmail(email);
 
         if (emailExists) {

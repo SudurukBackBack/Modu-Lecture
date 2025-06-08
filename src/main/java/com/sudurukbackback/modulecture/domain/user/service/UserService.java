@@ -61,20 +61,20 @@ public class UserService {
         user.deactivateAccount(UserStatus.PENDING);
     }
 
-    public UserProfileResponseDto getUserProfile(String email) {
+    public UserProfileResponseDto getUserProfile(String uuid) {
         // 사용자 정보 가져오기
-        User user = userComponent.getUserByEmail(email);
+        User user = userComponent.getUserByUuid(uuid);
 
         return UserProfileResponseDto.of(user.getEmail(), user.getNickname());
     }
 
     @Transactional
-    public UserProfileResponseDto updateUserProfile(String email, String newNickname) {
+    public UserProfileResponseDto updateUserProfile(String uuid, String newNickname) {
         // 닉네임 중복 확인
         userComponent.validateNicknameUniqueness(newNickname);
 
         // 사용자 정보 가져오기
-        User user = userComponent.getUserByEmail(email);
+        User user = userComponent.getUserByUuid(uuid);
         user.updateProfile(ProfileField.NICKNAME, newNickname);
 
         return UserProfileResponseDto.of(user.getEmail(), user.getNickname());

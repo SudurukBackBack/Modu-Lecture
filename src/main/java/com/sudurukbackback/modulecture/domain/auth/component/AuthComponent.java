@@ -61,10 +61,25 @@ public class AuthComponent {
      */
     public User verifyEmailAndPasswordMatch(String email, String password) {
         User user = userComponent.getUserByEmail(email);
-        int remainAttempts = loginAttemptService.getRemainingLoginAttempts(email);
 
-        validatePassword(password, user.getPassword(), remainAttempts);
+        // 먼저 계정이 잠겨있는지 확인
+        if (!loginAttemptService.isLoginAllowed(user.getUuid())) {
+            long remainingTime = loginAttemptService.getRemainingLockoutTime(user.getUuid());
+            throw new WrongAuthenticationException(remainingTime);
+        }
 
-        return user;
+        int remainAttempts = loginAttemptService.getRemainingLoginAttempts(user.getUuid());
+
+        try {
+            validatePassword(password, user.getPassword(), remainAttempts);
+            // 로그인 성공 시 시도 횟수 초기화
+            loginAttemptService.resetLoginAttempts(user.getUuid());
+            return user;
+        } catch (WrongAuthenticationException e) {
+            // 비밀번호 불일치 시 시도 횟수 증가
+            loginAttemptService.incrementLoginAttempts(user.getUuid());
+            throw e;
+        }
     }
+
 }

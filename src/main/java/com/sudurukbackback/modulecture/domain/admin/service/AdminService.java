@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 @RequiredArgsConstructor
@@ -70,8 +71,10 @@ public class AdminService {
         // 이메일, 닉네임 중복 체크
         userComponent.checkEmailAndNicknameUniqueness(email, nickname);
 
+        String uuid = "modu_" + UUID.randomUUID();
+
         // Admin 객체 생성
-        User admin = User.createUserEntity(email, password, nickname, UserGrade.ROLE_ADMIN);
+        User admin = User.createUser(uuid, email, password, nickname, UserGrade.ROLE_ADMIN);
 
         userRepository.save(admin);
 

@@ -4,7 +4,6 @@ import com.sudurukbackback.modulecture.domain.auth.dto.response.CookieResultDto;
 import com.sudurukbackback.modulecture.domain.auth.service.AuthService;
 import com.sudurukbackback.modulecture.domain.auth.service.CookieService;
 import com.sudurukbackback.modulecture.domain.user.entity.CustomOAuth2User;
-import com.sudurukbackback.modulecture.global.security.JwtTokenProvider;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -22,7 +21,6 @@ import java.io.PrintWriter;
 @Component
 public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
-    private final JwtTokenProvider jwtTokenProvider;
     private final AuthService authService;
     private final CookieService cookieService;
 
@@ -35,11 +33,11 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         try {
             CustomOAuth2User oAuth2User = (CustomOAuth2User) authentication.getPrincipal();
 
-            String userId = oAuth2User.getName();
+            String uuid = oAuth2User.getName();
 
-            CookieResultDto cookies = authService.generateTokensAndCreateCookies(userId, true);
+            CookieResultDto cookies = authService.generateTokensAndCreateCookies(uuid);
 
-            authService.storeRefreshTokenInRedis(userId, cookies.getRefreshCookie().getValue());
+            authService.storeRefreshTokenInRedis(uuid, cookies.getRefreshCookie().getValue());
 
             cookieService.setCookiesInHttpHeader(response, cookies.getAccessCookie(), cookies.getRefreshCookie());
 
