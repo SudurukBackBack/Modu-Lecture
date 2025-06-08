@@ -42,7 +42,7 @@ public class UserComponent {
     }
 
     /**
-     * ID를 사용해 User 가져오기
+     * UUID를 사용해 User 가져오기
      *
      * @param uuid UUID
      * @return User

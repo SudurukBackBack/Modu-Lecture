@@ -150,7 +150,7 @@ public class AuthService implements UserDetailsService {
      * 주어진 이메일에 대한 토큰(접근 토큰 및 리프레시 토큰)을 생성하고, 해당 토큰에 대한 쿠키를 생성합니다.
      * 생성된 토큰은 쿠키에 담겨 {@link CookieResultDto} 형태로 반환됩니다.
      *
-     * @param uuid 토큰 생성을 위해 사용자를 식별하는 코드(email or socialId)
+     * @param uuid 토큰 생성을 위해 사용자를 식별하는 코드
      * @return 접근 및 리프레시 쿠키를 담고 있는 {@link CookieResultDto}
      */
     public CookieResultDto generateTokensAndCreateCookies(String uuid) {
@@ -193,7 +193,7 @@ public class AuthService implements UserDetailsService {
 
     /**
      * 리프레시 토큰을 Redis에 2일의 만료 시간으로 저장합니다. 토큰은
-     * "RT:{이메일}" 형식의 키로 저장되며, 여기서 {이메일}은 제공된 이메일 주소입니다.
+     * "RT:{uuid}" 형식의 키로 저장되며, 여기서 {uuid}은 제공된 uuid입니다.
      *
      * @param uuid Redis 키의 일부로 사용될 사용자 식별 코드
      * @param token Redis에 저장될 리프레시 토큰

@@ -62,7 +62,7 @@ public class JwtTokenProvider {
     /**
      * JWT 토큰 생성.
      *
-     * @param uuid 사용자 식별용 코드.
+     * @param uuid UUID
      * @return Jwt token, Refresh token
      */
     public Map<String, String> generateToken(String uuid) {
