@@ -25,7 +25,7 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
         OAuth2User oAuth2User = super.loadUser(userRequest);
         String oauthClientName = userRequest.getClientRegistration().getClientName();
 
-        User newUser;
+        User user = null;
         String uuid = null;
         String email;
         String nickname;
@@ -36,17 +36,25 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
             Map<String, String> responseMap = (Map<String, String>) oAuth2User.getAttributes().get("response");
 
             // response에서 받아온 데이터 분리
-            uuid = "naver_" + responseMap.get("id").substring(0, 14);
+            uuid = "naver-" + responseMap.get("id").substring(0, 14);
             email = responseMap.get("email");
             nickname = responseMap.get("nickname");
 
-            // 이메일로 기존 사용자 확인
-            Optional<User> existingUser = userRepository.findByUuid(uuid);
+            // 먼저 UUID로 사용자 확인
+            Optional<User> existingUserByUuid = userRepository.findByUuid(uuid);
 
-            if (existingUser.isEmpty()) {
-                // 사용자가 존재하지 않으면 새로운 사용자 생성 및 저장
-                newUser = User.createSocialUser(uuid, email, nickname, "naver");
-                userRepository.save(newUser);
+            // UUID로 사용자가 없으면 이메일로 확인
+            if (existingUserByUuid.isEmpty()) {
+                Optional<User> existingUserByEmail = userRepository.findByEmail(email);
+
+                if (existingUserByEmail.isEmpty()) {
+                    // 사용자가 존재하지 않으면 새로운 사용자 생성 및 저장
+                    user = User.createSocialUser(uuid, email, nickname, "naver");
+                    userRepository.save(user);
+                } else {
+                    // 이메일로 사용자가 존재하면 그 사용자 정보 사용
+                    user = existingUserByEmail.get();
+                }
             }
         }
 

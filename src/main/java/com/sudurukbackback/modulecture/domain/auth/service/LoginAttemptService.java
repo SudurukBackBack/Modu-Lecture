@@ -90,19 +90,4 @@ public class LoginAttemptService {
         redisTemplate.delete(LOGIN_ATTEMPT_KEY_PREFIX + uuid);
     }
 
-    /**
-     * 로그인 가능 여부 확인 및 횟수 증가
-     *
-     * @param uuid UUID
-     * @return boolean
-     */
-    public boolean checkAndIncrementLoginAttempts(String uuid) {
-        if (!isLoginAllowed(uuid)) {
-            return false;
-        }
-
-        incrementLoginAttempts(uuid);
-        return true;
-    }
-
 }
