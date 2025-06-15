@@ -25,14 +25,17 @@ public class GlobalControllerAdvice {
             // JWT에서 사용자 인증 정보 추출
             Authentication authentication = authService.getAuthentication(token);
             User user = (User) authentication.getPrincipal();
+            boolean isSocialLogin = !user.getUuid().startsWith("modu-");
 
             // Thymeleaf에서 사용할 로그인 정보 전달
             model.addAttribute("isAuthenticated", true);
             model.addAttribute("username", user.getNickname());
+            model.addAttribute("isSocialLogin", isSocialLogin);
         } else {
             // 로그인되지 않은 경우
             model.addAttribute("isAuthenticated", false);
             model.addAttribute("username", null);
+            model.addAttribute("isSocialLogin", null);
         }
     }
 }

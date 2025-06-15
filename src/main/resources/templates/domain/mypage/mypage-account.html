@@ -115,6 +115,12 @@
 
         // 비밀번호 변경 요청
         document.getElementById("confirmChangePassword").addEventListener("click", async function () {
+            const isSocialLogin = this.getAttribute("data-is-social-login") === "true";
+
+            if (isSocialLogin) {
+                alert('소셜 로그인 계정은 비밀번호 변경이 불가능합니다.');
+            }
+
             const currentPassword = document.getElementById("current-password").value;
             const newPassword = document.getElementById("new-password").value;
             const confirmPassword = document.getElementById("confirm-password").value;
