@@ -31,7 +31,7 @@
                 <div class="d-flex justify-content-between align-items-center mt-3 mb-4">
                     <h3>보안</h3>
                     <!-- 비밀번호 변경 버튼 -->
-                    <button id="changePassword-btn" class="btn btn-dark opacity-50">비밀번호 변경</button>
+                    <button th:if="${!isSocialLogin}" id="changePassword-btn" class="btn btn-dark opacity-50">비밀번호 변경</button>
                 </div>
                 <hr>
 
@@ -101,11 +101,16 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        // 비밀번호 변경 모달 열기
-        document.getElementById("changePassword-btn").addEventListener("click", function () {
-            let modal = new bootstrap.Modal(document.getElementById("changePasswordModal"));
-            modal.show();
-        });
+
+        // 비밀번호 변경 모달 열기 (버튼이 존재할 때만)
+        const changePasswordBtn = document.getElementById("changePassword-btn");
+
+        if (changePasswordBtn) {
+            changePasswordBtn.addEventListener("click", function () {
+                let modal = new bootstrap.Modal(document.getElementById("changePasswordModal"));
+                modal.show();
+            });
+        }
 
         // 계정 탈퇴 모달 열기
         document.getElementById("deleteAccount-btn").addEventListener("click", function () {
@@ -115,12 +120,6 @@
 
         // 비밀번호 변경 요청
         document.getElementById("confirmChangePassword").addEventListener("click", async function () {
-            const isSocialLogin = this.getAttribute("data-is-social-login") === "true";
-
-            if (isSocialLogin) {
-                alert('소셜 로그인 계정은 비밀번호 변경이 불가능합니다.');
-            }
-
             const currentPassword = document.getElementById("current-password").value;
             const newPassword = document.getElementById("new-password").value;
             const confirmPassword = document.getElementById("confirm-password").value;
