@@ -71,7 +71,7 @@ public class AdminService {
         // 이메일, 닉네임 중복 체크
         userComponent.checkEmailAndNicknameUniqueness(email, nickname);
 
-        String uuid = "modu_" + UUID.randomUUID();
+        String uuid = "modu-" + UUID.randomUUID();
 
         // Admin 객체 생성
         User admin = User.createUser(uuid, email, password, nickname, UserGrade.ROLE_ADMIN);

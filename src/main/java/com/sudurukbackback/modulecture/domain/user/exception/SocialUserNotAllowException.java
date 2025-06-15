@@ -3,7 +3,7 @@ package com.sudurukbackback.modulecture.domain.user.exception;
 import com.sudurukbackback.modulecture.global.exception.BasicException;
 import org.springframework.http.HttpStatus;
 
-public class SocialUserNotAllowException extends BasicException {
+public final class SocialUserNotAllowException extends BasicException {
 
     @Override
     public int statusCode() {
