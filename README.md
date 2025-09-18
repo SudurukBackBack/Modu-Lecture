@@ -1,7 +1,10 @@
 # Modu-Lecture
 
+> 구조 변경으로 인해 개발이 중단된 Repo입니다.
+> 
+> 현재 개발 중인 레포는 Private 상태입니다.
 
-Modu-Lecture는 Spring Boot 기반의 **e-learning 플랫폼**으로,  
+Modu-Lecture는 Spring Boot 기반의 **e-learning 플랫폼**으로,
 누구나 쉽고 효율적으로 온라인 강의를 만들고 학습할 수 있도록 돕는 웹 서비스입니다.  
 강의 생성, 커뮤니티, 강의 검색, 사용자 맞춤 학습 기능을 제공합니다.
 
