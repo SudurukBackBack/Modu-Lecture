@@ -4,7 +4,6 @@ import com.sudurukbackback.modulecture.domain.auth.component.AuthComponent;
 import com.sudurukbackback.modulecture.domain.auth.dto.request.UserLoginRequestDto;
 import com.sudurukbackback.modulecture.domain.auth.dto.request.UserRegistrationRequestDto;
 import com.sudurukbackback.modulecture.domain.auth.dto.response.CookieResultDto;
-import com.sudurukbackback.modulecture.domain.auth.exception.WrongAuthenticationException;
 import com.sudurukbackback.modulecture.domain.user.component.UserComponent;
 import com.sudurukbackback.modulecture.domain.user.entity.User;
 import com.sudurukbackback.modulecture.domain.user.entity.enums.UserGrade;
@@ -26,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
@@ -42,16 +42,17 @@ public class AuthService implements UserDetailsService {
     private final CookieService cookieService;
 
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        return userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException(email));
+    public UserDetails loadUserByUsername(String uuid) throws UsernameNotFoundException {
+        // uuid로 사용자 찾기 시도
+        return userRepository.findByUuid(uuid)
+                .orElseThrow(() -> new UsernameNotFoundException(uuid));
     }
 
     public Authentication getAuthentication(String token) {
 
-        String username = JwtUtil.getUsername(token);
+        String uuid = JwtUtil.getUsername(token);
         List<GrantedAuthority> authorities = JwtUtil.getAuthorities(token);
-        UserDetails userDetails = loadUserByUsername(username);
+        UserDetails userDetails = loadUserByUsername(uuid);
 
         return new UsernamePasswordAuthenticationToken(userDetails, null, authorities);
     }
@@ -68,35 +69,33 @@ public class AuthService implements UserDetailsService {
         // 이메일, 닉네임 중복 체크
         userComponent.checkEmailAndNicknameUniqueness(email, nickname);
 
-        User newUserEntity = User.createUserEntity(email, password, nickname, UserGrade.ROLE_BRONZE);
+        String uuid = "modu-" + UUID.randomUUID();
+
+        User newUserEntity = User.createUser(uuid, email, password, nickname, UserGrade.ROLE_BRONZE);
 
         return userRepository.save(newUserEntity);
     }
 
+    @Transactional
     public CookieResultDto signIn(UserLoginRequestDto request) {
 
         String email = authComponent.emailNormalizer(request.getEmail());
 
-        // 로그인 시도 횟수 확인 및 잠금 처리
-        if (!loginAttemptService.checkAndIncrementLoginAttempts(email)) {
-            long remainingTime = loginAttemptService.getRemainingLockoutTime(email);
-            throw new WrongAuthenticationException(remainingTime);
-        }
-
-        // 이메일 및 비밀번호 검증, User 객체 반환
+        // 이메일 및 비밀번호 검증 (내부에서 잠금 확인 및 시도 횟수 증가 처리)
         User user = authComponent.verifyEmailAndPasswordMatch(email, request.getPassword());
+        String uuid = user.getUuid();
 
         // 사용자 계정 상태 검증
         userComponent.validateUserStatus(user);
 
         // 로그인 성공 시 시도 횟수 초기화
-        loginAttemptService.resetLoginAttempts(email);
+        loginAttemptService.resetLoginAttempts(uuid);
 
         // 토큰 생성 후 쿠키 생성
-        CookieResultDto cookies = generateTokensAndCreateCookiesByEmail(email);
+        CookieResultDto cookies = generateTokensAndCreateCookies(uuid);
 
         // refreshToken을 Redis에 저장
-        storeRefreshTokenInRedis(email, cookies.getRefreshCookie().getValue());
+        storeRefreshTokenInRedis(uuid, cookies.getRefreshCookie().getValue());
 
         return cookies;
     }
@@ -130,8 +129,8 @@ public class AuthService implements UserDetailsService {
             throw new BasicServerException();
         }
 
-        String email = JwtUtil.getUsername(refreshToken);
-        String token = redisTemplate.opsForValue().get("RT:" + email);
+        String uuid = JwtUtil.getUsername(refreshToken);
+        String token = redisTemplate.opsForValue().get("RT:" + uuid);
 
         if (!refreshToken.equals(token)) {
             log.error("토큰 값 불일치로 인한 토큰 갱신 작업 중단");
@@ -139,10 +138,10 @@ public class AuthService implements UserDetailsService {
         }
 
         // 토큰 생성 후 쿠키 생성
-        CookieResultDto cookies = generateTokensAndCreateCookiesByEmail(email);
+        CookieResultDto cookies = generateTokensAndCreateCookies(uuid);
 
         // refreshToken을 Redis에 저장
-        storeRefreshTokenInRedis(email, cookies.getRefreshCookie().getValue());
+        storeRefreshTokenInRedis(uuid, cookies.getRefreshCookie().getValue());
 
         return cookies;
     }
@@ -151,12 +150,12 @@ public class AuthService implements UserDetailsService {
      * 주어진 이메일에 대한 토큰(접근 토큰 및 리프레시 토큰)을 생성하고, 해당 토큰에 대한 쿠키를 생성합니다.
      * 생성된 토큰은 쿠키에 담겨 {@link CookieResultDto} 형태로 반환됩니다.
      *
-     * @param email 토큰 생성을 위해 사용자를 식별하는 이메일 주소
+     * @param uuid 토큰 생성을 위해 사용자를 식별하는 코드
      * @return 접근 및 리프레시 쿠키를 담고 있는 {@link CookieResultDto}
      */
-    private CookieResultDto generateTokensAndCreateCookiesByEmail(String email) {
+    public CookieResultDto generateTokensAndCreateCookies(String uuid) {
         // 이메일을 통해 사용자 식별 후 토큰 생성
-        var tokens = jwtTokenProvider.generateToken(email);
+        var tokens = jwtTokenProvider.generateToken(uuid);
         String accessToken = tokens.get("access_token");
         String refreshToken = tokens.get("refresh_token");
 
@@ -194,14 +193,14 @@ public class AuthService implements UserDetailsService {
 
     /**
      * 리프레시 토큰을 Redis에 2일의 만료 시간으로 저장합니다. 토큰은
-     * "RT:{이메일}" 형식의 키로 저장되며, 여기서 {이메일}은 제공된 이메일 주소입니다.
+     * "RT:{uuid}" 형식의 키로 저장되며, 여기서 {uuid}은 제공된 uuid입니다.
      *
-     * @param email Redis 키의 일부로 사용될 사용자의 이메일 주소
+     * @param uuid Redis 키의 일부로 사용될 사용자 식별 코드
      * @param token Redis에 저장될 리프레시 토큰
      */
-    public void storeRefreshTokenInRedis(String email, String token) {
+    public void storeRefreshTokenInRedis(String uuid, String token) {
         redisTemplate.opsForValue().set(
-                "RT:" + email,
+                "RT:" + uuid,
                 token,
                 2,
                 TimeUnit.DAYS);

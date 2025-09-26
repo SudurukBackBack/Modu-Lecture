@@ -42,11 +42,22 @@ public class UserComponent {
     }
 
     /**
+     * UUID를 사용해 User 가져오기
+     *
+     * @param uuid UUID
+     * @return User
+     */
+    public User getUserByUuid(String uuid) {
+        return userRepository.findByUuid(uuid)
+                .orElseThrow(BasicServerException::new);
+    }
+
+    /**
      * 이메일 중복 확인
      *
      * @param email 이메일
      */
-    public void validateEmailUniqueness(String email) {
+    private void validateEmailUniqueness(String email) {
         boolean emailExists = userRepository.existsByEmail(email);
 
         if (emailExists) {

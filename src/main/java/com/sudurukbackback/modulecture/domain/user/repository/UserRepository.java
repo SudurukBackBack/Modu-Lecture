@@ -23,4 +23,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<User> findAllByUserStatusAndDeletedAtBefore(UserStatus userStatus, LocalDateTime deleteAt);
 
     Page<User> findByNicknameContainingIgnoreCaseOrEmailContainingIgnoreCase(String keyword1, String keyword2, Pageable pageable);
+
+    Optional<User> findByUuid(String uuid);
 }

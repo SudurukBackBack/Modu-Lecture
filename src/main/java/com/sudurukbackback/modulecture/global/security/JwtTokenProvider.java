@@ -62,12 +62,12 @@ public class JwtTokenProvider {
     /**
      * JWT 토큰 생성.
      *
-     * @param email 사용자 이메일.
+     * @param uuid UUID
      * @return Jwt token, Refresh token
      */
-    public Map<String, String> generateToken(String email) {
+    public Map<String, String> generateToken(String uuid) {
 
-        User user = userComponent.getUserByEmail(email);
+        User user = userComponent.getUserByUuid(uuid);
 
         // 사용자의 권한 문자열 추출
         List<String> roles = user.getAuthorities().stream()
@@ -75,7 +75,7 @@ public class JwtTokenProvider {
                 .toList();
 
         // 사용자 정보 추가
-        var claims = Jwts.claims().setSubject(email);
+        var claims = Jwts.claims().setSubject(uuid);
         claims.put(KEY_ROLE, roles);
 
         // 토큰 만료 시간 설정

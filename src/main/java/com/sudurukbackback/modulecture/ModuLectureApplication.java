@@ -27,8 +27,25 @@ public class ModuLectureApplication {
 		System.setProperty("cloud.aws.credentials.access-key", Objects.requireNonNull(dotenv.get("ACCESS_KEY")));
 		System.setProperty("cloud.aws.credentials.secret-key", Objects.requireNonNull(dotenv.get("SECRET_KEY")));
 
-		SpringApplication.run(ModuLectureApplication.class, args);
+		System.setProperty("naver.client-id", Objects.requireNonNull(dotenv.get("NAVER_CLIENT_ID")));
+		System.setProperty("naver.client-secret", Objects.requireNonNull(dotenv.get("NAVER_CLIENT_SECRET")));
+		System.setProperty("naver.redirect-uri", Objects.requireNonNull(dotenv.get("NAVER_REDIRECT_URI")));
+		System.setProperty("naver.auth-grant-type", Objects.requireNonNull(dotenv.get("NAVER_AUTH_GRANT_TYPE")));
+		System.setProperty("naver.auth-uri", Objects.requireNonNull(dotenv.get("NAVER_AUTH_URI")));
+		System.setProperty("naver.token-uri", Objects.requireNonNull(dotenv.get("NAVER_TOKEN_URI")));
+		System.setProperty("naver.user-info-uri", Objects.requireNonNull(dotenv.get("NAVER_USER_INFO_URI")));
+		System.setProperty("naver.user-name-attribute", Objects.requireNonNull(dotenv.get("NAVER_USER_NAME_ATTRIBUTE")));
 
+		System.setProperty("google.client-id", Objects.requireNonNull(dotenv.get("GOOGLE_CLIENT_ID")));
+		System.setProperty("google.client-secret", Objects.requireNonNull(dotenv.get("GOOGLE_CLIENT_SECRET")));
+		System.setProperty("google.redirect-uri", Objects.requireNonNull(dotenv.get("GOOGLE_REDIRECT_URI")));
+		System.setProperty("google.auth-uri", Objects.requireNonNull(dotenv.get("GOOGLE_AUTH_URI")));
+		System.setProperty("google.token-uri", Objects.requireNonNull(dotenv.get("GOOGLE_TOKEN_URI")));
+		System.setProperty("google.user-info-uri", Objects.requireNonNull(dotenv.get("GOOGLE_USER_INFO_URI")));
+		System.setProperty("google.jwt-set-uri", Objects.requireNonNull(dotenv.get("GOOGLE_JWT_SET_URI")));
+		System.setProperty("google.user-name-attribute", Objects.requireNonNull(dotenv.get("GOOGLE_USER_NAME_ATTRIBUTE")));
+
+		SpringApplication.run(ModuLectureApplication.class, args);
 
 	}
 

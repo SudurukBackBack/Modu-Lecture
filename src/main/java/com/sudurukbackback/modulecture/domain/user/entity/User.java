@@ -38,6 +38,12 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull
+    @Column(nullable = false, unique = true)
+    private String uuid;
+
+    private String socialType;
+
     @Email
     @NotNull
     @Column(nullable = false, unique = true)
@@ -72,7 +78,7 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return email;
+        return uuid;
     }
 
     @Override
@@ -85,18 +91,42 @@ public class User implements UserDetails {
     /**
      * 제공된 상세 정보를 사용하여 새로운 User 엔티티를 생성합니다.
      *
+     * @param uuid 사용자 고유 식별 코드
      * @param email 사용자의 이메일 주소
      * @param password 사용자의 비밀번호
      * @param nickname 사용자의 닉네임
      * @param grade 사용자의 등급을 나타내는 UserGrade
      * @return User 엔티티의 새로운 인스턴스
      */
-    public static User createUserEntity(String email, String password, String nickname, UserGrade grade) {
+    public static User createUser(String uuid, String email, String password, String nickname, UserGrade grade) {
         return User.builder()
+                .uuid(uuid)
                 .email(email)
                 .password(password)
                 .nickname(nickname)
                 .grade(grade)
+                .userStatus(UserStatus.ACTIVE)
+                .createdAt(LocalDateTime.now())
+                .build();
+    }
+
+    /**
+     * 제공된 세부 정보를 사용하여 네이버 소셜 로그인에 특화된 새로운 User 인스턴스를 생성합니다.
+     *
+     * @param uuid 사용자 고유 식별 코드
+     * @param email 사용자의 이메일 주소
+     * @param nickname 사용자의 닉네임, null인 경우 이메일이 닉네임으로 사용됨
+     * @param type 소셜 로그인 플랫폼 유형(예: "NAVER")
+     * @return 제공된 데이터로 초기화된 새로운 User 인스턴스
+     */
+    public static User createSocialUser(String uuid, String email, String nickname, String type) {
+        return User.builder()
+                .uuid(uuid)
+                .socialType(type)
+                .email(email)
+                .password("<PASSWORD>") // 소셜 로그인의 경우 비밀번호 의미 없음
+                .nickname(nickname == null ? email : nickname)
+                .grade(UserGrade.ROLE_BRONZE)
                 .userStatus(UserStatus.ACTIVE)
                 .createdAt(LocalDateTime.now())
                 .build();

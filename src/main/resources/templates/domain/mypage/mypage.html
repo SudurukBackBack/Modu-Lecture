@@ -42,7 +42,7 @@
                                         <input type="text" class="form-control form-control-sm" id="name-text"
                                                name="name" value="username" readonly>
                                     </div>
-                                    <div class="col-sm-2">
+                                    <div class="col-sm-2" th:if="${!isSocialLogin}">
                                         <button type="button" class="btn btn-outline-primary btn-sm"
                                                 id="edit-nickname-btn">닉네임 변경
                                         </button>

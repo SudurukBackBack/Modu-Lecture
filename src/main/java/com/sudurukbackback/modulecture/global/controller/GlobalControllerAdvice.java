@@ -2,7 +2,6 @@ package com.sudurukbackback.modulecture.global.controller;
 
 import com.sudurukbackback.modulecture.domain.auth.service.AuthService;
 import com.sudurukbackback.modulecture.domain.user.entity.User;
-import com.sudurukbackback.modulecture.global.security.JwtTokenProvider;
 import com.sudurukbackback.modulecture.global.security.util.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 @ControllerAdvice
 public class GlobalControllerAdvice {
 
-    private final JwtTokenProvider jwtTokenProvider;
     private final AuthService authService;
 
     @ModelAttribute
@@ -27,14 +25,17 @@ public class GlobalControllerAdvice {
             // JWT에서 사용자 인증 정보 추출
             Authentication authentication = authService.getAuthentication(token);
             User user = (User) authentication.getPrincipal();
+            boolean isSocialLogin = user.getSocialType() != null;
 
             // Thymeleaf에서 사용할 로그인 정보 전달
             model.addAttribute("isAuthenticated", true);
             model.addAttribute("username", user.getNickname());
+            model.addAttribute("isSocialLogin", isSocialLogin);
         } else {
             // 로그인되지 않은 경우
             model.addAttribute("isAuthenticated", false);
             model.addAttribute("username", null);
+            model.addAttribute("isSocialLogin", null);
         }
     }
 }

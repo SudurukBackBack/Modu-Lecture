@@ -34,7 +34,41 @@ spring:
     redis:
       host: localhost
       port: 6379
-  
+
+  # Naver OAuth2
+  security:
+    oauth2:
+      client:
+        registration:
+          naver:
+            client-id: ${naver.client-id}
+            client-secret: ${naver.client-secret}
+            redirect-uri: ${naver.redirect-uri}
+            authorization-grant-type: ${naver.auth-grant-type}
+            scope: email
+
+          google:
+            client-id: ${google.client-id}
+            client-secret: ${google.client-secret}
+            redirect-uri: ${google.redirect-uri}
+            scope:
+              - email
+              - profile
+
+        provider:
+          naver:
+            authorization-uri: ${naver.auth-uri}
+            token-uri: ${naver.token-uri}
+            user-info-uri: ${naver.user-info-uri}
+            user-name-attribute: ${naver.user-name-attribute}
+
+          google:
+            authorization-uri: ${google.auth-uri}
+            token-uri: ${google.token-uri}
+            user-info-uri: ${google.user-info-uri}
+            jwk-set-uri: ${google.jwt-set-uri}
+            user-name-attribute: ${google.user-name-attribute}
+
 cloud:
   aws:
     region: ${cloud.aws.region}

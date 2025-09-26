@@ -12,6 +12,7 @@ import com.sudurukbackback.modulecture.domain.user.entity.enums.ProfileField;
 import com.sudurukbackback.modulecture.domain.user.entity.enums.UserGrade;
 import com.sudurukbackback.modulecture.domain.user.entity.enums.UserStatus;
 import com.sudurukbackback.modulecture.domain.user.exception.SamePasswordException;
+import com.sudurukbackback.modulecture.domain.user.exception.SocialUserNotAllowException;
 import com.sudurukbackback.modulecture.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,6 +41,9 @@ public class UserService {
         // 본인 인증
         User user = authenticateActiveUser(auth.getName(), request.getCurrentPassword());
 
+        // 소셜 로그인 유저 확인 (소셜 로그인 유저일 경우 비밀번호 변경 기능 사용 불가)
+        validateSocialUser(user);
+
         String originalPassword = user.getPassword();
         String newPassword = request.getNewPassword();
 
@@ -48,7 +52,7 @@ public class UserService {
             throw new SamePasswordException();
         }
 
-        authComponent.encodePassword(newPassword);
+        newPassword = authComponent.encodePassword(newPassword);
 
         user.updateProfile(ProfileField.PASSWORD, newPassword);
     }
@@ -61,20 +65,25 @@ public class UserService {
         user.deactivateAccount(UserStatus.PENDING);
     }
 
-    public UserProfileResponseDto getUserProfile(String email) {
+    public UserProfileResponseDto getUserProfile(String uuid) {
         // 사용자 정보 가져오기
-        User user = userComponent.getUserByEmail(email);
+        User user = userComponent.getUserByUuid(uuid);
 
         return UserProfileResponseDto.of(user.getEmail(), user.getNickname());
     }
 
     @Transactional
-    public UserProfileResponseDto updateUserProfile(String email, String newNickname) {
+    public UserProfileResponseDto updateUserProfile(String uuid, String newNickname) {
         // 닉네임 중복 확인
         userComponent.validateNicknameUniqueness(newNickname);
 
         // 사용자 정보 가져오기
-        User user = userComponent.getUserByEmail(email);
+        User user = userComponent.getUserByUuid(uuid);
+
+        // 소셜 로그인 유저 확인 (소셜 로그인 유저일 경우 닉네임 변경 기능 사용 불가)
+        validateSocialUser(user);
+
+        // 닉네임 변경
         user.updateProfile(ProfileField.NICKNAME, newNickname);
 
         return UserProfileResponseDto.of(user.getEmail(), user.getNickname());
@@ -151,4 +160,20 @@ public class UserService {
 
         return user;
     }
+
+    /**
+     * 제공된 사용자가 소셜 사용자인지 검증합니다. 만약 사용자가 소셜 사용자라면,
+     * SocialUserNotAllowException이 발생합니다.
+     *
+     * @param user 검증할 사용자
+     * @throws SocialUserNotAllowException 사용자가 소셜 사용자로 확인된 경우 발생
+     */
+    private void validateSocialUser(User user) {
+        boolean isSocialUser = user.getSocialType() != null;
+
+        if (isSocialUser) {
+            throw new SocialUserNotAllowException();
+        }
+    }
+
 }
